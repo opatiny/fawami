@@ -1,1 +1,1 @@
-# Fabric waste minimization project
+# FaWaMi: Fabric waste minimization project
