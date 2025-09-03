@@ -1,0 +1,1 @@
+# Fabric waste minimization project
