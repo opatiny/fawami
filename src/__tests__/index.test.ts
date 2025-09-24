@@ -1,7 +1,11 @@
 import { expect, test } from 'vitest';
 
-import { myModule } from '../index.ts';
+import { helloWorld, myModule } from '../index.ts';
 
 test('should return 42', () => {
   expect(myModule()).toBe(42);
+});
+
+test('should return Hello, World!', () => {
+  expect(helloWorld()).toBe('Hello, World!');
 });
