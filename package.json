@@ -1,0 +1,49 @@
+{
+  "name": "fawami",
+  "version": "0.0.0",
+  "license": "MIT",
+  "description": "Fabric waste minimization heuristic",
+  "keywords": [],
+  "author": "Oceane Patiny",
+  "type": "module",
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "clean": "rimraf coverage lib",
+    "eslint": "eslint .",
+    "eslint-fix": "eslint . --fix",
+    "prepack": "npm run tsc",
+    "prettier": "prettier --check .",
+    "prettier-write": "prettier --write .",
+    "test": "npm run test-only && npm run check-types && npm run eslint && npm run prettier",
+    "test-only": "vitest run --coverage",
+    "tsc": "npm run clean && npm run tsc-build",
+    "tsc-build": "tsc --project tsconfig.build.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@zakodium/tsconfig": "^1.0.2",
+    "eslint": "^9.36.0",
+    "eslint-config-cheminfo-typescript": "^20.0.0",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opatiny/fawami.git"
+  },
+  "bugs": {
+    "url": "https://github.com/opatiny/fawami/issues"
+  },
+  "homepage": "https://github.com/opatiny/fawami#readme"
+}
