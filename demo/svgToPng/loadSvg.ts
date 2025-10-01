@@ -6,7 +6,7 @@ import { Mask, readCanvas, write } from 'image-js';
 import { JSDOM } from 'jsdom';
 import { Canvas, Image } from 'skia-canvas';
 
-import { parseDimension } from './parseDimension.ts';
+import { parseDimension } from '../parseDimension.ts';
 
 const aaron = '../data/freesewing-aaron-simplified.svg';
 

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { fromMask, read, write, writeSync } from 'image-js';
+import { colorRois, fromMask, read, write, writeSync } from 'image-js';
 
 const filePath = '../../data/png/freesewing-aaron-100dpi.png';
 const image = await read(join(import.meta.dirname, filePath));
@@ -17,13 +17,21 @@ const mask = greyImage.threshold();
 await write(join(import.meta.dirname, 'mask.png'), mask);
 
 // get the ROIs
-const rois = fromMask(mask).getRois();
+
+const roiMap = fromMask(mask);
+console.log(roiMap);
+
+const colorMap = colorRois(roiMap, { roiKind: 'white', mode: 'rainbow' });
+await write(join(import.meta.dirname, 'colorMap.png'), colorMap);
+
+const rois = roiMap.getRois();
 console.log(`Found ${rois.length} ROIs`);
 
 // save each ROI as a separate image
 for (let i = 0; i < rois.length; i++) {
   const roi = rois[i];
+
   const roiMask = roi.getMask();
 
-  writeSync(join(import.meta.dirname, `roi${i}.png`), roiMask);
+  writeSync(join(import.meta.dirname, 'rois', `roi${i}.png`), roiMask);
 }
