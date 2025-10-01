@@ -13,11 +13,24 @@
 - Some options buttons: orientation, space between parts, ...
 - Graphics zone with the results of the opti displayed as an image
 
+## Run a script
+
+Simply use `node yourScript.ts`. In the latest node version, you don't need to transpile ts code anymore, as you did using `ts-node` for instance.
+
+In watch mode: `node --watch yourScript.ts`
+
 ## Running tests
 
-To run all tests: `npm run test-only`
+- To run all tests once: `npm run test-only`
+- Rerun on change:
+
+## Convert SVG to a PNG or other image format
+
+- https://www.npmjs.com/package/svg2img
+- https://www.npmjs.com/package/html-to-image
+- https://stackoverflow.com/questions/3975499/convert-svg-to-image-jpeg-png-etc-in-the-browser
 
 ## Questions
 
 - how to make the debugger work to inspect variables?
-- why can't I run scripts with `ts-node`?
+- why can't I run scripts with `ts-node`? Is it because I have a module? Should I use `tsx` instead?
