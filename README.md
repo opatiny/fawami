@@ -22,7 +22,8 @@ In watch mode: `node --watch yourScript.ts`
 ## Running tests
 
 - To run all tests once: `npm run test-only`
-- Rerun on change:
+- Watch mode:
+- Focus on one test: `npm run test-only testName`
 
 ## Convert SVG to a PNG or other image format
 

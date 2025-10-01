@@ -41,11 +41,8 @@ const height = svgElement.getAttribute('height');
 
 console.log({ width, height });
 
-// desired resolution
-const dpcm = 10; // pixels per cm
-
-const widthPx = parseDimension(width, dpcm);
-const heightPx = parseDimension(height, dpcm);
+const widthPx = parseDimension(width);
+const heightPx = parseDimension(height);
 
 console.log({ widthPx, heightPx });
 
@@ -58,7 +55,7 @@ console.log(elements.length);
 for (const pathElement of elements) {
   pathElement.removeAttribute('class');
   pathElement.removeAttribute('style');
-  pathElement.setAttribute('fill', '#f00000');
+  pathElement.setAttribute('fill', '#000000');
 }
 
 const blackSVG = dom.serialize();
@@ -66,7 +63,14 @@ const blackSVG = dom.serialize();
 await writeFile(join(import.meta.dirname, outputDir, 'black.svg'), blackSVG);
 
 // width and height should be in px
-const scale = 1;
+
+// desired resolution
+const dpcm = 10; // pixels per cm
+
+// by default 1mm = 1 pixel
+
+const scale = dpcm / 10;
+
 const canvas = new Canvas(widthPx * scale, heightPx * scale);
 
 const ctx = canvas.getContext('2d');
