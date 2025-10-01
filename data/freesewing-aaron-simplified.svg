@@ -14,12 +14,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
 
-  <g
-     inkscape:groupmode="layer"
-     id="layer1"
-     inkscape:label="Layer 1"
-     style="display:inline"
-     transform="matrix(0.99945993,0,0,0.99945993,0.27070595,0.23021914)">
+
     <path
        class="fabric"
        id="fs-14"
@@ -52,5 +47,4 @@
        d="M 0,35.235872 V 538.23587 h 225.72 c 0,-157.3 -2.3,-265.59 -2.3,-265.59 -67.8,0 -104.7,-127.18 -73.79,-254.359998 l -42.75,-10.39 v 0 c -6.65,27.34 -106.88,27.34 -106.88,27.34 z"
        transform="matrix(1.0005404,0,0,1.0005404,755.45741,61.53146)"
        inkscape:label="fs-3" />
-  </g>
 </svg>

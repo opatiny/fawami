@@ -1,16 +1,22 @@
 /* eslint-disable unicorn/prefer-add-event-listener */
 import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { Mask, readCanvas, write } from 'image-js';
 import { JSDOM } from 'jsdom';
 import { Canvas, Image } from 'skia-canvas';
 
-import { parseDimension } from '../parseDimension.ts';
+import { parseDimension } from './parseDimension.ts';
 
-const aaron = '../data/freesewing-aaron-simplified.svg';
+const outputDir = './output/';
+// create output dir if it doesn't exist
+await mkdir(join(import.meta.dirname, outputDir), { recursive: true });
 
-const rectangles = '../data/rectangles.svg';
+const dataPath = '../../data';
+
+const aaron = join(dataPath, 'freesewing-aaron.svg');
+const rectangles = join(dataPath, 'rectangles.svg');
 
 // read the svg as text
 const svg = await readFile(join(import.meta.dirname, aaron), 'utf8');
@@ -18,42 +24,46 @@ const svg = await readFile(join(import.meta.dirname, aaron), 'utf8');
 // transform to a DOM
 const dom = new JSDOM(svg, { contentType: 'image/svg+xml' });
 
-console.log(dom.window.document.querySelectorAll('svg').length);
+const svgElement = dom.window.document.querySelectorAll('svg')[0];
 
-const width = dom.window.document
-  .querySelectorAll('svg')[0]
-  .getAttribute('width');
-const height = dom.window.document
-  .querySelectorAll('svg')[0]
-  .getAttribute('height');
+// remove xmlns:svg attribute -> otherwise canvas won't work
+svgElement.removeAttribute('xmlns:svg');
+
+// remove all textt elements
+const textElements = dom.window.document.querySelectorAll('text');
+for (const textElement of textElements) {
+  textElement.remove();
+}
+
+// retrieve width and height
+const width = svgElement.getAttribute('width');
+const height = svgElement.getAttribute('height');
 
 console.log({ width, height });
 
 // desired resolution
-const dpcm = 10; // 10 pixels per cm
+const dpcm = 10; // pixels per cm
 
 const widthPx = parseDimension(width, dpcm);
 const heightPx = parseDimension(height, dpcm);
 
 console.log({ widthPx, heightPx });
 
-const pathElements = dom.window.document.querySelectorAll(
+const elements = dom.window.document.querySelectorAll(
   'path, rect, circle, ellipse, polygon, line',
 );
 
-console.log(pathElements.length);
+console.log(elements.length);
 
-for (const pathElement of pathElements) {
+for (const pathElement of elements) {
   pathElement.removeAttribute('class');
   pathElement.removeAttribute('style');
-  pathElement.setAttribute('fill', '#fff000');
-  pathElement.setAttribute('stroke', '#ffffff');
-  pathElement.setAttribute('stroke-width', '1');
+  pathElement.setAttribute('fill', '#f00000');
 }
 
 const blackSVG = dom.serialize();
 
-await writeFile(join(import.meta.dirname, 'test-black.svg'), blackSVG);
+await writeFile(join(import.meta.dirname, outputDir, 'black.svg'), blackSVG);
 
 // width and height should be in px
 const scale = 1;
@@ -62,24 +72,27 @@ const canvas = new Canvas(widthPx * scale, heightPx * scale);
 const ctx = canvas.getContext('2d');
 
 const img = new Image();
-img.onload = function () {
-  ctx.drawImage(img, 0, 0, width, height, 0, 0, width * 2, height * 2);
+img.onload = () => {
+  ctx.drawImage(
+    img,
+    0,
+    0,
+    widthPx,
+    heightPx,
+    0,
+    0,
+    widthPx * scale,
+    heightPx * scale,
+  );
 };
-console.log(blackSVG);
 
 img.src = `data:image/svg+xml;utf8,${encodeURIComponent(blackSVG.replaceAll('mm', ''))}`;
 
 await writeFile(
-  join(import.meta.dirname, 'canvas.png'),
+  join(import.meta.dirname, outputDir, 'canvas.png'),
   await canvas.toBuffer('png'),
 );
 
 const ijs = await readCanvas(canvas);
 console.log(ijs);
-write(join(import.meta.dirname, 'test-black.png'), ijs);
-
-const mask = Mask.createFrom(ijs);
-console.log(mask);
-
-// save mask
-write(join(import.meta.dirname, 'mask.png'), mask);
+write(join(import.meta.dirname, outputDir, 'image.png'), ijs);
