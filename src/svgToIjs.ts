@@ -61,9 +61,15 @@ export async function svgToIjs(
   }
 
   for (const pathElement of elements) {
-    pathElement.removeAttribute('class');
-    pathElement.removeAttribute('style');
-    pathElement.setAttribute('fill', '#000000');
+    // elements filled in white as considered as holes in the pieces
+    if (
+      pathElement.getAttribute('fill') !== '#ffffff' &&
+      !pathElement.getAttribute('style')?.includes('#ffffff')
+    ) {
+      pathElement.removeAttribute('class');
+      pathElement.removeAttribute('style');
+      pathElement.setAttribute('fill', '#000000');
+    }
   }
 
   const blackSVG = dom.serialize();

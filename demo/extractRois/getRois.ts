@@ -19,7 +19,6 @@ await write(join(import.meta.dirname, 'mask.png'), mask);
 // get the ROIs
 
 const roiMap = fromMask(mask);
-console.log(roiMap);
 
 const colorMap = colorRois(roiMap, { roiKind: 'white', mode: 'rainbow' });
 await write(join(import.meta.dirname, 'colorMap.png'), colorMap);
@@ -30,6 +29,8 @@ console.log(`Found ${rois.length} ROIs`);
 // save each ROI as a separate image
 for (let i = 0; i < rois.length; i++) {
   const roi = rois[i];
+
+  console.log(roi?.width, roi?.height, roi?.origin);
 
   const roiMask = roi.getMask();
 
