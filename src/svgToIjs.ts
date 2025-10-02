@@ -92,7 +92,7 @@ export async function svgToIjs(
 
   img.src = `data:image/svg+xml;utf8,${encodeURIComponent(blackSVG.replaceAll('mm', ''))}`;
 
-  const ijs = await readCanvas(canvas);
+  const ijs = readCanvas(canvas);
 
   return ijs;
 }
