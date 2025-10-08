@@ -1,15 +1,23 @@
 import type { PatternPiece } from '../PatternPiece.ts';
 
+/**
+ * Compute the surface of the intersection of two pattern pieces in pixels.
+ * @param piece1 - First pattern piece
+ * @param piece2 - Second pattern piece
+ * @returns Surface area of the intersection in pixels
+ */
 export function getIntersection(
   piece1: PatternPiece,
   piece2: PatternPiece,
 ): number {
   // treat easy case where bounding boxes do not intersect
   if (
-    piece1.origin.column + piece1.width <= piece2.origin.column ||
-    piece2.origin.column + piece2.width <= piece1.origin.column ||
-    piece1.origin.row + piece1.height <= piece2.origin.row ||
-    piece2.origin.row + piece2.height <= piece1.origin.row
+    piece1.numberHoles === 0 &&
+    piece2.numberHoles === 0 &&
+    (piece1.origin.column + piece1.width <= piece2.origin.column ||
+      piece2.origin.column + piece2.width <= piece1.origin.column ||
+      piece1.origin.row + piece1.height <= piece2.origin.row ||
+      piece2.origin.row + piece2.height <= piece1.origin.row)
   ) {
     return 0;
   }

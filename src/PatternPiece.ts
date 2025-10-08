@@ -19,6 +19,11 @@ export interface PatternPieceOptions {
    * @default undefined
    */
   centroid?: Point;
+  /**
+   * Whether the piece contains holes
+   * @default false
+   */
+  numberHoles?: number;
 }
 
 export class PatternPiece {
@@ -30,17 +35,25 @@ export class PatternPiece {
   public readonly surface: number | undefined; // in pixels
   public readonly centroid: Point | undefined; // location of center of mass relative to top-left corner of the mask
   public readonly resolution: number; // pixels per cm
+  public readonly numberHoles: number | undefined;
 
   public constructor(mask: Mask, options: PatternPieceOptions = {}) {
-    const { resolution = 10, orientation = 0 } = options;
+    const {
+      resolution = 10,
+      orientation = 0,
+      numberHoles = undefined,
+      centroid = undefined,
+      surface = undefined,
+    } = options;
     this.mask = mask;
     this.origin = mask.origin;
     this.width = mask.width;
     this.height = mask.height;
     this.orientation = orientation;
-    this.surface = undefined;
-    this.centroid = undefined;
+    this.surface = surface;
+    this.centroid = centroid;
     this.resolution = resolution;
+    this.numberHoles = numberHoles;
   }
 
   public static createFromRoi(
@@ -50,6 +63,7 @@ export class PatternPiece {
     return new PatternPiece(roi.getMask(), {
       surface: roi.surface,
       centroid: roi.centroid,
+      numberHoles: roi.holesInfo.number,
       ...options,
     });
   }
