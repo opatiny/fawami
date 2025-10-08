@@ -6,6 +6,7 @@ import { write, writeSync } from 'image-js';
 import { extractRois } from '../src/extractRois.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
+import { drawBoundingRectangles } from '../src/utils/drawBoundingRectangles.ts';
 import { getColors } from '../src/utils/getColors.ts';
 
 const img1 = 'shapes-holes.svg';
@@ -52,3 +53,8 @@ for (let i = 0; i < masks.length; i++) {
 }
 
 await write(join(import.meta.dirname, 'fabric-with-parts.png'), fabric);
+
+// draw bounding rectangles of each piece on the fabric
+drawBoundingRectangles(fabric, masks);
+
+await write(join(import.meta.dirname, 'fabric-with-BR.png'), fabric);
