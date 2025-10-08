@@ -7,7 +7,7 @@ import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { placeRandomOnFabric } from '../src/placeRandomOnFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
-import { drawMasks } from '../src/utils/drawMasks.ts';
+import { drawPieces } from '../src/utils/drawPieces.ts';
 
 const img1 = 'shapes-holes.svg';
 const img2 = 'freesewing-aaron.svg';
@@ -40,12 +40,10 @@ for (let i = 0; i < pieces.length; i++) {
 // create a rectangular piece of fabric
 const fabric = getRectangleFabric({ width: 20, length: 30 });
 
-console.log('color model', fabric.colorModel);
-
 // paint pieces on the fabric with default position
 const fabricDefaultPos = fabric.clone();
 
-drawMasks(fabricDefaultPos, pieces, { showBoundingRectangles: true });
+drawPieces(fabricDefaultPos, pieces, { showBoundingRectangles: true });
 
 await write(
   join(import.meta.dirname, 'fabric-with-original-parts.png'),
@@ -54,9 +52,8 @@ await write(
 
 // place pieces randomly on the fabric
 const fabricRandom = fabric.clone();
-console.log('color model', fabricRandom.colorModel);
 placeRandomOnFabric(fabricRandom, pieces);
-drawMasks(fabricRandom, pieces, { showBoundingRectangles: true, blend: true });
+drawPieces(fabricRandom, pieces, { showBoundingRectangles: true, blend: true });
 
 await write(
   join(import.meta.dirname, 'fabric-with-random-parts.png'),

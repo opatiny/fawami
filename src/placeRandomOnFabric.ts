@@ -1,4 +1,4 @@
-import type { Image, Roi } from 'image-js';
+import type { Image } from 'image-js';
 
 import type { PatternPiece } from './PatternPiece.ts';
 
@@ -22,11 +22,8 @@ export function placeRandomOnFabric(
       throw new Error(`Mask ${i} is too large to fit in the fabric`);
     }
 
-    console.log('old origin', piece.origin);
-
     const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
     const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
     piece.origin = { column: x, row: y };
-    console.log('new origin', piece.origin);
   }
 }

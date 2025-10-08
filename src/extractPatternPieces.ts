@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import type { Image, Roi } from 'image-js';
+import type { Image } from 'image-js';
 import { fromMask, writeSync } from 'image-js';
 
 import { PatternPiece } from './PatternPiece.ts';
@@ -45,7 +45,7 @@ export function extractPatternPieces(
 
   const pieces: PatternPiece[] = [];
   for (const roi of rois) {
-    pieces.push(new PatternPiece(roi));
+    pieces.push(PatternPiece.createFromRoi(roi));
   }
 
   return pieces;

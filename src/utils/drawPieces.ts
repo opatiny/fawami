@@ -16,6 +16,11 @@ export interface DrawRoisOptions {
    * @default false
    */
   blend?: boolean;
+  /**
+   * Enable debug?
+   * @default false
+   */
+  debug?: boolean;
 }
 
 /**
@@ -24,21 +29,25 @@ export interface DrawRoisOptions {
  * @param pieces - The pieces to draw
  * @param options - Options for drawing masks
  */
-export function drawMasks(
+export function drawPieces(
   fabric: Image,
   pieces: PatternPiece[],
   options: DrawRoisOptions = {},
 ): void {
-  const { showBoundingRectangles = false, blend = false } = options;
+  const {
+    showBoundingRectangles = false,
+    blend = false,
+    debug = false,
+  } = options;
 
   // create array of colors
   const colors = getColors(pieces.length, fabric);
 
-  console.log(colors);
-
   for (let i = 0; i < pieces.length; i++) {
     const piece = pieces[i] as PatternPiece;
-    console.log('piece origin', piece.origin);
+    if (debug) {
+      console.log('piece origin', piece.origin);
+    }
     const mask = piece.mask;
     fabric.paintMask(mask, {
       origin: piece.origin,
