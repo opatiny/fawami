@@ -8,9 +8,10 @@
 
 ## Concept for the GUI
 
-- Form to select an input svg file
+- Input an SVG image with the pattern pieces to place on the fabric
+- Define the fabric dimensions (if rectangular). We'll see if we handle not rectangular shapes.
 - Drop-down for optimisation algorithm selection
-- Some options buttons: orientation, space between parts, ...
+- Some options buttons: orientation, space between parts (padding), ...
 - Graphics zone with the results of the opti displayed as an image
 
 ## Run a script
@@ -25,13 +26,6 @@ In watch mode: `node --watch yourScript.ts`
 - Watch mode: `npx vitest` (no coverage)
 - Focus on one test: `npx vitest testName`
 
-## Convert SVG to a PNG or other image format
-
-- https://www.npmjs.com/package/svg2img
-- https://www.npmjs.com/package/html-to-image
-- https://stackoverflow.com/questions/3975499/convert-svg-to-image-jpeg-png-etc-in-the-browser
-
 ## Questions
 
 - how to make the debugger work to inspect variables?
-- why can't I run scripts with `ts-node`? Is it because I have a module? Should I use `tsx` instead?

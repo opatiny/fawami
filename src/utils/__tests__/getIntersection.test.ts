@@ -39,3 +39,11 @@ test('move piece 1 to (1,1)', async () => {
 
   expect(result).toBe(0);
 });
+
+test('bounding rectangles do not overlap', async () => {
+  piece1.origin = { row: 3, column: 3 };
+  piece2.origin = { row: 0, column: 0 };
+  const result = getIntersection(piece1, piece2);
+
+  expect(result).toBe(0);
+});
