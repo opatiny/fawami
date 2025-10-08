@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import { colorRois, fromMask, read, write, writeSync } from 'image-js';
 
-const filePath = '../../data/png/freesewing-aaron-100dpi.png';
+const filePath = '../../data/png/shapes-holes-25dpi.png';
 const image = await read(join(import.meta.dirname, filePath));
 
 const greyImage = image
@@ -36,3 +36,7 @@ for (let i = 0; i < rois.length; i++) {
 
   writeSync(join(import.meta.dirname, 'rois', `roi${i}.png`), roiMask);
 }
+
+// test rotating an ROI
+const roi = rois[0];
+const roiMask = roi.getMask();

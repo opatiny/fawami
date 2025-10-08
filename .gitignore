@@ -121,3 +121,6 @@ lib
 
 demo/**/*.png
 demo/**/*.svg
+
+src/**/*.png
+src/**/*.svg
