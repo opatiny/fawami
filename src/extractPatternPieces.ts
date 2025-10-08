@@ -1,7 +1,9 @@
 import { join } from 'node:path';
 
-import type { Image, Mask } from 'image-js';
+import type { Image, Roi } from 'image-js';
 import { fromMask, writeSync } from 'image-js';
+
+import { PatternPiece } from './PatternPiece.ts';
 
 /**
  * Extract the ROIs from the image.
@@ -9,7 +11,10 @@ import { fromMask, writeSync } from 'image-js';
  * @param debug - Whether to enable debug mode
  * @returns The masks of ROIs
  */
-export function extractRois(image: Image, debug = false): Mask[] {
+export function extractPatternPieces(
+  image: Image,
+  debug = false,
+): PatternPiece[] {
   if (debug) {
     // check color model
     console.log(`extractRois: Color model: ${image.colorModel}`);
@@ -38,7 +43,10 @@ export function extractRois(image: Image, debug = false): Mask[] {
     console.log(`extractRois: Found ${rois.length} ROIs`);
   }
 
-  // get the masks of the ROIs
-  const masks: Mask[] = rois.map((roi) => roi.getMask());
-  return masks;
+  const pieces: PatternPiece[] = [];
+  for (const roi of rois) {
+    pieces.push(new PatternPiece(roi));
+  }
+
+  return pieces;
 }

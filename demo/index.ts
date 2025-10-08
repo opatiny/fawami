@@ -3,16 +3,16 @@ import { join } from 'node:path';
 
 import { write, writeSync } from 'image-js';
 
-import { extractRois } from '../src/extractRois.ts';
+import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
+import { placeRandomOnFabric } from '../src/placeRandomOnFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
-import { drawBoundingRectangles } from '../src/utils/drawBoundingRectangles.ts';
-import { getColors } from '../src/utils/getColors.ts';
+import { drawMasks } from '../src/utils/drawMasks.ts';
 
 const img1 = 'shapes-holes.svg';
 const img2 = 'freesewing-aaron.svg';
 
-const path = join(import.meta.dirname, '../data/', img2);
+const path = join(import.meta.dirname, '../data/', img1);
 
 // convert the SVG to an image-js image
 const pattern = await svgToIjs(path);
@@ -20,9 +20,9 @@ const pattern = await svgToIjs(path);
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
 
 // extract the pieces of the pattern
-const masks = extractRois(pattern, true);
+const pieces = extractPatternPieces(pattern, true);
 
-console.log(`Extracted ${masks.length} pieces`);
+console.log(`Extracted ${pieces.length} pieces`);
 
 // save each piece as a separate image
 // create folder 'masks' first if it does not exist
@@ -32,29 +32,33 @@ mkdir(join(import.meta.dirname, 'masks'), { recursive: true }, (err) => {
   }
 });
 
-for (let i = 0; i < masks.length; i++) {
-  const mask = masks[i];
+for (let i = 0; i < pieces.length; i++) {
+  const mask = pieces[i].mask;
   writeSync(join(import.meta.dirname, 'masks', `piece${i}.png`), mask);
 }
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric();
+const fabric = getRectangleFabric({ width: 20, length: 30 });
 
-// crete array of colors
-const colors = getColors(masks.length);
-// paint pieces on the fabric
-for (let i = 0; i < masks.length; i++) {
-  const mask = masks[i];
-  fabric.paintMask(mask, {
-    origin: mask.origin,
-    out: fabric,
-    color: colors[i],
-  });
-}
+console.log('color model', fabric.colorModel);
 
-await write(join(import.meta.dirname, 'fabric-with-parts.png'), fabric);
+// paint pieces on the fabric with default position
+const fabricDefaultPos = fabric.clone();
 
-// draw bounding rectangles of each piece on the fabric
-drawBoundingRectangles(fabric, masks);
+drawMasks(fabricDefaultPos, pieces, { showBoundingRectangles: true });
 
-await write(join(import.meta.dirname, 'fabric-with-BR.png'), fabric);
+await write(
+  join(import.meta.dirname, 'fabric-with-original-parts.png'),
+  fabricDefaultPos,
+);
+
+// place pieces randomly on the fabric
+const fabricRandom = fabric.clone();
+console.log('color model', fabricRandom.colorModel);
+placeRandomOnFabric(fabricRandom, pieces);
+drawMasks(fabricRandom, pieces, { showBoundingRectangles: true, blend: true });
+
+await write(
+  join(import.meta.dirname, 'fabric-with-random-parts.png'),
+  fabricRandom,
+);

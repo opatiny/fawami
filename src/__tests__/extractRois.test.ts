@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
 
-import { extractRois } from '../extractRois.ts';
+import { extractPatternPieces } from '../extractPatternPieces.ts';
 
 test('aaron', async () => {
   const image = testUtils.load('png/aaron.png');
 
-  const rois = extractRois(image);
+  const rois = extractPatternPieces(image);
 
   expect(rois).toHaveLength(6);
 });
@@ -13,7 +13,7 @@ test('aaron', async () => {
 test('shapes with holes', async () => {
   const image = testUtils.load('png/shapes-holes.png');
 
-  const rois = extractRois(image);
+  const rois = extractPatternPieces(image);
 
   expect(rois).toHaveLength(6);
 });

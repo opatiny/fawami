@@ -14,7 +14,7 @@ interface GetFabricOptions {
 export function getRectangleFabric(options: GetFabricOptions = {}): Image {
   const { resolution = 10, width = 150, length = 200 } = options;
   const fabric = new Image(length * resolution, width * resolution, {
-    colorModel: 'RGB',
+    colorModel: 'RGBA',
     bitDepth: 8,
   }).fill(0);
   return fabric;
