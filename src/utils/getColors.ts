@@ -5,8 +5,8 @@ import { hsvToRgb } from './hsvToRgb.ts';
  * @param nbColors - Number of colors to generate
  * @returns An array of colors in RGB format
  */
-export function getColors(nbColors: number): Uint8Array[] {
-  const colors: Uint8Array[] = [];
+export function getColors(nbColors: number): number[][] {
+  const colors: number[][] = [];
 
   for (let i = 0; i < nbColors; i++) {
     const hue = Math.round((i * 360) / nbColors);

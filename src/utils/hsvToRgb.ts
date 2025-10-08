@@ -19,7 +19,7 @@ export interface RgbColor {
  * @param hsv - The HSV color.
  * @returns The RGB color.
  */
-export function hsvToRgb(hsv: number[]): Uint8Array {
+export function hsvToRgb(hsv: number[]): number[] {
   const h = hsv[0];
   const s = hsv[1] / 255;
   const v = hsv[2] / 255;
@@ -55,9 +55,9 @@ export function hsvToRgb(hsv: number[]): Uint8Array {
     b = X;
   }
 
-  const rgb = new Uint8Array(3);
+  const rgb = new Uint8ClampedArray(3);
   rgb[0] = (r + m) * 255;
   rgb[1] = (g + m) * 255;
   rgb[2] = (b + m) * 255;
-  return rgb;
+  return Array.from(rgb);
 }
