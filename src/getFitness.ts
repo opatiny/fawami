@@ -1,4 +1,4 @@
-import type { PatternPiece } from './PatternPiece.ts';
+import type { PatternPieces } from './PatternPiece.ts';
 import { getIntersectionMatrix } from './utils/getIntersectionMatrix.ts';
 import { getUsedLength } from './utils/getUsedLength.ts';
 
@@ -17,7 +17,7 @@ export interface GetFitnessOptions {
  * @returns The fitness value
  */
 export function getFitness(
-  pieces: PatternPiece[],
+  pieces: PatternPieces,
   options: GetFitnessOptions = {},
 ): number {
   const { overlapWeight = 1, lengthWeight = 10, debug = false } = options;

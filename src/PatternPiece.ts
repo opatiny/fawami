@@ -1,5 +1,7 @@
 import type { Mask, Point, Roi } from 'image-js';
 
+export type PatternPieces = PatternPiece[];
+
 /**
  * Meta information for the pattern pieces
  */

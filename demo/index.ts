@@ -3,16 +3,13 @@ import { join } from 'node:path';
 
 import { write, writeSync } from 'image-js';
 
+import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { getFitness } from '../src/getFitness.ts';
 import { getRandomLocations } from '../src/getRandomLocations.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { drawPieces } from '../src/utils/drawPieces.ts';
-import { getIntersection } from '../src/utils/getIntersection.ts';
-import { getIntersectionMatrix } from '../src/utils/getIntersectionMatrix.ts';
-import { getUsedLength } from '../src/utils/getUsedLength.ts';
-import { getInt16Array } from '../test/testUtils.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };
@@ -70,22 +67,13 @@ await write(
   fabricRandom,
 );
 
-// compute overlap area and used length
-
-const overlap = getIntersectionMatrix(randomPieces).sum() / 2;
-
-const length = getUsedLength(randomPieces);
-
-console.log(`Overlap area: ${overlap} pixels`);
-console.log(`Length of fabric used: ${length} pixels`);
-
 // compute fitness value
 const fitness = getFitness(randomPieces, { debug: true });
 console.log(`Fitness: ${fitness}`);
 
 // create initial generation for genetic algorithm
 const populationSize = 10;
-const population: PatternPiece[][] = [];
+const population: PatternPieces[] = [];
 for (let i = 0; i < populationSize; i++) {
   const individual = getRandomLocations(fabric, pieces);
   population.push(individual);

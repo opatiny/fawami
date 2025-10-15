@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import type { Image } from 'image-js';
 import { fromMask, writeSync } from 'image-js';
 
+import type { PatternPieces } from './PatternPiece.ts';
 import { PatternPiece } from './PatternPiece.ts';
 
 /**
@@ -14,7 +15,7 @@ import { PatternPiece } from './PatternPiece.ts';
 export function extractPatternPieces(
   image: Image,
   debug = false,
-): PatternPiece[] {
+): PatternPieces {
   if (debug) {
     // check color model
     console.log(`extractRois: Color model: ${image.colorModel}`);
@@ -43,7 +44,7 @@ export function extractPatternPieces(
     console.log(`extractRois: Found ${rois.length} ROIs`);
   }
 
-  const pieces: PatternPiece[] = [];
+  const pieces: PatternPieces = [];
   for (const roi of rois) {
     pieces.push(PatternPiece.createFromRoi(roi));
   }

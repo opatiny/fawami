@@ -1,6 +1,6 @@
 import { Matrix } from 'ml-matrix';
 
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
 
 import { getIntersection } from './getIntersection.ts';
 
@@ -10,7 +10,7 @@ import { getIntersection } from './getIntersection.ts';
  * @param pieces - Array of pattern pieces
  * @returns The intersection matrix
  */
-export function getIntersectionMatrix(pieces: PatternPiece[]): Matrix {
+export function getIntersectionMatrix(pieces: PatternPieces): Matrix {
   const n = pieces.length;
   const matrix = Matrix.zeros(n, n);
 

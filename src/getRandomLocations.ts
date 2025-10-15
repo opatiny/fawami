@@ -1,5 +1,6 @@
 import type { Image } from 'image-js';
 
+import type { PatternPieces } from './PatternPiece.ts';
 import { PatternPiece } from './PatternPiece.ts';
 
 /**
@@ -10,12 +11,12 @@ import { PatternPiece } from './PatternPiece.ts';
  */
 export function getRandomLocations(
   fabric: Image,
-  pieces: PatternPiece[],
-): PatternPiece[] {
+  pieces: PatternPieces,
+): PatternPieces {
   const minX = 0;
   const minY = 0;
 
-  const randomPieces: PatternPiece[] = [];
+  const randomPieces: PatternPieces = [];
   for (let i = 0; i < pieces.length; i++) {
     const piece = pieces[i] as PatternPiece;
     const maxX = fabric.width - piece.meta.width;
