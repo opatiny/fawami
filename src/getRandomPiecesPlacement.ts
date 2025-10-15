@@ -9,7 +9,7 @@ import { PatternPiece } from './PatternPiece.ts';
  * @param pieces - The ROIs to place on the fabric
  * @returns New array of pieces with updated origins
  */
-export function getRandomLocations(
+export function getRandomPiecesPlacement(
   fabric: Image,
   pieces: PatternPieces,
 ): PatternPieces {

@@ -6,10 +6,11 @@ import { write, writeSync } from 'image-js';
 import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { getFitness } from '../src/getFitness.ts';
-import { getRandomLocations } from '../src/getRandomLocations.ts';
+import { getRandomPiecesPlacement } from '../src/getRandomPiecesPlacement.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { drawPieces } from '../src/utils/drawPieces.ts';
+import { saveGenerationImages } from '../src/utils/saveGenerationImages.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };
@@ -56,7 +57,7 @@ await write(
 
 // place pieces randomly on the fabric
 const fabricRandom = fabric.clone();
-const randomPieces = getRandomLocations(fabricRandom, pieces);
+const randomPieces = getRandomPiecesPlacement(fabricRandom, pieces);
 drawPieces(fabricRandom, randomPieces, {
   showBoundingRectangles: true,
   blend: true,
@@ -73,8 +74,11 @@ console.log(`Fitness: ${fitness}`);
 
 // create initial generation for genetic algorithm
 const populationSize = 10;
-const population: PatternPieces[] = [];
+const initialPopulation: PatternPieces[] = [];
 for (let i = 0; i < populationSize; i++) {
-  const individual = getRandomLocations(fabric, pieces);
-  population.push(individual);
+  const individual = getRandomPiecesPlacement(fabric, pieces);
+  initialPopulation.push(individual);
 }
+
+// save all sequences to images
+saveGenerationImages(fabric, initialPopulation, { path: import.meta.dirname });

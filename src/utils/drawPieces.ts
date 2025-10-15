@@ -8,12 +8,12 @@ import { getColors } from './getColors.ts';
 export interface DrawRoisOptions {
   /**
    * Whether to show bounding rectangles around the masks
-   * @default false
+   * @default true
    */
   showBoundingRectangles?: boolean;
   /**
    * Whether to blend the masks colors.
-   * @default false
+   * @default true
    */
   blend?: boolean;
   /**
@@ -35,8 +35,8 @@ export function drawPieces(
   options: DrawRoisOptions = {},
 ): void {
   const {
-    showBoundingRectangles = false,
-    blend = false,
+    showBoundingRectangles = true,
+    blend = true,
     debug = false,
   } = options;
 
