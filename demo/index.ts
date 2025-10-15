@@ -4,8 +4,8 @@ import { join } from 'node:path';
 import { write, writeSync } from 'image-js';
 
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
+import { getRandomLocations } from '../src/getRandomLocations.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
-import { placeRandomOnFabric } from '../src/placeRandomOnFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { drawPieces } from '../src/utils/drawPieces.ts';
 
@@ -52,7 +52,7 @@ await write(
 
 // place pieces randomly on the fabric
 const fabricRandom = fabric.clone();
-const locations = placeRandomOnFabric(fabricRandom, pieces);
+const locations = getRandomLocations(fabricRandom, pieces);
 drawPieces(fabricRandom, pieces, {
   locations,
   showBoundingRectangles: true,

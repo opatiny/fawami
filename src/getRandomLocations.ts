@@ -1,4 +1,4 @@
-import type { Image, Point } from 'image-js';
+import type { Image } from 'image-js';
 
 import type { PatternPiece } from './PatternPiece.ts';
 import type { PiecesLocations } from './PiecesLocations.ts';
@@ -9,7 +9,7 @@ import type { PiecesLocations } from './PiecesLocations.ts';
  * @param pieces - The ROIs to place on the fabric
  * @returns The locations of the pieces
  */
-export function placeRandomOnFabric(
+export function getRandomLocations(
   fabric: Image,
   pieces: PatternPiece[],
 ): PiecesLocations {
