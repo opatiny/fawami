@@ -1,14 +1,21 @@
 import type { Mask, Point, Roi } from 'image-js';
 
-export interface PatternPieceOptions {
+/**
+ * Meta information for the pattern pieces
+ */
+export interface MetaInfo {
+  /**
+   * Width of the piece in pixels
+   */
+  width: number;
+  /**
+   * Height of the piece in pixels
+   */
+  height: number;
   /**
    * Resolution of the mask in pixels per cm
    */
   resolution?: number;
-  /**
-   * Orientation of the piece in degrees (mathematical positive direction, counter-clockwise)
-   */
-  orientation?: number;
   /**
    * Surface of the piece in pixels
    * @default undefined
@@ -26,34 +33,37 @@ export interface PatternPieceOptions {
   numberHoles?: number;
 }
 
+export interface PatternPieceOptions {
+  /**
+   * Meta information about the piece
+   * @default {}
+   */
+  meta?: MetaInfo;
+  /**
+   * Origin of the piece on the fabric (top-left corner of the mask)
+   */
+  origin?: Point;
+  /**
+   * Orientation of the piece in degrees (mathematical positive direction, counter-clockwise)
+   */
+  orientation?: number;
+}
+
 export class PatternPiece {
   public readonly mask: Mask;
   public origin: Point;
   public orientation: number;
-  public readonly width: number;
-  public readonly height: number;
-  public readonly surface: number | undefined; // in pixels
-  public readonly centroid: Point | undefined; // location of center of mass relative to top-left corner of the mask
-  public readonly resolution: number; // pixels per cm
-  public readonly numberHoles: number | undefined;
+  public readonly meta: MetaInfo;
 
   public constructor(mask: Mask, options: PatternPieceOptions = {}) {
-    const {
-      resolution = 10,
-      orientation = 0,
-      numberHoles = undefined,
-      centroid = undefined,
-      surface = undefined,
-    } = options;
-    this.mask = mask;
-    this.origin = mask.origin;
-    this.width = mask.width;
-    this.height = mask.height;
+    const { orientation = 0, origin = { row: 0, column: 0 } } = options;
+
+    const meta = { width: mask.width, height: mask.height, ...options.meta };
+
+    this.origin = origin;
     this.orientation = orientation;
-    this.surface = surface;
-    this.centroid = centroid;
-    this.resolution = resolution;
-    this.numberHoles = numberHoles;
+    this.mask = mask;
+    this.meta = meta;
   }
 
   public static createFromRoi(
@@ -61,10 +71,25 @@ export class PatternPiece {
     options: PatternPieceOptions = {},
   ): PatternPiece {
     return new PatternPiece(roi.getMask(), {
-      surface: roi.surface,
-      centroid: roi.centroid,
-      numberHoles: roi.holesInfo.number,
-      ...options,
+      orientation: 0,
+      origin: roi.origin,
+      meta: {
+        width: roi.width,
+        height: roi.height,
+        surface: roi.surface,
+        centroid: roi.centroid,
+        numberHoles: roi.holesInfo.number,
+        ...options.meta,
+      },
+    });
+  }
+
+  public static clone(piece: PatternPiece): PatternPiece {
+    // copy pointer to mask and meta, and copy origin and orientation
+    return new PatternPiece(piece.mask, {
+      meta: piece.meta,
+      origin: { ...piece.origin },
+      orientation: piece.orientation,
     });
   }
 }

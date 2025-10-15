@@ -26,6 +26,10 @@ In watch mode: `node --watch yourScript.ts`
 - Watch mode: `npx vitest` (no coverage)
 - Focus on one test: `npx vitest testName`
 
+## TS tips
+
+- `structuredClone(object)`: create a typed copy of the object
+
 ## Questions
 
 - how to make the debugger work to inspect variables?

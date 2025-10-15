@@ -1,13 +1,9 @@
-import { get } from 'node:http';
-
 import type { Image } from 'image-js';
 
 import type { PatternPiece } from '../PatternPiece.ts';
-import type { PiecesLocations } from '../PiecesLocations.ts';
 
 import { drawBoundingRectangles } from './drawBoundingRectangles.ts';
 import { getColors } from './getColors.ts';
-import { getDefaultLocations } from './getDefaultLocations.ts';
 
 export interface DrawRoisOptions {
   /**
@@ -25,7 +21,6 @@ export interface DrawRoisOptions {
    * @default false
    */
   debug?: boolean;
-  locations?: PiecesLocations;
 }
 
 /**
@@ -43,14 +38,7 @@ export function drawPieces(
     showBoundingRectangles = false,
     blend = false,
     debug = false,
-    locations = getDefaultLocations(pieces),
   } = options;
-
-  if (pieces.length !== locations.length) {
-    throw new Error(
-      'drawPieces: Number of pieces and number of locations must be equal',
-    );
-  }
 
   // create array of colors
   const colors = getColors(pieces.length, fabric, { alpha: 200 });
@@ -62,7 +50,7 @@ export function drawPieces(
     }
     const mask = piece.mask;
     fabric.paintMask(mask, {
-      origin: locations[i].origin,
+      origin: piece.origin,
       out: fabric,
       color: colors[i],
       blend,
@@ -70,6 +58,6 @@ export function drawPieces(
   }
 
   if (showBoundingRectangles) {
-    drawBoundingRectangles(fabric, pieces, { locations });
+    drawBoundingRectangles(fabric, pieces);
   }
 }

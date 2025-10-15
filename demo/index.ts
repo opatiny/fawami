@@ -59,9 +59,8 @@ await write(
 
 // place pieces randomly on the fabric
 const fabricRandom = fabric.clone();
-const locations = getRandomLocations(fabricRandom, pieces);
-drawPieces(fabricRandom, pieces, {
-  locations,
+const randomPieces = getRandomLocations(fabricRandom, pieces);
+drawPieces(fabricRandom, randomPieces, {
   showBoundingRectangles: true,
   blend: true,
 });
@@ -73,13 +72,21 @@ await write(
 
 // compute overlap area and used length
 
-const overlap = getIntersectionMatrix(pieces, locations).sum() / 2;
+const overlap = getIntersectionMatrix(randomPieces).sum() / 2;
 
-const length = getUsedLength(pieces);
+const length = getUsedLength(randomPieces);
 
 console.log(`Overlap area: ${overlap} pixels`);
 console.log(`Length of fabric used: ${length} pixels`);
 
 // compute fitness value
-const fitness = getFitness(pieces, locations);
+const fitness = getFitness(randomPieces, { debug: true });
 console.log(`Fitness: ${fitness}`);
+
+// create initial generation for genetic algorithm
+const populationSize = 10;
+const population: PatternPiece[][] = [];
+for (let i = 0; i < populationSize; i++) {
+  const individual = getRandomLocations(fabric, pieces);
+  population.push(individual);
+}

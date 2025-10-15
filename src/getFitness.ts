@@ -1,5 +1,4 @@
 import type { PatternPiece } from './PatternPiece.ts';
-import type { PiecesLocations } from './PiecesLocations.ts';
 import { getIntersectionMatrix } from './utils/getIntersectionMatrix.ts';
 import { getUsedLength } from './utils/getUsedLength.ts';
 
@@ -14,26 +13,22 @@ export interface GetFitnessOptions {
  * The fitness is a weighted sum of the total intersection area and the length of fabric used.
  * Lower fitness is better.
  * @param pieces - Array of pattern pieces
- * @param locations - Locations of the pieces
- * @param options
+ * @param options - Options for computing fitness
  * @returns The fitness value
  */
 export function getFitness(
   pieces: PatternPiece[],
-  locations: PiecesLocations,
   options: GetFitnessOptions = {},
 ): number {
   const { overlapWeight = 1, lengthWeight = 10, debug = false } = options;
-  const intersectionMatrix = getIntersectionMatrix(pieces, locations);
-  const totalIntersection = intersectionMatrix.sum() / 2;
+  const intersectionMatrix = getIntersectionMatrix(pieces);
+  const totalOverlapArea = intersectionMatrix.sum() / 2;
   const usedLength = getUsedLength(pieces);
   if (debug) {
-    console.log('getFitness: Overlap area:', totalIntersection);
-    console.log('getFitness: Length of fabric used:', usedLength);
+    console.log('getFitness:', { totalOverlapArea, overlapWeight });
+    console.log('getFitness:', { usedLength, lengthWeight });
   }
-  // we want to minimize both totalIntersection and usedLength
-  // we can use a weighted sum of both, with weights that can be adjusted
-
-  const fitness = overlapWeight * totalIntersection + lengthWeight * usedLength;
+  // we want to minimize both totalOverlapArea and usedLength
+  const fitness = overlapWeight * totalOverlapArea + lengthWeight * usedLength;
   return fitness;
 }
