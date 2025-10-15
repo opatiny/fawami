@@ -20,8 +20,8 @@ export interface PatternPieceOptions {
    */
   centroid?: Point;
   /**
-   * Whether the piece contains holes
-   * @default false
+   * Number of holes in the piece
+   * @default 0
    */
   numberHoles?: number;
 }
@@ -29,9 +29,9 @@ export interface PatternPieceOptions {
 export class PatternPiece {
   public readonly mask: Mask;
   public origin: Point;
+  public orientation: number;
   public readonly width: number;
   public readonly height: number;
-  public readonly orientation: number;
   public readonly surface: number | undefined; // in pixels
   public readonly centroid: Point | undefined; // location of center of mass relative to top-left corner of the mask
   public readonly resolution: number; // pixels per cm

@@ -52,8 +52,12 @@ await write(
 
 // place pieces randomly on the fabric
 const fabricRandom = fabric.clone();
-placeRandomOnFabric(fabricRandom, pieces);
-drawPieces(fabricRandom, pieces, { showBoundingRectangles: true, blend: true });
+const locations = placeRandomOnFabric(fabricRandom, pieces);
+drawPieces(fabricRandom, pieces, {
+  locations,
+  showBoundingRectangles: true,
+  blend: true,
+});
 
 await write(
   join(import.meta.dirname, 'fabric-with-random-parts.png'),
