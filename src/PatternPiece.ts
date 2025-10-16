@@ -1,5 +1,4 @@
 import type { Mask, Point, Roi } from 'image-js';
-import { Image } from 'image-js';
 
 export type PatternPieces = PatternPiece[];
 
@@ -10,11 +9,11 @@ export type Orientation = 0 | 90 | 180 | 270;
  */
 export interface MetaInfo {
   /**
-   * Width of the piece in pixels
+   * Width of the piece in pixels without rotation
    */
   width: number;
   /**
-   * Height of the piece in pixels
+   * Height of the piece in pixels without rotation
    */
   height: number;
   /**
@@ -109,5 +108,21 @@ export class PatternPiece {
     const image = mask.convertColor('GREY');
     const rotated = image.rotate(-piece.orientation);
     return rotated.threshold();
+  }
+
+  public static getRotatedWidth(piece: PatternPiece): number {
+    const orientation = piece.orientation;
+    if (orientation === 0 || orientation === 180) {
+      return piece.meta.width;
+    }
+    return piece.meta.height;
+  }
+
+  public static getRotatedHeight(piece: PatternPiece): number {
+    const orientation = piece.orientation;
+    if (orientation === 0 || orientation === 180) {
+      return piece.meta.height;
+    }
+    return piece.meta.width;
   }
 }
