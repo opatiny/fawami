@@ -5,7 +5,7 @@ import { write, writeSync } from 'image-js';
 
 import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
-import { getFitness } from '../src/getFitness.ts';
+import { getFitness } from '../src/geneticAlgo/getFitness.ts';
 import { getRandomPieces } from '../src/getRandomPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';

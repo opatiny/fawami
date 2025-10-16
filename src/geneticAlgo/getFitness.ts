@@ -1,6 +1,6 @@
-import type { PatternPieces } from './PatternPiece.ts';
-import { getIntersectionMatrix } from './utils/getIntersectionMatrix.ts';
-import { getUsedLength } from './utils/getUsedLength.ts';
+import type { PatternPieces } from '../PatternPiece.ts';
+import { getIntersectionMatrix } from '../utils/getIntersectionMatrix.ts';
+import { getUsedLength } from '../utils/getUsedLength.ts';
 
 export interface GetFitnessOptions {
   overlapWeight?: number;

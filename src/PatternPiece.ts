@@ -1,6 +1,9 @@
 import type { Mask, Point, Roi } from 'image-js';
+import { Image } from 'image-js';
 
 export type PatternPieces = PatternPiece[];
+
+export type Orientation = 0 | 90 | 180 | 270;
 
 /**
  * Meta information for the pattern pieces
@@ -48,13 +51,13 @@ export interface PatternPieceOptions {
   /**
    * Orientation of the piece in degrees (mathematical positive direction, counter-clockwise)
    */
-  orientation?: number;
+  orientation?: Orientation;
 }
 
 export class PatternPiece {
   public readonly mask: Mask;
   public origin: Point;
-  public orientation: number;
+  public orientation: Orientation;
   public readonly meta: MetaInfo;
 
   public constructor(mask: Mask, options: PatternPieceOptions = {}) {
@@ -93,5 +96,18 @@ export class PatternPiece {
       origin: { ...piece.origin },
       orientation: piece.orientation,
     });
+  }
+
+  public static getRotatedMask(piece: PatternPiece): Mask {
+    const orientation = piece.orientation;
+    const mask = piece.mask;
+
+    if (orientation === 0) {
+      return piece.mask;
+    }
+
+    const image = mask.convertColor('GREY');
+    const rotated = image.rotate(-piece.orientation);
+    return rotated.threshold();
   }
 }
