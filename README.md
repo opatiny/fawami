@@ -29,6 +29,7 @@ In watch mode: `node --watch yourScript.ts`
 ## TS tips
 
 - `structuredClone(object)`: create a typed copy of the object
+- random values with seed:
 
 ## Questions
 

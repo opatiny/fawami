@@ -54,6 +54,7 @@
     "image-js": "^1.0.0",
     "jsdom": "^27.0.0",
     "ml-matrix": "^6.12.1",
+    "ml-xsadd": "^3.0.1",
     "skia-canvas": "^3.0.8"
   }
 }

@@ -6,7 +6,7 @@ import { write, writeSync } from 'image-js';
 import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { getFitness } from '../src/getFitness.ts';
-import { getRandomPiecesPlacement } from '../src/getRandomPiecesPlacement.ts';
+import { getRandomPieces } from '../src/getRandomPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { drawPieces } from '../src/utils/drawPieces.ts';
@@ -55,9 +55,9 @@ await write(
   fabricDefaultPos,
 );
 
-// place pieces randomly on the fabric
+// place pieces randomly on the fabric, but use a seed
 const fabricRandom = fabric.clone();
-const randomPieces = getRandomPiecesPlacement(fabricRandom, pieces);
+const randomPieces = getRandomPieces(fabricRandom, pieces, { seed: 0 });
 drawPieces(fabricRandom, randomPieces, {
   showBoundingRectangles: true,
   blend: true,
@@ -76,7 +76,7 @@ console.log(`Fitness: ${fitness}`);
 const populationSize = 10;
 const initialPopulation: PatternPieces[] = [];
 for (let i = 0; i < populationSize; i++) {
-  const individual = getRandomPiecesPlacement(fabric, pieces);
+  const individual = getRandomPieces(fabric, pieces);
   initialPopulation.push(individual);
 }
 
