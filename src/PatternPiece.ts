@@ -186,15 +186,16 @@ export class PatternPiece {
       return center;
     }
   }
-
+  /**
+   * Get the top-left origin of the piece relative to the fabric, while considering its orientation.
+   * @param piece - Piece to process
+   * @returns The top-left origin of the piece with orientation
+   */
   public static getOriginWithOrientation(piece: PatternPiece): Point {
     const rotatedCenter = PatternPiece.getRotatedCenter(piece);
     return {
-      row: piece.centerOrigin.row + rotatedCenter.row - piece.meta.center.row,
-      column:
-        piece.centerOrigin.column +
-        rotatedCenter.column -
-        piece.meta.center.column,
+      row: piece.centerOrigin.row - rotatedCenter.row,
+      column: piece.centerOrigin.column - rotatedCenter.column,
     };
   }
 }
