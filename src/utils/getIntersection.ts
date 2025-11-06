@@ -1,7 +1,9 @@
 import { PatternPiece } from '../PatternPiece.ts';
 
+import { getBitWithOrientation } from './getBitWithOrientation.ts';
+
 /**
- * Compute the surface of the intersection of two pattern pieces in pixels.
+ * Compute the surface of the intersection of two pattern pieces in pixels (handles orientation).
  * @param piece1 - First pattern piece
  * @param piece2 - Second pattern piece
  * @returns Surface area of the intersection in pixels
@@ -38,8 +40,19 @@ export function getIntersection(
   let intersectionSurface = 0;
   for (let y = yMin; y < yMax; y++) {
     for (let x = xMin; x < xMax; x++) {
-      const inPiece1 = piece1.mask.getBit(x - origin1.column, y - origin1.row);
-      const inPiece2 = piece2.mask.getBit(x - origin2.column, y - origin2.row);
+      const point1 = { row: y - origin1.row, column: x - origin1.column };
+      const point2 = { row: y - origin2.row, column: x - origin2.column };
+
+      const inPiece1 = getBitWithOrientation(
+        piece1.mask,
+        point1,
+        piece1.orientation,
+      );
+      const inPiece2 = getBitWithOrientation(
+        piece2.mask,
+        point2,
+        piece2.orientation,
+      );
       if (inPiece1 && inPiece2) {
         intersectionSurface++;
       }

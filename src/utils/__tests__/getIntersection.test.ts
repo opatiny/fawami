@@ -47,3 +47,21 @@ test('bounding rectangles do not overlap', async () => {
 
   expect(result).toBe(0);
 });
+
+test('piece 2 orientation = 90', async () => {
+  piece1.centerOrigin = { row: 1, column: 1 };
+  piece2.centerOrigin = { row: 0, column: 0 };
+  piece2.orientation = 90;
+  const result = getIntersection(piece1, piece2);
+
+  expect(result).toBe(2);
+});
+
+test('piece 2 orientation = 180', async () => {
+  piece1.centerOrigin = { row: 1, column: 1 };
+  piece2.centerOrigin = { row: 1, column: 1 };
+  piece2.orientation = 180;
+  const result = getIntersection(piece1, piece2);
+
+  expect(result).toBe(5);
+});
