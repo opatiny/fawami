@@ -57,7 +57,9 @@ await write(
 
 // place pieces randomly on the fabric, but use a seed
 const fabricRandom = fabric.clone();
-const randomPieces = getRandomPieces(fabricRandom, pieces, { seed: 0 });
+const randomPieces = getRandomPieces(fabricRandom, pieces, {
+  rotatePieces: true,
+});
 drawPieces(fabricRandom, randomPieces, {
   showBoundingRectangles: true,
   blend: true,
