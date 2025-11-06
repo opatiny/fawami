@@ -2,10 +2,18 @@ import type { PatternPieces } from '../PatternPiece.ts';
 import { getIntersectionMatrix } from '../utils/getIntersectionMatrix.ts';
 import { getUsedLength } from '../utils/getUsedLength.ts';
 
+import { DefaultFitnessOptions } from './Gene.ts';
+
 export interface GetFitnessOptions {
-  overlapWeight?: number;
-  lengthWeight?: number;
+  overlapWeight: number;
+  lengthWeight: number;
   debug?: boolean;
+}
+
+export interface FitnessData {
+  overlapArea: number;
+  usedLength: number;
+  score: number;
 }
 
 /**
@@ -18,17 +26,24 @@ export interface GetFitnessOptions {
  */
 export function getFitness(
   pieces: PatternPieces,
-  options: GetFitnessOptions = {},
-): number {
-  const { overlapWeight = 1, lengthWeight = 10, debug = false } = options;
+  options: GetFitnessOptions = DefaultFitnessOptions,
+): FitnessData {
+  const { overlapWeight, lengthWeight, debug = false } = options;
   const intersectionMatrix = getIntersectionMatrix(pieces);
-  const totalOverlapArea = intersectionMatrix.sum() / 2;
+  const overlapArea = intersectionMatrix.sum() / 2;
   const usedLength = getUsedLength(pieces);
   if (debug) {
-    console.log('getFitness:', { totalOverlapArea, overlapWeight });
+    console.log('getFitness:', {
+      totalOverlapArea: overlapArea,
+      overlapWeight,
+    });
     console.log('getFitness:', { usedLength, lengthWeight });
   }
   // we want to minimize both totalOverlapArea and usedLength
-  const fitness = overlapWeight * totalOverlapArea + lengthWeight * usedLength;
-  return fitness;
+  const score = overlapWeight * overlapArea + lengthWeight * usedLength;
+  return {
+    overlapArea,
+    usedLength,
+    score,
+  };
 }

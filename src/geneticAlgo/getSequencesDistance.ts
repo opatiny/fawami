@@ -1,6 +1,6 @@
 import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
 
-export interface GetSequencesDistanceOptions {
+export interface GetGenesDistanceOptions {
   /**
    * Weight for center distance.
    * @default 1
@@ -25,10 +25,10 @@ export interface GetSequencesDistanceOptions {
  * @param options - Options for distance computation
  * @returns The computed distance
  */
-export function getSequencesDistance(
+export function getGenesDistance(
   pieces1: PatternPieces,
   pieces2: PatternPieces,
-  options: GetSequencesDistanceOptions = {},
+  options: GetGenesDistanceOptions = {},
 ): number {
   const { centerWeight = 1, orientationWeight = 100, debug = false } = options;
 

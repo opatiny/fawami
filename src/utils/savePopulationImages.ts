@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import type { Image } from 'image-js';
 import { writeSync } from 'image-js';
 
-import type { PatternPieces } from '../PatternPiece.ts';
+import type { Gene } from '../geneticAlgo/Gene.ts';
 
 import { drawPieces } from './drawPieces.ts';
 
@@ -24,12 +24,12 @@ export interface SaveGenerationImagesOptions {
 /**
  * Save each pieces arrangement of the generation to an image.
  * @param fabric - Image on which to draw the pieces
- * @param sequences - Array of sequences of pieces to draw
+ * @param genes - Array of sequences of pieces to draw
  * @param options - Options for saving the images
  */
-export function saveGenerationImages(
+export function savePopulationImages(
   fabric: Image,
-  sequences: PatternPieces[],
+  genes: Gene[],
   options: SaveGenerationImagesOptions = {},
 ): void {
   const { outdir = 'sequences', path = import.meta.dirname } = options;
@@ -41,11 +41,11 @@ export function saveGenerationImages(
     }
   });
 
-  for (let i = 0; i < sequences.length; i++) {
-    const sequence = sequences[i] as PatternPieces;
+  for (let i = 0; i < genes.length; i++) {
+    const gene = genes[i] as Gene;
     const fabricClone = fabric.clone();
 
-    drawPieces(fabricClone, sequence);
+    drawPieces(fabricClone, gene.data);
     writeSync(join(path, outdir, `sequence${i}.png`), fabricClone);
   }
 }

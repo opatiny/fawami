@@ -9,3 +9,14 @@
   - first of all we'll limit ourselves to the 4 cardinal orientations
   - for overlap, implement the function that does the correct geometric conversion
   - for drawing the masks: add a method to `PatternPiece` called `getRotatedMask` which returns the mask with correct orientation
+
+## 2025.11.06
+
+- add orientation handling to all existing functions
+- create function to compute distance between two genes
+
+todo:
+
+- create a `Gene` class containing data and fitness, and potentially other stats (`overlap`, `usedLength`)
+  - use getters to compute on the fly
+  - `toJSON` method to display all stats from different genes as a table with `console.table()`
