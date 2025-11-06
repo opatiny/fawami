@@ -70,10 +70,7 @@ export class PatternPiece {
   public constructor(mask: Mask, options: PatternPieceOptions = {}) {
     const { orientation = 0, centerOrigin = { row: 0, column: 0 } } = options;
 
-    const center = {
-      row: Math.floor(mask.height / 2),
-      column: Math.floor(mask.width / 2),
-    };
+    const center = getCenterPoint(mask.width, mask.height);
 
     const meta = {
       width: mask.width,
@@ -169,18 +166,18 @@ export class PatternPiece {
     const center = piece.meta.center;
     if (orientation === 90) {
       return {
-        row: center.column,
-        column: piece.meta.width - center.row,
+        row: piece.meta.width - 1 - center.column,
+        column: center.row,
       };
     } else if (orientation === 180) {
       return {
-        row: piece.meta.height - center.row,
-        column: piece.meta.width - center.column,
+        row: piece.meta.height - 1 - center.row,
+        column: piece.meta.width - 1 - center.column,
       };
     } else if (orientation === 270) {
       return {
-        row: piece.meta.height - center.column,
-        column: center.row,
+        row: center.column,
+        column: piece.meta.height - 1 - center.row,
       };
     } else {
       return center;
