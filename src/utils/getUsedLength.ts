@@ -1,4 +1,4 @@
-import type { PatternPiece } from '../PatternPiece.ts';
+import { PatternPiece } from '../PatternPiece.ts';
 
 /**
  * Compute the length of fabric used by the pieces.
@@ -8,7 +8,9 @@ import type { PatternPiece } from '../PatternPiece.ts';
 export function getUsedLength(pieces: PatternPiece[]): number {
   let maxColumn = 0;
   for (const piece of pieces) {
-    const pieceRight = piece.centerOrigin.column + piece.meta.width;
+    const topLeftOrigin = PatternPiece.getTopLeftOrigin(piece);
+    const rotatedWidth = PatternPiece.getRotatedWidth(piece);
+    const pieceRight = topLeftOrigin.column + rotatedWidth;
     if (pieceRight > maxColumn) {
       maxColumn = pieceRight;
     }
