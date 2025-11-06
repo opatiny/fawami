@@ -14,7 +14,7 @@ export function drawBoundingRectangles(
   const color = new Array(fabric.channels).fill(fabric.maxValue);
   for (const piece of pieces) {
     fabric.drawRectangle({
-      origin: PatternPiece.getOriginWithOrientation(piece),
+      origin: PatternPiece.getTopLeftOrigin(piece),
       width: PatternPiece.getRotatedWidth(piece),
       height: PatternPiece.getRotatedHeight(piece),
       strokeColor: color,

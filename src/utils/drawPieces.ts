@@ -50,7 +50,7 @@ export function drawPieces(
     }
     const mask = PatternPiece.getRotatedMask(piece);
     fabric.paintMask(mask, {
-      origin: PatternPiece.getOriginWithOrientation(piece),
+      origin: PatternPiece.getTopLeftOrigin(piece),
       out: fabric,
       color: colors[i],
       blend,

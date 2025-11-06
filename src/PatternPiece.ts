@@ -186,7 +186,7 @@ export class PatternPiece {
    * @param piece - Piece to process
    * @returns The top-left origin of the piece with orientation
    */
-  public static getOriginWithOrientation(piece: PatternPiece): Point {
+  public static getTopLeftOrigin(piece: PatternPiece): Point {
     const rotatedCenter = PatternPiece.getRotatedCenter(piece);
     return {
       row: piece.centerOrigin.row - rotatedCenter.row,

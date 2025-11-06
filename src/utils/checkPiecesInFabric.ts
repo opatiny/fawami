@@ -18,7 +18,7 @@ export function checkPiecesInFabric(
   for (let i = 0; i < pieces.length; i++) {
     const piece = pieces[i] as PatternPiece;
 
-    const topLeftOrigin = PatternPiece.getOriginWithOrientation(piece);
+    const topLeftOrigin = PatternPiece.getTopLeftOrigin(piece);
     const rotatedWidth = PatternPiece.getRotatedWidth(piece);
     const rotatedHeight = PatternPiece.getRotatedHeight(piece);
     if (

@@ -1,4 +1,4 @@
-import type { PatternPiece } from '../PatternPiece.ts';
+import { PatternPiece } from '../PatternPiece.ts';
 
 /**
  * Compute the surface of the intersection of two pattern pieces in pixels.
@@ -10,30 +10,29 @@ export function getIntersection(
   piece1: PatternPiece,
   piece2: PatternPiece,
 ): number {
-  const origin1 = piece1.centerOrigin;
-  const origin2 = piece2.centerOrigin;
+  const origin1 = PatternPiece.getTopLeftOrigin(piece1);
+  const origin2 = PatternPiece.getTopLeftOrigin(piece2);
+
+  const width1 = PatternPiece.getRotatedWidth(piece1);
+  const height1 = PatternPiece.getRotatedHeight(piece1);
+  const width2 = PatternPiece.getRotatedWidth(piece2);
+  const height2 = PatternPiece.getRotatedHeight(piece2);
+
   // treat easy case where bounding boxes do not intersect
   if (
-    piece1.meta.numberHoles === 0 &&
-    piece2.meta.numberHoles === 0 &&
-    (origin1.column + piece1.meta.width <= origin2.column ||
-      origin2.column + piece2.meta.width <= origin1.column ||
-      origin1.row + piece1.meta.height <= origin2.row ||
-      origin2.row + piece2.meta.height <= origin1.row)
+    origin1.column + width1 <= origin2.column ||
+    origin2.column + width2 <= origin1.column ||
+    origin1.row + height1 <= origin2.row ||
+    origin2.row + height2 <= origin1.row
   ) {
     return 0;
   }
+
   // compute intersection bounding box
   const xMin = Math.max(origin1.column, origin2.column);
-  const xMax = Math.min(
-    origin1.column + piece1.meta.width,
-    origin2.column + piece2.meta.width,
-  );
+  const xMax = Math.min(origin1.column + width1, origin2.column + width2);
   const yMin = Math.max(origin1.row, origin2.row);
-  const yMax = Math.min(
-    origin1.row + piece1.meta.height,
-    origin2.row + piece2.meta.height,
-  );
+  const yMax = Math.min(origin1.row + height1, origin2.row + height2);
 
   // scan intersection bounding box and count overlapping pixels
   let intersectionSurface = 0;
