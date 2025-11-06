@@ -54,7 +54,8 @@ export interface PatternPieceOptions {
    */
   centerOrigin?: Point;
   /**
-   * Orientation of the piece in degrees (mathematical positive direction, counter-clockwise)
+   * Orientation of the piece in degrees (mathematical positive direction, counter-clockwise).
+   * The piece is first placed at the center origin, then rotated around its center.
    */
   orientation?: Orientation;
 }
@@ -66,9 +67,9 @@ export class PatternPiece {
   public readonly meta: MetaInfo;
 
   public constructor(mask: Mask, options: PatternPieceOptions = {}) {
-    const { orientation = 0, centerOrigin = { row: 0, column: 0 } } = options;
-
     const center = getCenterPoint(mask.width, mask.height);
+
+    const { orientation = 0, centerOrigin = center } = options;
 
     const meta = {
       width: mask.width,

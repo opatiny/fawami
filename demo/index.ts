@@ -1,15 +1,14 @@
-import { mkdir } from 'node:fs';
 import { join } from 'node:path';
 
-import { write, writeSync } from 'image-js';
+import { write } from 'image-js';
 
 import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { getFitness } from '../src/geneticAlgo/getFitness.ts';
+import { getSequencesDistance } from '../src/geneticAlgo/getSequencesDistance.ts';
 import { getRandomPieces } from '../src/getRandomPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
-import { drawPieces } from '../src/utils/drawPieces.ts';
 import { saveGenerationImages } from '../src/utils/saveGenerationImages.ts';
 
 const img1 = 'shapes-holes.svg';
@@ -32,55 +31,27 @@ const pieces = extractPatternPieces(pattern, true);
 
 console.log(`Extracted ${pieces.length} pieces`);
 
-// save each piece as a separate image
-// create folder 'masks' first if it does not exist
-mkdir(join(import.meta.dirname, 'masks'), { recursive: true }, (err) => {
-  if (err) {
-    console.error(err);
-  }
-});
-
-for (let i = 0; i < pieces.length; i++) {
-  const mask = pieces[i].mask;
-  writeSync(join(import.meta.dirname, 'masks', `piece${i}.png`), mask);
-}
-
-// paint pieces on the fabric with default position
-const fabricDefaultPos = fabric.clone();
-
-drawPieces(fabricDefaultPos, pieces, { showBoundingRectangles: true });
-
-await write(
-  join(import.meta.dirname, 'fabric-with-original-parts.png'),
-  fabricDefaultPos,
-);
-
-// place pieces randomly on the fabric, but use a seed
-const fabricRandom = fabric.clone();
-const randomPieces = getRandomPieces(fabricRandom, pieces, {
-  rotatePieces: true,
-});
-drawPieces(fabricRandom, randomPieces, {
-  showBoundingRectangles: true,
-  blend: true,
-});
-
-await write(
-  join(import.meta.dirname, 'fabric-with-random-parts.png'),
-  fabricRandom,
-);
-
-// compute fitness value
-const fitness = getFitness(randomPieces, { debug: true });
-console.log(`Fitness: ${fitness}`);
-
 // create initial generation for genetic algorithm
 const populationSize = 10;
 const initialPopulation: PatternPieces[] = [];
 for (let i = 0; i < populationSize; i++) {
-  const individual = getRandomPieces(fabric, pieces);
+  const individual = getRandomPieces(fabric, pieces, {
+    rotatePieces: true,
+    seed: i,
+  });
   initialPopulation.push(individual);
+
+  const fitnessValue = getFitness(individual);
+  console.log(`Individual ${i} fitness: ${fitnessValue}`);
 }
 
 // save all sequences to images
 saveGenerationImages(fabric, initialPopulation, { path: import.meta.dirname });
+
+// compute distaces between first two individuals
+const distance = getSequencesDistance(
+  initialPopulation[0],
+  initialPopulation[1],
+  { debug: true },
+);
+console.log(`Distance between individual 0 and 1: ${distance}`);

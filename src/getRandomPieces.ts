@@ -9,7 +9,7 @@ export interface GetRandomPiecesOptions {
    * Seed for the random number generator. By default, there is no seed.
    * @default undefined
    */
-  seed?: number | undefined;
+  seed?: number;
   /**
    * Whether to rotate pieces randomly.
    * @default false
@@ -29,15 +29,10 @@ export function getRandomPieces(
   pieces: PatternPieces,
   options: GetRandomPiecesOptions = {},
 ): PatternPieces {
-  const { seed = undefined, rotatePieces = false } = options;
+  const { seed = (Math.random() * 2 ** 32) >> 0, rotatePieces = false } =
+    options;
 
-  let xsadd;
-
-  if (seed !== undefined) {
-    xsadd = new XSadd(seed);
-  } else {
-    xsadd = new XSadd();
-  }
+  const xsadd = new XSadd(seed);
 
   const randomPieces: PatternPieces = [];
   for (let i = 0; i < pieces.length; i++) {
