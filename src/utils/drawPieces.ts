@@ -1,6 +1,6 @@
 import type { Image } from 'image-js';
 
-import type { PatternPiece } from '../PatternPiece.ts';
+import { PatternPiece } from '../PatternPiece.ts';
 
 import { drawBoundingRectangles } from './drawBoundingRectangles.ts';
 import { getColors } from './getColors.ts';
@@ -46,11 +46,11 @@ export function drawPieces(
   for (let i = 0; i < pieces.length; i++) {
     const piece = pieces[i] as PatternPiece;
     if (debug) {
-      console.log('piece origin', piece.origin);
+      console.log('piece origin', piece.centerOrigin);
     }
-    const mask = piece.mask;
+    const mask = PatternPiece.getRotatedMask(piece);
     fabric.paintMask(mask, {
-      origin: piece.origin,
+      origin: PatternPiece.getOriginWithOrientation(piece),
       out: fabric,
       color: colors[i],
       blend,

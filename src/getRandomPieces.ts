@@ -50,7 +50,7 @@ export function getRandomPieces(
     const x = Math.floor(xsadd.getFloat() * (maxX - minX + 1)) + minX;
     const y = Math.floor(xsadd.getFloat() * (maxY - minY + 1)) + minY;
     const newPiece = PatternPiece.clone(piece);
-    newPiece.origin = { row: y, column: x };
+    newPiece.centerOrigin = { row: y, column: x };
     randomPieces.push(newPiece);
   }
   return randomPieces;

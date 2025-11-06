@@ -25,24 +25,24 @@ test('both origins (0,0)', async () => {
 });
 
 test('move piece 2 to (1,1)', async () => {
-  piece1.origin = { row: 0, column: 0 };
-  piece2.origin = { row: 1, column: 1 };
+  piece1.centerOrigin = { row: 0, column: 0 };
+  piece2.centerOrigin = { row: 1, column: 1 };
   const result = getIntersection(piece1, piece2);
 
   expect(result).toBe(3);
 });
 
 test('move piece 1 to (1,1)', async () => {
-  piece1.origin = { row: 1, column: 1 };
-  piece2.origin = { row: 0, column: 0 };
+  piece1.centerOrigin = { row: 1, column: 1 };
+  piece2.centerOrigin = { row: 0, column: 0 };
   const result = getIntersection(piece1, piece2);
 
   expect(result).toBe(0);
 });
 
 test('bounding rectangles do not overlap', async () => {
-  piece1.origin = { row: 3, column: 3 };
-  piece2.origin = { row: 0, column: 0 };
+  piece1.centerOrigin = { row: 3, column: 3 };
+  piece2.centerOrigin = { row: 0, column: 0 };
   const result = getIntersection(piece1, piece2);
 
   expect(result).toBe(0);

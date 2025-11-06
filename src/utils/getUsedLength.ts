@@ -8,7 +8,7 @@ import type { PatternPiece } from '../PatternPiece.ts';
 export function getUsedLength(pieces: PatternPiece[]): number {
   let maxColumn = 0;
   for (const piece of pieces) {
-    const pieceRight = piece.origin.column + piece.meta.width;
+    const pieceRight = piece.centerOrigin.column + piece.meta.width;
     if (pieceRight > maxColumn) {
       maxColumn = pieceRight;
     }

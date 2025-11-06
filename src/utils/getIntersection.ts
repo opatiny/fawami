@@ -10,8 +10,8 @@ export function getIntersection(
   piece1: PatternPiece,
   piece2: PatternPiece,
 ): number {
-  const origin1 = piece1.origin;
-  const origin2 = piece2.origin;
+  const origin1 = piece1.centerOrigin;
+  const origin2 = piece2.centerOrigin;
   // treat easy case where bounding boxes do not intersect
   if (
     piece1.meta.numberHoles === 0 &&

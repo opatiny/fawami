@@ -1,4 +1,8 @@
+import { get } from 'node:http';
+
 import type { Mask, Point, Roi } from 'image-js';
+
+import { getCenterPoint } from './utils/getCenterPoint.ts';
 
 export type PatternPieces = PatternPiece[];
 
@@ -16,6 +20,10 @@ export interface MetaInfo {
    * Height of the piece in pixels without rotation
    */
   height: number;
+  /**
+   * Center of the piece in pixels relative to the top-left corner of the mask, based on original orientation
+   */
+  center: Point;
   /**
    * Resolution of the mask in pixels per cm
    */
@@ -44,9 +52,9 @@ export interface PatternPieceOptions {
    */
   meta?: MetaInfo;
   /**
-   * Origin of the piece on the fabric (top-left corner of the mask)
+   * Origin of the piece on the fabric relative to the **center** of the piece
    */
-  origin?: Point;
+  centerOrigin?: Point;
   /**
    * Orientation of the piece in degrees (mathematical positive direction, counter-clockwise)
    */
@@ -55,16 +63,26 @@ export interface PatternPieceOptions {
 
 export class PatternPiece {
   public readonly mask: Mask;
-  public origin: Point;
+  public centerOrigin: Point;
   public orientation: Orientation;
   public readonly meta: MetaInfo;
 
   public constructor(mask: Mask, options: PatternPieceOptions = {}) {
-    const { orientation = 0, origin = { row: 0, column: 0 } } = options;
+    const { orientation = 0, centerOrigin = { row: 0, column: 0 } } = options;
 
-    const meta = { width: mask.width, height: mask.height, ...options.meta };
+    const center = {
+      row: Math.floor(mask.height / 2),
+      column: Math.floor(mask.width / 2),
+    };
 
-    this.origin = origin;
+    const meta = {
+      width: mask.width,
+      height: mask.height,
+      center,
+      ...options.meta,
+    };
+
+    this.centerOrigin = centerOrigin;
     this.orientation = orientation;
     this.mask = mask;
     this.meta = meta;
@@ -74,12 +92,22 @@ export class PatternPiece {
     roi: Roi,
     options: PatternPieceOptions = {},
   ): PatternPiece {
+    // roi has origin in top-left corner of the mask, so we need to adjust it to be relative to the center
+    const center = getCenterPoint(roi.width, roi.height);
+    const centerOrigin = {
+      row: roi.origin.row + center.row,
+      column: roi.origin.column + center.column,
+    };
     return new PatternPiece(roi.getMask(), {
       orientation: 0,
-      origin: roi.origin,
+      centerOrigin,
       meta: {
         width: roi.width,
         height: roi.height,
+        center: {
+          row: Math.floor(roi.height / 2),
+          column: Math.floor(roi.width / 2),
+        },
         surface: roi.surface,
         centroid: roi.centroid,
         numberHoles: roi.holesInfo.number,
@@ -92,11 +120,16 @@ export class PatternPiece {
     // copy pointer to mask and meta, and copy origin and orientation
     return new PatternPiece(piece.mask, {
       meta: piece.meta,
-      origin: { ...piece.origin },
+      centerOrigin: { ...piece.centerOrigin },
       orientation: piece.orientation,
     });
   }
 
+  /**
+   * Get mask with correct orientation.
+   * @param piece - Piece to process
+   * @returns Rotated mask.
+   */
   public static getRotatedMask(piece: PatternPiece): Mask {
     const orientation = piece.orientation;
     const mask = piece.mask;
@@ -106,7 +139,7 @@ export class PatternPiece {
     }
 
     const image = mask.convertColor('GREY');
-    const rotated = image.rotate(-piece.orientation);
+    const rotated = image.rotate(-orientation);
     return rotated.threshold();
   }
 
@@ -124,5 +157,44 @@ export class PatternPiece {
       return piece.meta.height;
     }
     return piece.meta.width;
+  }
+
+  /**
+   * Compute the center of the piece taking into account its orientation, relative to the top-left corner of the piece.
+   * @param piece - Piece to process
+   * @returns Rotated center point.
+   */
+  public static getRotatedCenter(piece: PatternPiece): Point {
+    const orientation = piece.orientation;
+    const center = piece.meta.center;
+    if (orientation === 90) {
+      return {
+        row: center.column,
+        column: piece.meta.width - center.row,
+      };
+    } else if (orientation === 180) {
+      return {
+        row: piece.meta.height - center.row,
+        column: piece.meta.width - center.column,
+      };
+    } else if (orientation === 270) {
+      return {
+        row: piece.meta.height - center.column,
+        column: center.row,
+      };
+    } else {
+      return center;
+    }
+  }
+
+  public static getOriginWithOrientation(piece: PatternPiece): Point {
+    const rotatedCenter = PatternPiece.getRotatedCenter(piece);
+    return {
+      row: piece.centerOrigin.row + rotatedCenter.row - piece.meta.center.row,
+      column:
+        piece.centerOrigin.column +
+        rotatedCenter.column -
+        piece.meta.center.column,
+    };
   }
 }

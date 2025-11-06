@@ -14,7 +14,7 @@ export function drawBoundingRectangles(
   const color = new Array(fabric.channels).fill(fabric.maxValue);
   for (const piece of pieces) {
     fabric.drawRectangle({
-      origin: piece.origin,
+      origin: piece.centerOrigin,
       width: piece.meta.width,
       height: piece.meta.height,
       strokeColor: color,
