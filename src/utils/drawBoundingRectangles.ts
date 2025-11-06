@@ -1,6 +1,6 @@
 import type { Image } from 'image-js';
 
-import type { PatternPiece } from '../PatternPiece.ts';
+import { PatternPiece } from '../PatternPiece.ts';
 
 /**
  * Draw the bounding rectangles of the masks on the fabric.
@@ -14,9 +14,9 @@ export function drawBoundingRectangles(
   const color = new Array(fabric.channels).fill(fabric.maxValue);
   for (const piece of pieces) {
     fabric.drawRectangle({
-      origin: piece.centerOrigin,
-      width: piece.meta.width,
-      height: piece.meta.height,
+      origin: PatternPiece.getOriginWithOrientation(piece),
+      width: PatternPiece.getRotatedWidth(piece),
+      height: PatternPiece.getRotatedHeight(piece),
       strokeColor: color,
       out: fabric,
     });

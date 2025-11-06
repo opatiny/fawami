@@ -1,5 +1,3 @@
-import { get } from 'node:http';
-
 import type { Mask, Point, Roi } from 'image-js';
 
 import { getCenterPoint } from './utils/getCenterPoint.ts';
