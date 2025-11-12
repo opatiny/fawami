@@ -3,6 +3,7 @@ import type { Image } from 'image-js';
 import type { PatternPiece } from '../PatternPiece.ts';
 
 import { drawBoundingRectangles } from './drawBoundingRectangles.ts';
+import { getBlack } from './getBlack.ts';
 import { getColors } from './getColors.ts';
 
 export interface DrawRoisOptions {
@@ -21,6 +22,7 @@ export interface DrawRoisOptions {
    * @default false
    */
   debug?: boolean;
+  backgroundColor?: number[];
 }
 
 /**
@@ -38,7 +40,11 @@ export function drawPieces(
     showBoundingRectangles = true,
     blend = true,
     debug = false,
+    backgroundColor = getBlack(fabric),
   } = options;
+
+  // fill fabric with background color
+  fabric.fill(backgroundColor);
 
   // create array of colors
   const colors = getColors(pieces.length, fabric, { alpha: 200 });
