@@ -1,18 +1,16 @@
-import { get } from 'node:http';
 import { join } from 'node:path';
 
 import { write } from 'image-js';
 
-import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { Gene } from '../src/geneticAlgo/Gene.ts';
 import { getDistanceMatrix } from '../src/geneticAlgo/getDistanceMatrix.ts';
-import { getFitness } from '../src/geneticAlgo/getFitness.ts';
 import { getGenesDistance } from '../src/geneticAlgo/getGenesDistance.ts';
 import { getRandomPieces } from '../src/getRandomPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
+import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };
@@ -35,18 +33,11 @@ const pieces = extractPatternPieces(pattern, true);
 console.log(`Extracted ${pieces.length} pieces`);
 
 // create initial generation for genetic algorithm
-const populationSize = 10;
-const initialPopulation: Gene[] = [];
-for (let i = 0; i < populationSize; i++) {
-  const randomPieces = getRandomPieces(fabric, pieces, {
-    rotatePieces: true,
-    seed: i,
-  });
-  const gene = new Gene(randomPieces);
-  initialPopulation.push(gene);
-
-  console.log(`Individual ${i} fitness: ${gene.fitness.score}`);
-}
+const initialPopulation = getRandomGenes(fabric, pieces, {
+  populationSize: 10,
+  seedRandomGenerator: true,
+  rotatePieces: true,
+});
 
 // save all sequences to images
 savePopulationImages(fabric, initialPopulation, { path: import.meta.dirname });
