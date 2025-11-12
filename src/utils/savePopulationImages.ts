@@ -19,6 +19,11 @@ export interface SaveGenerationImagesOptions {
    * Path where the function is called.
    */
   path?: string;
+  /**
+   * Base name for saved images.
+   * @default 'sequence'
+   */
+  nameBase?: string;
 }
 
 /**
@@ -32,7 +37,11 @@ export function savePopulationImages(
   genes: Gene[],
   options: SaveGenerationImagesOptions = {},
 ): void {
-  const { outdir = 'sequences', path = import.meta.dirname } = options;
+  const {
+    outdir = 'sequences',
+    path = import.meta.dirname,
+    nameBase = 'sequence',
+  } = options;
 
   // create folder first if it does not exist
   mkdir(join(path, outdir), { recursive: true }, (err) => {
@@ -46,6 +55,6 @@ export function savePopulationImages(
     const fabricClone = fabric.clone();
 
     drawPieces(fabricClone, gene.data);
-    writeSync(join(path, outdir, `sequence${i}.png`), fabricClone);
+    writeSync(join(path, outdir, `${nameBase}${i}.png`), fabricClone);
   }
 }
