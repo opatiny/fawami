@@ -1,7 +1,6 @@
 import type { Image } from 'image-js';
 
-import type { PatternPieces } from '../PatternPiece.ts';
-import { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
 
 /**
  * Check if all pieces are within the fabric boundaries given their location and orientation.
@@ -18,9 +17,9 @@ export function checkPiecesInFabric(
   for (let i = 0; i < pieces.length; i++) {
     const piece = pieces[i] as PatternPiece;
 
-    const topLeftOrigin = PatternPiece.getTopLeftOrigin(piece);
-    const rotatedWidth = PatternPiece.getRotatedWidth(piece);
-    const rotatedHeight = PatternPiece.getRotatedHeight(piece);
+    const topLeftOrigin = piece.getTopLeftOrigin();
+    const rotatedWidth = piece.getRotatedWidth();
+    const rotatedHeight = piece.getRotatedHeight();
     if (
       topLeftOrigin.column < 0 ||
       topLeftOrigin.row < 0 ||

@@ -12,7 +12,7 @@ const piece = new PatternPiece(mask);
 
 test('orientation 0', async () => {
   piece.orientation = 0;
-  const result = PatternPiece.getRotatedCenter(piece);
+  const result = piece.getRelativeCenter();
 
   const expected = { row: 1, column: 0 };
 
@@ -21,7 +21,7 @@ test('orientation 0', async () => {
 
 test('orientation 90', async () => {
   piece.orientation = 90;
-  const result = PatternPiece.getRotatedCenter(piece);
+  const result = piece.getRelativeCenter();
 
   const expected = { row: 1, column: 1 };
 
@@ -30,7 +30,7 @@ test('orientation 90', async () => {
 
 test('orientation 180', async () => {
   piece.orientation = 180;
-  const result = PatternPiece.getRotatedCenter(piece);
+  const result = piece.getRelativeCenter();
 
   const expected = { row: 2, column: 1 };
 
@@ -39,7 +39,7 @@ test('orientation 180', async () => {
 
 test('orientation 270', async () => {
   piece.orientation = 270;
-  const result = PatternPiece.getRotatedCenter(piece);
+  const result = piece.getRelativeCenter();
 
   const expected = { row: 0, column: 2 };
 

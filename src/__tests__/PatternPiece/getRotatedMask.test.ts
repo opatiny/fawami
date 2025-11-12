@@ -11,14 +11,14 @@ const mask = testUtils.createMask([
 const piece = new PatternPiece(mask);
 
 test('getRotatedMask: orientation 0', async () => {
-  const result = PatternPiece.getRotatedMask(piece);
+  const result = piece.getRotatedMask();
 
   expect(result).toMatchMask(mask);
 });
 
 test('getRotatedMask: orientation 90', async () => {
   piece.orientation = 90;
-  const result = PatternPiece.getRotatedMask(piece);
+  const result = piece.getRotatedMask();
 
   const expectedMask = testUtils.createMask([
     [1, 0, 0, 0],

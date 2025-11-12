@@ -1,4 +1,4 @@
-import { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../PatternPiece.ts';
 
 import { getBitWithOrientation } from './getBitWithOrientation.ts';
 
@@ -12,13 +12,13 @@ export function getIntersection(
   piece1: PatternPiece,
   piece2: PatternPiece,
 ): number {
-  const origin1 = PatternPiece.getTopLeftOrigin(piece1);
-  const origin2 = PatternPiece.getTopLeftOrigin(piece2);
+  const origin1 = piece1.getTopLeftOrigin();
+  const origin2 = piece2.getTopLeftOrigin();
 
-  const width1 = PatternPiece.getRotatedWidth(piece1);
-  const height1 = PatternPiece.getRotatedHeight(piece1);
-  const width2 = PatternPiece.getRotatedWidth(piece2);
-  const height2 = PatternPiece.getRotatedHeight(piece2);
+  const width1 = piece1.getRotatedWidth();
+  const height1 = piece1.getRotatedHeight();
+  const width2 = piece2.getRotatedWidth();
+  const height2 = piece2.getRotatedHeight();
 
   // treat easy case where bounding boxes do not intersect
   if (

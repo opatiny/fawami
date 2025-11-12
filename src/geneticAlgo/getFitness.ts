@@ -5,8 +5,8 @@ import { getUsedLength } from '../utils/getUsedLength.ts';
 import { DefaultFitnessWeights } from './Gene.ts';
 
 export interface FitnessWeights {
-  overlapWeight: number;
-  lengthWeight: number;
+  overlapWeight?: number;
+  lengthWeight?: number;
 }
 
 export interface GetFitnessOptions extends FitnessWeights {

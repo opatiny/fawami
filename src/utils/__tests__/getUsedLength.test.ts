@@ -20,7 +20,7 @@ const piece2 = new PatternPiece(mask2);
 
 const pieces = [piece1, piece2];
 
-test('both origins (0,0)', async () => {
+test('both center origins (0,0)', async () => {
   const result = getUsedLength(pieces);
 
   expect(result).toBe(2);

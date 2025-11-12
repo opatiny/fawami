@@ -123,15 +123,14 @@ export class PatternPiece {
 
   /**
    * Get mask with correct orientation.
-   * @param piece - Piece to process
    * @returns Rotated mask.
    */
-  public static getRotatedMask(piece: PatternPiece): Mask {
-    const orientation = piece.orientation;
-    const mask = piece.mask;
+  public getRotatedMask(): Mask {
+    const orientation = this.orientation;
+    const mask = this.mask;
 
     if (orientation === 0) {
-      return piece.mask;
+      return this.mask;
     }
 
     const image = mask.convertColor('GREY');
@@ -139,44 +138,43 @@ export class PatternPiece {
     return rotated.threshold();
   }
 
-  public static getRotatedWidth(piece: PatternPiece): number {
-    const orientation = piece.orientation;
+  public getRotatedWidth(): number {
+    const orientation = this.orientation;
     if (orientation === 0 || orientation === 180) {
-      return piece.meta.width;
+      return this.meta.width;
     }
-    return piece.meta.height;
+    return this.meta.height;
   }
 
-  public static getRotatedHeight(piece: PatternPiece): number {
-    const orientation = piece.orientation;
+  public getRotatedHeight(): number {
+    const orientation = this.orientation;
     if (orientation === 0 || orientation === 180) {
-      return piece.meta.height;
+      return this.meta.height;
     }
-    return piece.meta.width;
+    return this.meta.width;
   }
 
   /**
    * Compute the center of the piece taking into account its orientation, relative to the top-left corner of the piece.
-   * @param piece - Piece to process
-   * @returns Rotated center point.
+   * @returns Center point of the piece relative to its top-left corner.
    */
-  public static getRotatedCenter(piece: PatternPiece): Point {
-    const orientation = piece.orientation;
-    const center = piece.meta.center;
+  public getRelativeCenter(): Point {
+    const orientation = this.orientation;
+    const center = this.meta.center;
     if (orientation === 90) {
       return {
-        row: piece.meta.width - 1 - center.column,
+        row: this.meta.width - 1 - center.column,
         column: center.row,
       };
     } else if (orientation === 180) {
       return {
-        row: piece.meta.height - 1 - center.row,
-        column: piece.meta.width - 1 - center.column,
+        row: this.meta.height - 1 - center.row,
+        column: this.meta.width - 1 - center.column,
       };
     } else if (orientation === 270) {
       return {
         row: center.column,
-        column: piece.meta.height - 1 - center.row,
+        column: this.meta.height - 1 - center.row,
       };
     } else {
       return center;
@@ -184,14 +182,13 @@ export class PatternPiece {
   }
   /**
    * Get the top-left origin of the piece relative to the fabric, while considering its orientation.
-   * @param piece - Piece to process
    * @returns The top-left origin of the piece with orientation
    */
-  public static getTopLeftOrigin(piece: PatternPiece): Point {
-    const rotatedCenter = PatternPiece.getRotatedCenter(piece);
+  public getTopLeftOrigin(): Point {
+    const rotatedCenter = this.getRelativeCenter();
     return {
-      row: piece.centerOrigin.row - rotatedCenter.row,
-      column: piece.centerOrigin.column - rotatedCenter.column,
+      row: this.centerOrigin.row - rotatedCenter.row,
+      column: this.centerOrigin.column - rotatedCenter.column,
     };
   }
 }

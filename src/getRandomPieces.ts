@@ -44,14 +44,12 @@ export function getRandomPieces(
       piece.orientation = orientations[randIndex] as Orientation;
     }
 
-    const rotatedCenter = PatternPiece.getRotatedCenter(piece);
+    const rotatedCenter = piece.getRelativeCenter();
 
     const minX = rotatedCenter.column;
     const minY = rotatedCenter.row;
-    const maxX =
-      fabric.width - PatternPiece.getRotatedWidth(piece) + rotatedCenter.column;
-    const maxY =
-      fabric.height - PatternPiece.getRotatedHeight(piece) + rotatedCenter.row;
+    const maxX = fabric.width - piece.getRotatedWidth() + rotatedCenter.column;
+    const maxY = fabric.height - piece.getRotatedHeight() + rotatedCenter.row;
 
     if (maxX < 0 || maxY < 0) {
       throw new Error(`Mask ${i} is too large to fit in the fabric`);
