@@ -12,11 +12,18 @@
 
 ## 2025.11.06
 
-- add orientation handling to all existing functions
-- create function to compute distance between two genes
+- added orientation handling to all existing functions
+- created function to compute distance between two genes
 
 todo:
 
 - create a `Gene` class containing data and fitness, and potentially other stats (`overlap`, `usedLength`)
   - use getters to compute on the fly
   - `toJSON` method to display all stats from different genes as a table with `console.table()`
+
+## 2026.11.12
+
+questions:
+
+- how to avoid `number | undefined` errors? when I access an element of an array
+- how to pick the N most diverse elements from a dataset?

@@ -1,5 +1,7 @@
 import { XSadd } from 'ml-xsadd';
 
+import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
+
 import { Gene } from './Gene.ts';
 
 export interface Crossover1PointOptions {
@@ -30,7 +32,7 @@ export function crossover1Point(
   options: Crossover1PointOptions = {},
 ): [Gene, Gene] {
   const {
-    seed = (Math.random() * 2 ** 32) >> 0,
+    seed = getDefaultSeed(),
     minCrossoverFraction = 0,
     debug = false,
   } = options;

@@ -3,11 +3,12 @@ import { XSadd } from 'ml-xsadd';
 
 import type { Orientation, PatternPieces } from './PatternPiece.ts';
 import { PatternPiece } from './PatternPiece.ts';
+import { getDefaultSeed } from './utils/getDefaultSeed.ts';
 
 export interface GetRandomPiecesOptions {
   /**
    * Seed for the random number generator. By default, there is no seed.
-   * @default undefined
+   * @default A random seed
    */
   seed?: number;
   /**
@@ -29,8 +30,7 @@ export function getRandomPieces(
   pieces: PatternPieces,
   options: GetRandomPiecesOptions = {},
 ): PatternPieces {
-  const { seed = (Math.random() * 2 ** 32) >> 0, rotatePieces = false } =
-    options;
+  const { seed = getDefaultSeed(), rotatePieces = false } = options;
 
   const xsadd = new XSadd(seed);
 

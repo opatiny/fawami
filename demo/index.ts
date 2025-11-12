@@ -7,6 +7,7 @@ import { crossover1Point } from '../src/geneticAlgo/crossover1point.ts';
 import { getDistanceMatrix } from '../src/geneticAlgo/getDistanceMatrix.ts';
 import { getGenesDistance } from '../src/geneticAlgo/getGenesDistance.ts';
 import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
+import { mutateTranslate } from '../src/geneticAlgo/mutateTranslate.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
@@ -52,12 +53,22 @@ const distanceMatrix = getDistanceMatrix(initialPopulation);
 console.log('Distance matrix:');
 console.log(distanceMatrix.toString());
 
-// compute crossover between the two first genes
+// test 1 point crossover between the two first genes
 const children = crossover1Point(initialPopulation[0], initialPopulation[1], {
   debug: true,
 });
 
 savePopulationImages(fabric, children, {
   outdir: 'children',
+  path: import.meta.dirname,
+});
+
+// test mutate translate
+const mutated = mutateTranslate(fabric, initialPopulation[0], {
+  debug: true,
+  translationAmplitude: 10,
+});
+savePopulationImages(fabric, [mutated], {
+  outdir: 'mutated',
   path: import.meta.dirname,
 });

@@ -22,6 +22,10 @@ export interface DrawRoisOptions {
    * @default false
    */
   debug?: boolean;
+  /**
+   * Background color to fill the fabric before drawing pieces
+   * @default black
+   */
   backgroundColor?: number[];
 }
 
