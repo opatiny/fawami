@@ -1,3 +1,4 @@
+import { get } from 'node:http';
 import { join } from 'node:path';
 
 import { write } from 'image-js';
@@ -5,8 +6,9 @@ import { write } from 'image-js';
 import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { Gene } from '../src/geneticAlgo/Gene.ts';
+import { getDistanceMatrix } from '../src/geneticAlgo/getDistanceMatrix.ts';
 import { getFitness } from '../src/geneticAlgo/getFitness.ts';
-import { getGenesDistance } from '../src/geneticAlgo/getSequencesDistance.ts';
+import { getGenesDistance } from '../src/geneticAlgo/getGenesDistance.ts';
 import { getRandomPieces } from '../src/getRandomPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
@@ -43,7 +45,7 @@ for (let i = 0; i < populationSize; i++) {
   const gene = new Gene(randomPieces);
   initialPopulation.push(gene);
 
-  console.log(`Individual ${i} fitness: ${fitnessValue}`);
+  console.log(`Individual ${i} fitness: ${gene.fitness.score}`);
 }
 
 // save all sequences to images
@@ -54,3 +56,8 @@ const distance = getGenesDistance(initialPopulation[0], initialPopulation[1], {
   debug: true,
 });
 console.log(`Distance between individual 0 and 1: ${distance}`);
+
+// compute distance matrix
+const distanceMatrix = getDistanceMatrix(initialPopulation);
+console.log('Distance matrix:');
+console.log(distanceMatrix.toString());

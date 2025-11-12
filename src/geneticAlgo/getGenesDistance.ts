@@ -1,5 +1,7 @@
 import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
 
+import type { Gene } from './Gene.ts';
+
 export interface GetGenesDistanceOptions {
   /**
    * Weight for center distance.
@@ -20,28 +22,28 @@ export interface GetGenesDistanceOptions {
 
 /**
  * Compute a distance between two sets of pattern pieces. Takes into account the distance between centers and the difference in orientation.
- * @param pieces1 - First set of pattern pieces
- * @param pieces2 - Second set of pattern pieces
+ * @param gene1 - First set of pattern pieces
+ * @param gene2 - Second set of pattern pieces
  * @param options - Options for distance computation
  * @returns The computed distance
  */
 export function getGenesDistance(
-  pieces1: PatternPieces,
-  pieces2: PatternPieces,
+  gene1: Gene,
+  gene2: Gene,
   options: GetGenesDistanceOptions = {},
 ): number {
   const { centerWeight = 1, orientationWeight = 100, debug = false } = options;
 
-  if (pieces1.length !== pieces2.length) {
-    throw new Error('Both sequences must have the same length');
+  if (gene1.data.length !== gene2.data.length) {
+    throw new Error('Both genes must have the same length');
   }
 
   let centerDistance = 0;
   let orientationDistance = 0;
 
-  for (let i = 0; i < pieces1.length; i++) {
-    const piece1 = pieces1[i] as PatternPiece;
-    const piece2 = pieces2[i] as PatternPiece;
+  for (let i = 0; i < gene1.data.length; i++) {
+    const piece1 = gene1.data[i] as PatternPiece;
+    const piece2 = gene2.data[i] as PatternPiece;
 
     const center1 = piece1.centerOrigin;
     const center2 = piece2.centerOrigin;
