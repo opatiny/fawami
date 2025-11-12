@@ -3,14 +3,13 @@ import { join } from 'node:path';
 import { write } from 'image-js';
 
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
-import { Gene } from '../src/geneticAlgo/Gene.ts';
+import { crossover1Point } from '../src/geneticAlgo/crossover1point.ts';
 import { getDistanceMatrix } from '../src/geneticAlgo/getDistanceMatrix.ts';
 import { getGenesDistance } from '../src/geneticAlgo/getGenesDistance.ts';
-import { getRandomPieces } from '../src/getRandomPieces.ts';
+import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
-import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };
@@ -52,3 +51,13 @@ console.log(`Distance between individual 0 and 1: ${distance}`);
 const distanceMatrix = getDistanceMatrix(initialPopulation);
 console.log('Distance matrix:');
 console.log(distanceMatrix.toString());
+
+// compute crossover between the two first genes
+const children = crossover1Point(initialPopulation[0], initialPopulation[1], {
+  debug: true,
+});
+
+savePopulationImages(fabric, children, {
+  outdir: 'children',
+  path: import.meta.dirname,
+});

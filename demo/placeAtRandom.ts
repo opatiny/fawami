@@ -6,15 +6,12 @@ import { join } from 'node:path';
 
 import { write, writeSync } from 'image-js';
 
-import type { PatternPieces } from '../src/PatternPiece.ts';
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import { getFitness } from '../src/geneticAlgo/getFitness.ts';
-import { getGenesDistance } from '../src/geneticAlgo/getGenesDistance.ts';
 import { getRandomPieces } from '../src/getRandomPieces.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { drawPieces } from '../src/utils/drawPieces.ts';
-import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };
