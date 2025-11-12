@@ -1,21 +1,40 @@
 import type { PatternPieces } from '../PatternPiece.ts';
+import { getAverageOriginColumn } from '../utils/getAverageOriginColumn.ts';
 import { getIntersectionMatrix } from '../utils/getIntersectionMatrix.ts';
 import { getUsedLength } from '../utils/getUsedLength.ts';
 
-import { DefaultFitnessWeights } from './Gene.ts';
-
 export interface FitnessWeights {
-  overlapWeight?: number;
-  lengthWeight?: number;
+  overlap: number;
+  usedLength: number;
+  averageColumn: number;
 }
+export const DefaultFitnessWeights: FitnessWeights = {
+  overlap: 1,
+  usedLength: 0,
+  averageColumn: 10,
+};
 
-export interface GetFitnessOptions extends FitnessWeights {
+export interface GetFitnessOptions {
   debug?: boolean;
+  weights?: FitnessWeights;
 }
 
 export interface FitnessData {
+  /**
+   * Total overlapping area between pieces (in pixels)
+   */
   overlapArea: number;
+  /**
+   * Length of fabric used
+   */
   usedLength: number;
+  /**
+   * Average column of the pattern pieces origins. More powerful than usedLength because usedLength only puts the pressure on the right-most piece.
+   */
+  averageColumn?: number;
+  /**
+   * The overall fitness score (lower is better)
+   */
   score: number;
 }
 
@@ -29,24 +48,28 @@ export interface FitnessData {
  */
 export function getFitness(
   pieces: PatternPieces,
-  options: GetFitnessOptions = DefaultFitnessWeights,
+  options: GetFitnessOptions = {},
 ): FitnessData {
-  const { overlapWeight, lengthWeight, debug = false } = options;
+  const { weights = DefaultFitnessWeights, debug = false } = options;
   const intersectionMatrix = getIntersectionMatrix(pieces);
   const overlapArea = intersectionMatrix.sum() / 2;
   const usedLength = getUsedLength(pieces);
+  const averageColumn = getAverageOriginColumn(pieces);
   if (debug) {
-    console.log('getFitness:', {
-      totalOverlapArea: overlapArea,
-      overlapWeight,
-    });
-    console.log('getFitness:', { usedLength, lengthWeight });
+    console.log('getFitness:', weights);
+    console.log('overlapArea:', overlapArea);
+    console.log('usedLength:', usedLength);
+    console.log('averageColumn:', averageColumn);
   }
   // we want to minimize both totalOverlapArea and usedLength
-  const score = overlapWeight * overlapArea + lengthWeight * usedLength;
+  const score =
+    weights.overlap * overlapArea +
+    weights.usedLength * usedLength +
+    weights.averageColumn * averageColumn;
   return {
     overlapArea,
     usedLength,
+    averageColumn,
     score,
   };
 }
