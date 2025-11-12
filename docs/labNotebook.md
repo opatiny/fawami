@@ -31,3 +31,4 @@ questions:
 - how to implement functions that act on an array of class instances? can you put it directly in the class?
 - how to add some text on an image?
 - how to remove console.log being an error?
+- why isn't `ls -1 | sort --numeric-sort` working?

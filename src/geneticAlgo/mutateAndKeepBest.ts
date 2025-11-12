@@ -37,8 +37,13 @@ export function mutateAndKeepBest(
   const { populationSize = 10, nbIterations = 5, debug = false } = options;
   const bestGenes: Gene[] = [];
   let bestGene = gene;
+
+  if (debug) {
+    console.log('iteration', 'score');
+  }
+
   for (let iteration = 0; iteration < nbIterations; iteration++) {
-    const mutants: Gene[] = [];
+    const mutants: Gene[] = [bestGene];
     for (let i = 0; i < populationSize; i++) {
       const mutant = mutateTranslate(fabric, bestGene, { seed: i });
       mutants.push(mutant);
@@ -49,10 +54,10 @@ export function mutateAndKeepBest(
     bestGenes.push(bestGene);
 
     if (debug) {
-      console.log(`Iteration ${iteration + 1}:`);
-      console.log('Current best score:', bestGene.fitness.score);
+      console.log(iteration, bestGene.fitness.score);
     }
   }
+
   return bestGenes;
 }
 
