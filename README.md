@@ -29,8 +29,20 @@ In watch mode: `node --watch yourScript.ts`
 ## TS tips
 
 - `structuredClone(object)`: create a typed copy of the object
-- random values with seed:
+- random values with seed: use the `XSadd` library
 
-## Questions
+## Create a gif from set of images
+
+This command adds a longer delay (of 100) before the first and last images.
+
+```bash
+convert -delay 40 -loop 0 *.png -set delay '%[fx:t==(n-1) || t==0 ? 100 : 40]'  mutateTranslate.gif
+```
+
+## Question`
 
 - how to make the debugger work to inspect variables?
+
+```
+
+```

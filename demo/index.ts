@@ -50,7 +50,7 @@ const gene1 = initialPopulation[0] as Gene;
 // mutate a gene multiple times and select the best ones
 const bestMutants = mutateAndKeepBest(fabric, gene1, {
   populationSize: 10,
-  nbIterations: 10,
+  nbIterations: 100,
   debug: true,
 });
 

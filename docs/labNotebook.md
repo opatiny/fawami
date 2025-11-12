@@ -29,3 +29,5 @@ questions:
 - how to pick the N most diverse elements from a dataset?
 - is there a way of deleting variables after you're done using them, to free memory?
 - how to implement functions that act on an array of class instances? can you put it directly in the class?
+- how to add some text on an image?
+- how to remove console.log being an error?

@@ -1,5 +1,3 @@
-import { debug } from 'node:console';
-
 import type { Image } from 'image-js';
 
 import type { Gene } from './Gene.ts';
@@ -47,12 +45,13 @@ export function mutateAndKeepBest(
     }
     sortGenesByScore(mutants);
 
-    if (debug) {
-      console.log(`Iteration ${iteration + 1}:`);
-      printScores(mutants);
-    }
     bestGene = mutants[0];
     bestGenes.push(bestGene);
+
+    if (debug) {
+      console.log(`Iteration ${iteration + 1}:`);
+      console.log('Current best score:', bestGene.fitness.score);
+    }
   }
   return bestGenes;
 }

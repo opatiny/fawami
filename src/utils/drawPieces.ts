@@ -27,6 +27,10 @@ export interface DrawRoisOptions {
    * @default black
    */
   backgroundColor?: number[];
+  /**
+   * Optional text to add to the top-right corner of the image in white.
+   */
+  text?: string;
 }
 
 /**
@@ -45,6 +49,7 @@ export function drawPieces(
     blend = true,
     debug = false,
     backgroundColor = getBlack(fabric),
+    text,
   } = options;
 
   // fill fabric with background color
@@ -69,5 +74,7 @@ export function drawPieces(
 
   if (showBoundingRectangles) {
     drawBoundingRectangles(fabric, pieces);
+  }
+  if (text) {
   }
 }

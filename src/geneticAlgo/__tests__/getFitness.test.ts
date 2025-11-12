@@ -25,13 +25,13 @@ const pieces = [piece1, piece2];
 
 test('all weights to 1', async () => {
   const fitness = getFitness(pieces, {
-    weights: { overlap: 1, usedLength: 1, averageColumn: 1 },
+    weights: { overlap: 1, usedLength: 1, averageColumn: 1, averageRow: 1 },
   });
   const expected = {
     overlapArea: 9,
     usedLength: 5,
-    averageColumn: 1.5,
-    score: 15.5,
+    averageOrigin: { column: 2, row: 1 },
+    score: 17,
   };
 
   expect(fitness).toStrictEqual(expected);
@@ -42,8 +42,8 @@ test('default weights', async () => {
   const expected = {
     overlapArea: 9,
     usedLength: 5,
-    averageColumn: 1.5,
-    score: 24, // 1*9 + 0*5 + 10*1.5 = 24
+    averageOrigin: { column: 2, row: 1 },
+    score: 39, // 1*9 + 10*2 + 10 * 1 = 39
   };
 
   expect(fitness).toStrictEqual(expected);

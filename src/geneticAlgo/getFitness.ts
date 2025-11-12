@@ -1,5 +1,7 @@
+import type { Point } from 'image-js';
+
 import type { PatternPieces } from '../PatternPiece.ts';
-import { getAverageOriginColumn } from '../utils/getAverageOriginColumn.ts';
+import { getAverageOrigin } from '../utils/getAverageOrigin.ts';
 import { getIntersectionMatrix } from '../utils/getIntersectionMatrix.ts';
 import { getUsedLength } from '../utils/getUsedLength.ts';
 
@@ -7,11 +9,13 @@ export interface FitnessWeights {
   overlap: number;
   usedLength: number;
   averageColumn: number;
+  averageRow: number;
 }
 export const DefaultFitnessWeights: FitnessWeights = {
   overlap: 1,
   usedLength: 0,
   averageColumn: 10,
+  averageRow: 10,
 };
 
 export interface GetFitnessOptions {
@@ -29,9 +33,9 @@ export interface FitnessData {
    */
   usedLength: number;
   /**
-   * Average column of the pattern pieces origins. More powerful than usedLength because usedLength only puts the pressure on the right-most piece.
+   * Average origin of the pattern pieces. More powerful than usedLength because usedLength only puts the pressure on the right-most piece.
    */
-  averageColumn?: number;
+  averageOrigin?: Point;
   /**
    * The overall fitness score (lower is better)
    */
@@ -54,22 +58,23 @@ export function getFitness(
   const intersectionMatrix = getIntersectionMatrix(pieces);
   const overlapArea = intersectionMatrix.sum() / 2;
   const usedLength = getUsedLength(pieces);
-  const averageColumn = getAverageOriginColumn(pieces);
+  const averageOrigin = getAverageOrigin(pieces);
   if (debug) {
     console.log('getFitness:', weights);
     console.log('overlapArea:', overlapArea);
     console.log('usedLength:', usedLength);
-    console.log('averageColumn:', averageColumn);
+    console.log('averageOrigin:', averageOrigin);
   }
   // we want to minimize both totalOverlapArea and usedLength
   const score =
     weights.overlap * overlapArea +
     weights.usedLength * usedLength +
-    weights.averageColumn * averageColumn;
+    weights.averageColumn * averageOrigin.column +
+    weights.averageRow * averageOrigin.row;
   return {
     overlapArea,
     usedLength,
-    averageColumn,
+    averageOrigin,
     score,
   };
 }

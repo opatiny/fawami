@@ -1,12 +1,7 @@
 import type { PatternPieces } from '../PatternPiece.ts';
 
 import type { FitnessData, FitnessWeights } from './getFitness.ts';
-import { getFitness } from './getFitness.ts';
-
-export const DefaultFitnessWeights = {
-  overlapWeight: 1,
-  lengthWeight: 10,
-};
+import { DefaultFitnessWeights, getFitness } from './getFitness.ts';
 
 export interface GeneOptions {
   fitnessWeights?: FitnessWeights;
@@ -20,8 +15,10 @@ export class Gene {
   public constructor(patternPieces: PatternPieces, options: GeneOptions = {}) {
     this.data = patternPieces;
     this.fitness = getFitness(this.data, {
-      ...DefaultFitnessWeights,
-      ...options.fitnessWeights,
+      weights: {
+        ...DefaultFitnessWeights,
+        ...options.fitnessWeights,
+      },
     });
     this.fitnessWeights = {
       ...DefaultFitnessWeights,
