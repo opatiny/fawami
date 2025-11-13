@@ -1,5 +1,7 @@
 import type { PatternPieces } from '../PatternPiece.ts';
 
+import type { GetDataVectorOptions } from './getDataVector.ts';
+import { getDataVector } from './getDataVector.ts';
 import type { FitnessData, FitnessWeights } from './getFitness.ts';
 import { DefaultFitnessWeights, getFitness } from './getFitness.ts';
 
@@ -32,5 +34,9 @@ export class Gene {
       overlapArea: this.fitness.overlapArea,
       usedLength: this.fitness.usedLength,
     };
+  }
+
+  public getDataVector(options: GetDataVectorOptions = {}): number[] {
+    return getDataVector(this, options);
   }
 }
