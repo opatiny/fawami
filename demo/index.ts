@@ -16,13 +16,13 @@ const dim1 = { width: 20, length: 30 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 
-const path = join(import.meta.dirname, '../data/', img1);
+const path = join(import.meta.dirname, '../data/', img2);
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim1);
+const fabric = getRectangleFabric(dim2);
 
 // convert the SVG to an image-js image
-const pattern = await svgToIjs(path);
+const pattern = await svgToIjs(path, { resolution: 10 });
 
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
 
@@ -57,8 +57,7 @@ savePopulationImages(fabric, bestMutants, {
 });
 
 // test getDistantGenes
-
 const distantGenes = getDistantGenes(bestMutants, {
   numberOfGenes: 5,
-  debug: true,
+  debug: false,
 });

@@ -42,5 +42,7 @@ Node.js
 This command adds a longer delay (of 100) before the first and last images.
 
 ```bash
-convert -delay 40 -loop 0 *.png -set delay '%[fx:t==(n-1) || t==0 ? 100 : 40]'  mutateTranslate.gif
+convert -resize 20% -delay 40 -loop 0 *.png -set delay '%[fx:t==(n-1) || t==0 ? 100 : 40]'  mutateTranslate.gif
 ```
+
+- Remove the `resize` option if you don't want to scale down

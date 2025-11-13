@@ -8,18 +8,31 @@ import { Canvas, Image } from 'skia-canvas';
 
 import { parseDimension } from './utils/parseDimension.ts';
 
+export interface SvgToIjsOptions {
+  /**
+   * Resolution of the output image in pixels per cm
+   * @default 10
+   */
+  resolution?: number;
+  /**
+   * Display debug information?
+   * @default false
+   */
+  debug?: boolean;
+}
+
 /**
  * Convert an SVG image to an image-js object.
  * @param path - Path to the svg file
- * @param resolution - Resolution of the output image in pixels per cm
- * @param debug - Display debug information?
+ * @param options - Options
  * @returns The image-js image
  */
 export async function svgToIjs(
   path: string,
-  resolution = 10,
-  debug = false,
+  options: SvgToIjsOptions = {},
 ): Promise<IJS> {
+  const { resolution = 10, debug = false } = options;
+
   // read the svg as text
   const svg = await readFile(path, 'utf8');
 

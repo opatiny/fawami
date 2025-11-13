@@ -6,16 +6,41 @@ import { fromMask, writeSync } from 'image-js';
 import type { PatternPieces } from './PatternPiece.ts';
 import { PatternPiece } from './PatternPiece.ts';
 
+export interface ExtractPatternPiecesOptions {
+  /**
+   * Input image resolution in pixels per cm
+   * @default 10
+   */
+  patternResolution?: number;
+  /**
+   * Desired output image resolution in pixels per cm
+   * @default 10
+   */
+  desiredResolution?: number;
+  /**
+   * Display debug information?
+   * @default false
+   */
+  debug?: boolean;
+}
+
 /**
  * Extract the ROIs from the image.
  * @param image - The input image
- * @param debug - Whether to enable debug mode
+ * @param options - Options
  * @returns The masks of ROIs
  */
 export function extractPatternPieces(
   image: Image,
-  debug = false,
+  options: ExtractPatternPiecesOptions = {},
 ): PatternPieces {
+  // todo: implement resolution change
+  const {
+    patternResolution = 10,
+    desiredResolution = 10,
+    debug = false,
+  } = options;
+
   if (debug) {
     // check color model
     console.log(`extractRois: Color model: ${image.colorModel}`);
