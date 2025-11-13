@@ -50,11 +50,20 @@ export function savePopulationImages(
     }
   });
 
+  const nbDigits = Math.ceil(Math.log10(genes.length)) + 1;
+
   for (let i = 0; i < genes.length; i++) {
     const gene = genes[i] as Gene;
     const fabricClone = fabric.clone();
 
     drawPieces(fabricClone, gene.data);
-    writeSync(join(path, outdir, `${nameBase}${i}.png`), fabricClone);
+    writeSync(
+      join(
+        path,
+        outdir,
+        `${nameBase}${(i - 1).toString().padStart(nbDigits, '0')}.png`,
+      ),
+      fabricClone,
+    );
   }
 }

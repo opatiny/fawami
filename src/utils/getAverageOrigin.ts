@@ -18,6 +18,7 @@ export function getAverageOrigin(patternPieces: PatternPieces): Point {
     totalY += piece?.centerOrigin.row;
   }
 
+  // todo: should this be rounded?
   return {
     column: Math.round(totalX / nbPieces),
     row: Math.round(totalY / nbPieces),
