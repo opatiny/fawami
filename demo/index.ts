@@ -4,13 +4,9 @@ import { write } from 'image-js';
 
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
 import type { Gene } from '../src/geneticAlgo/Gene.ts';
-import { crossover1Point } from '../src/geneticAlgo/crossover1point.ts';
-import { getDistanceMatrix } from '../src/geneticAlgo/getDistanceMatrix.ts';
-import { getGenesDistance } from '../src/geneticAlgo/getGenesDistance.ts';
+import { getDistantGenes } from '../src/geneticAlgo/getDistantGenes.ts';
 import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
 import { mutateAndKeepBest } from '../src/geneticAlgo/mutateAndKeepBest.ts';
-import { mutateTranslate } from '../src/geneticAlgo/mutateTranslate.ts';
-import { sortGenesByScore } from '../src/geneticAlgo/sortGenesByScore.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
@@ -51,11 +47,18 @@ const gene1 = initialPopulation[0] as Gene;
 const bestMutants = mutateAndKeepBest(fabric, gene1, {
   populationSize: 10,
   nbIterations: 100,
-  debug: true,
+  debug: false,
 });
 
 savePopulationImages(fabric, bestMutants, {
   outdir: 'sortedMutants',
   path: import.meta.dirname,
   nameBase: 'generation',
+});
+
+// test getDistantGenes
+
+const distantGenes = getDistantGenes(bestMutants, {
+  numberOfGenes: 5,
+  debug: true,
 });
