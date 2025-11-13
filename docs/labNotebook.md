@@ -25,10 +25,11 @@ todo:
 
 questions:
 
-- how to avoid `number | undefined` errors? when I access an element of an array
-- how to pick the N most diverse elements from a dataset?
-- is there a way of deleting variables after you're done using them, to free memory?
-- how to implement functions that act on an array of class instances? can you put it directly in the class?
-- how to add some text on an image?
+- how to pick the N most diverse elements from a dataset? -> kmeans
+- is there a way of deleting variables after you're done using them, to free memory? -> done automatically by garbage collector when no more pointer to the variable
+- how to add some text on an image? -> new version of `image-js`
+- why isn't `ls -1 | sort --numeric-sort` working? -> probably need a separator for it to work
+
 - how to remove console.log being an error?
-- why isn't `ls -1 | sort --numeric-sort` working?
+- how to avoid `number | undefined` errors? when I access an element of an array
+- how to implement functions that act on an array of class instances? can you put it directly in the class?

@@ -1,6 +1,7 @@
 import { mkdir } from 'node:fs';
 import { join } from 'node:path';
 
+import fsExtra from 'fs-extra';
 import type { Image } from 'image-js';
 import { writeSync } from 'image-js';
 
@@ -43,14 +44,19 @@ export function savePopulationImages(
     nameBase = 'sequence',
   } = options;
 
+  const fullOutdir = join(path, outdir);
+
   // create folder first if it does not exist
-  mkdir(join(path, outdir), { recursive: true }, (err) => {
+  mkdir(fullOutdir, { recursive: true }, (err) => {
     if (err) {
       console.error(err);
     }
   });
 
-  const nbDigits = Math.ceil(Math.log10(genes.length)) + 1;
+  // empty output directory
+  fsExtra.emptyDirSync(fullOutdir);
+
+  const nbDigits = Math.ceil(Math.log10(genes.length - 1));
 
   for (let i = 0; i < genes.length; i++) {
     const gene = genes[i] as Gene;
@@ -61,7 +67,7 @@ export function savePopulationImages(
       join(
         path,
         outdir,
-        `${nameBase}${(i - 1).toString().padStart(nbDigits, '0')}.png`,
+        `${nameBase}${i.toString().padStart(nbDigits, '0')}.png`,
       ),
       fabricClone,
     );

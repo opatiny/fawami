@@ -26,23 +26,21 @@ In watch mode: `node --watch yourScript.ts`
 - Watch mode: `npx vitest` (no coverage)
 - Focus on one test: `npx vitest testName`
 
-## TS tips
+## TS and Node.js tips
+
+Typescript:
 
 - `structuredClone(object)`: create a typed copy of the object
 - random values with seed: use the `XSadd` library
 
-## Create a gif from set of images
+Node.js
+
+- install newest version of package: `npm i image-js@latest`
+
+## Create a gif from set of images in the command line
 
 This command adds a longer delay (of 100) before the first and last images.
 
 ```bash
 convert -delay 40 -loop 0 *.png -set delay '%[fx:t==(n-1) || t==0 ? 100 : 40]'  mutateTranslate.gif
-```
-
-## Question`
-
-- how to make the debugger work to inspect variables?
-
-```
-
 ```
