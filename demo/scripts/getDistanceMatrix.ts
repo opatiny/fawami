@@ -6,13 +6,13 @@ import { join } from 'node:path';
 
 import { write } from 'image-js';
 
-import { extractPatternPieces } from '../src/extractPatternPieces.ts';
-import { getDistanceMatrix } from '../src/geneticAlgo/getDistanceMatrix.ts';
-import { getGenesDistance } from '../src/geneticAlgo/getGenesDistance.ts';
-import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
-import { getRectangleFabric } from '../src/getRectangleFabric.ts';
-import { svgToIjs } from '../src/svgToIjs.ts';
-import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
+import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
+import { getDistanceMatrix } from '../../src/geneticAlgo/getDistanceMatrix.ts';
+import { getGenesDistance } from '../../src/geneticAlgo/getGenesDistance.ts';
+import { getRandomGenes } from '../../src/geneticAlgo/getRandomGenes.ts';
+import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
+import { svgToIjs } from '../../src/svgToIjs.ts';
+import { savePopulationImages } from '../../src/utils/savePopulationImages.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };

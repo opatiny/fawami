@@ -1,0 +1,212 @@
+// this should be completely generic in order to be used in other projects
+import { Random } from 'ml-random';
+
+import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
+
+interface ScoredIndividual<Type> {
+  individual: Type;
+  score: number;
+}
+
+type CrossoverFunc<Type> = (parent1: Type, parent2: Type) => [Type, Type];
+
+type MutationFunc<Type> = (gene: Type) => Type;
+
+type FitnessFunc<Type> = (gene: Type) => number;
+
+type DistantIndividualsFunc<Type> = (
+  population: Array<ScoredIndividual<Type>>,
+  nbIndividuals: number,
+) => Array<ScoredIndividual<Type>>;
+
+export interface ConfigGA<Type> {
+  intitialPopulation: Type[];
+
+  crossoverFunction: CrossoverFunc<Type>;
+
+  mutationFunction: MutationFunc<Type>;
+
+  fitnessFunction: FitnessFunc<Type>;
+  /**
+   * Function to select the most diverse individuals in the population
+   * @default Takes the N random individuals
+   */
+  distantIndividualsFunction?: DistantIndividualsFunc<Type>;
+
+  /**
+   * Enable crossover?
+   * @default true
+   */
+  enableCrossover?: boolean;
+
+  /**
+   * Enable mutation?
+   * @default true
+   */
+  enableMutation?: boolean;
+
+  /**
+   * Population size
+   * @default 100
+   */
+  populationSize?: number;
+  /**
+   * Seed for the random number generator
+   * @default A random seed
+   */
+  seed?: number;
+  /**
+   * Number of individuals to select that are the most diverse.
+   * Should be less than population size.
+   * @default 10
+   */
+  nbDiverseIndividuals?: number;
+  /**
+   * Define whether a higher score is better ('max') or a lower score is better ('min')
+   * @default 'max'
+   */
+  scoreDirection?: 'max' | 'min';
+}
+
+export class GeneticAlgorithm<Type> {
+  public population: Array<ScoredIndividual<Type>>;
+  public crossover: CrossoverFunc<Type>;
+  public mutate: MutationFunc<Type>;
+  public fitness: FitnessFunc<Type>;
+  public distantIndividuals: DistantIndividualsFunc<Type>;
+
+  public enableCrossover: boolean;
+  public enableMutation: boolean;
+  public populationSize: number;
+  public seed: number;
+  public nbDiverseGenes: number;
+  /**
+   * Number of iterations performed
+   */
+  public iteration = 0;
+  /**
+   * Individuals with the best score at each iteration
+   */
+  public readonly bestScoredIndividuals: Array<ScoredIndividual<Type>>;
+  public readonly scoreDirection: 'max' | 'min';
+
+  public constructor(config: ConfigGA<Type>) {
+    function randomDistantIndividuals<Type>(
+      population: Type[],
+      nbIndividuals: number,
+    ): Type[] {
+      const randomGen = new Random(config.seed);
+      return randomGen.choice(population, {
+        size: nbIndividuals,
+        replace: false,
+      });
+    }
+
+    const {
+      enableCrossover = true,
+      enableMutation = true,
+      populationSize = 100,
+      scoreDirection = 'max',
+      nbDiverseIndividuals: nbDiverseGenes = 10,
+      distantIndividualsFunction = randomDistantIndividuals,
+    } = config;
+
+    if (config.intitialPopulation.length !== config.populationSize) {
+      throw new Error(
+        `Initial population size (${config.intitialPopulation.length}) must match the populationSize parameter (${config.populationSize})`,
+      );
+    }
+
+    if (nbDiverseGenes > config.populationSize || nbDiverseGenes < 0) {
+      throw new Error(
+        `Number of diverse genes (${nbDiverseGenes}) must be between 0 and population size (${config.populationSize})`,
+      );
+    }
+
+    this.population = config.intitialPopulation.map((individual) => ({
+      individual,
+      score: this.fitness(individual),
+    }));
+    this.crossover = config.crossoverFunction;
+    this.mutate = config.mutationFunction;
+    this.fitness = config.fitnessFunction;
+    this.distantIndividuals = distantIndividualsFunction;
+    this.enableCrossover = enableCrossover;
+    this.enableMutation = enableMutation;
+    this.populationSize = populationSize;
+    this.seed = config.seed ?? getDefaultSeed();
+    this.nbDiverseGenes = nbDiverseGenes;
+    this.bestScoredIndividuals = [];
+    this.scoreDirection = scoreDirection;
+  }
+
+  public computeNextGeneration(debug = false): void {
+    // create random generator
+    const randomGen = new Random(this.seed);
+
+    const originalIndividuals = this.population.map((ind) => ind.individual);
+
+    const crossovered: Type[] = [];
+    // apply crossover
+    if (this.enableCrossover) {
+      const nbCrossovers = Math.floor(this.populationSize / 2);
+
+      if (debug) {
+        console.log(`Performing ${nbCrossovers} crossovers`);
+      }
+
+      for (let i = 0; i < nbCrossovers; i++) {
+        // todo: enhance selection of parents
+        const parent1 =
+          originalIndividuals[
+            Math.floor(randomGen.random() * this.population.length)
+          ];
+        const parent2 =
+          originalIndividuals[
+            Math.floor(randomGen.random() * this.population.length)
+          ];
+        const [child1, child2] = this.crossover(parent1, parent2);
+        crossovered.push(child1, child2);
+      }
+    }
+    // apply mutation to original and crossovered individuals
+    const mutated: Type[] = [];
+    if (this.enableMutation) {
+      for (let individual of [...originalIndividuals, ...crossovered]) {
+        individual = this.mutate(individual);
+        mutated.push(individual);
+      }
+    }
+    const newIndividuals = [...crossovered, ...mutated];
+    const newScoredIndividuals: Array<ScoredIndividual<Type>> =
+      newIndividuals.map((individual) => ({
+        individual,
+        score: this.fitness(individual),
+      }));
+
+    const newPopulation = [...this.population, ...newScoredIndividuals];
+
+    // sort by fitness score
+    if (this.scoreDirection === 'max') {
+      newPopulation.sort((a, b) => b.score - a.score);
+    } else {
+      newPopulation.sort((a, b) => a.score - b.score);
+    }
+
+    this.population = newPopulation.slice(
+      0,
+      this.populationSize - this.nbDiverseGenes,
+    );
+    // select most diverse individuals if needed
+    if (this.nbDiverseGenes > 0) {
+      // there is a probability that one of the individuals selected is already in the population
+      const diverseIndividuals = this.distantIndividuals(
+        newPopulation,
+        this.nbDiverseGenes,
+      );
+      this.population.push(...diverseIndividuals);
+    }
+
+    this.iteration++;
+  }
+}

@@ -3,7 +3,6 @@ import { join } from 'node:path';
 import { write } from 'image-js';
 
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
-import type { Gene } from '../src/geneticAlgo/Gene.ts';
 import { getDistantGenes } from '../src/geneticAlgo/getDistantGenes.ts';
 import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
 import { mutateAndKeepBest } from '../src/geneticAlgo/mutateAndKeepBest.ts';
@@ -27,7 +26,7 @@ const pattern = await svgToIjs(path, { resolution: 10 });
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
 
 // extract the pieces of the pattern
-const pieces = extractPatternPieces(pattern, true);
+const pieces = extractPatternPieces(pattern, { debug: true });
 
 console.log(`Extracted ${pieces.length} pieces`);
 
@@ -41,7 +40,7 @@ const initialPopulation = getRandomGenes(fabric, pieces, {
 // save all sequences to images
 savePopulationImages(fabric, initialPopulation, { path: import.meta.dirname });
 
-const gene1 = initialPopulation[0] as Gene;
+const gene1 = initialPopulation[0];
 
 // mutate a gene multiple times and select the best ones
 const bestMutants = mutateAndKeepBest(fabric, gene1, {

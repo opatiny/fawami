@@ -84,5 +84,5 @@ function getRandomOffsetDirection(seed?: number): number {
 
   const values = [-1, 0, 1];
   const index = Math.floor(xsadd.getFloat() * values.length);
-  return values[index] as number;
+  return values[index];
 }

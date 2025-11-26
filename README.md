@@ -32,6 +32,7 @@ Typescript:
 
 - `structuredClone(object)`: create a typed copy of the object
 - random values with seed: use the `XSadd` library
+- add types for a library: `
 
 Node.js
 

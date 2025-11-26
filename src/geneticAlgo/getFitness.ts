@@ -6,11 +6,28 @@ import { getIntersectionMatrix } from '../utils/getIntersectionMatrix.ts';
 import { getUsedLength } from '../utils/getUsedLength.ts';
 
 export interface FitnessWeights {
+  /**
+   * Weight to minimize overlap area
+   * @default 1
+   */
   overlap: number;
+  /**
+   * Weight to minimize length of fabric used
+   * @default 0
+   */
   usedLength: number;
+  /**
+   * Weight to minimize average column position of pattern pieces
+   * @default 10
+   */
   averageColumn: number;
+  /**
+   * Weight to minimize average row position of pattern pieces
+   * @default 10
+   */
   averageRow: number;
 }
+
 export const DefaultFitnessWeights: FitnessWeights = {
   overlap: 1,
   usedLength: 0,

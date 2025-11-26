@@ -52,10 +52,12 @@
   "homepage": "https://github.com/opatiny/fawami#readme",
   "dependencies": {
     "fs-extra": "^11.3.2",
+    "geneticalgorithm": "^1.0.2",
     "image-js": "^1.1.0",
     "jsdom": "^27.0.0",
     "ml-kmeans": "^6.0.0",
     "ml-matrix": "^6.12.1",
+    "ml-random": "^2.0.0",
     "ml-xsadd": "^3.0.1",
     "skia-canvas": "^3.0.8"
   }

@@ -44,7 +44,7 @@ export async function svgToIjs(
   // remove xmlns:svg attribute -> otherwise canvas won't work
   svgElement.removeAttribute('xmlns:svg');
 
-  // remove all textt elements
+  // remove all text elements
   const textElements = dom.window.document.querySelectorAll('text');
   for (const textElement of textElements) {
     textElement.remove();
@@ -85,6 +85,7 @@ export async function svgToIjs(
     }
   }
 
+  // convert back to text
   const blackSVG = dom.serialize();
 
   // by default 1mm = 1 pixel
