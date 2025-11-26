@@ -25,8 +25,17 @@ export interface ConfigGA<Type> {
   crossoverFunction: CrossoverFunc<Type>;
 
   mutationFunction: MutationFunc<Type>;
-
+  /**
+   * Function to compute the fitness score of an individual
+   */
   fitnessFunction: FitnessFunc<Type>;
+  /**
+   * Define whether a higher score is better ('max') or a lower score is better ('min')
+   */
+  scoreDirection: 'max' | 'min';
+}
+
+export interface OptionsGA<Type> {
   /**
    * Function to select the most diverse individuals in the population
    * @default Takes the N random individuals
@@ -58,14 +67,10 @@ export interface ConfigGA<Type> {
   /**
    * Number of individuals to select that are the most diverse.
    * Should be less than population size.
+   * Set to 0 to disable diversity selection.
    * @default 10
    */
   nbDiverseIndividuals?: number;
-  /**
-   * Define whether a higher score is better ('max') or a lower score is better ('min')
-   * @default 'max'
-   */
-  scoreDirection?: 'max' | 'min';
 }
 
 export class GeneticAlgorithm<Type> {
@@ -90,12 +95,14 @@ export class GeneticAlgorithm<Type> {
   public readonly bestScoredIndividuals: Array<ScoredIndividual<Type>>;
   public readonly scoreDirection: 'max' | 'min';
 
-  public constructor(config: ConfigGA<Type>) {
+  public constructor(config: ConfigGA<Type>, options: OptionsGA<Type> = {}) {
+    const { seed = getDefaultSeed() } = options;
+
     function randomDistantIndividuals<Type>(
       population: Type[],
       nbIndividuals: number,
     ): Type[] {
-      const randomGen = new Random(config.seed);
+      const randomGen = new Random(seed);
       return randomGen.choice(population, {
         size: nbIndividuals,
         replace: false,
@@ -106,20 +113,19 @@ export class GeneticAlgorithm<Type> {
       enableCrossover = true,
       enableMutation = true,
       populationSize = 100,
-      scoreDirection = 'max',
       nbDiverseIndividuals: nbDiverseGenes = 10,
       distantIndividualsFunction = randomDistantIndividuals,
-    } = config;
+    } = options;
 
-    if (config.intitialPopulation.length !== config.populationSize) {
+    if (config.intitialPopulation.length !== populationSize) {
       throw new Error(
-        `Initial population size (${config.intitialPopulation.length}) must match the populationSize parameter (${config.populationSize})`,
+        `Initial population size (${config.intitialPopulation.length}) must match the populationSize parameter (${populationSize})`,
       );
     }
 
-    if (nbDiverseGenes > config.populationSize || nbDiverseGenes < 0) {
+    if (nbDiverseGenes > populationSize || nbDiverseGenes < 0) {
       throw new Error(
-        `Number of diverse genes (${nbDiverseGenes}) must be between 0 and population size (${config.populationSize})`,
+        `Number of diverse genes (${nbDiverseGenes}) must be between 0 and population size (${populationSize})`,
       );
     }
 
@@ -134,10 +140,10 @@ export class GeneticAlgorithm<Type> {
     this.enableCrossover = enableCrossover;
     this.enableMutation = enableMutation;
     this.populationSize = populationSize;
-    this.seed = config.seed ?? getDefaultSeed();
+    this.seed = seed;
     this.nbDiverseGenes = nbDiverseGenes;
     this.bestScoredIndividuals = [];
-    this.scoreDirection = scoreDirection;
+    this.scoreDirection = config.scoreDirection;
   }
 
   public computeNextGeneration(debug = false): void {
@@ -208,5 +214,6 @@ export class GeneticAlgorithm<Type> {
     }
 
     this.iteration++;
+    this.bestScoredIndividuals.push(this.population[0]);
   }
 }
