@@ -78,13 +78,14 @@ export class GeneticAlgorithm<Type> {
   public crossover: CrossoverFunc<Type>;
   public mutate: MutationFunc<Type>;
   public fitness: FitnessFunc<Type>;
-  public distantIndividuals: DistantIndividualsFunc<Type>;
 
+  public distantIndividuals: DistantIndividualsFunc<Type>;
+  public nbDiverseIndividuals: number;
   public enableCrossover: boolean;
   public enableMutation: boolean;
   public populationSize: number;
   public seed: number;
-  public nbDiverseGenes: number;
+
   /**
    * Number of iterations performed
    */
@@ -109,11 +110,13 @@ export class GeneticAlgorithm<Type> {
       });
     }
 
+    console.log(options);
+
     const {
       enableCrossover = true,
       enableMutation = true,
       populationSize = 100,
-      nbDiverseIndividuals: nbDiverseGenes = 10,
+      nbDiverseIndividuals = 10,
       distantIndividualsFunction = randomDistantIndividuals,
     } = options;
 
@@ -123,25 +126,26 @@ export class GeneticAlgorithm<Type> {
       );
     }
 
-    if (nbDiverseGenes > populationSize || nbDiverseGenes < 0) {
+    if (nbDiverseIndividuals > populationSize || nbDiverseIndividuals < 0) {
       throw new Error(
-        `Number of diverse genes (${nbDiverseGenes}) must be between 0 and population size (${populationSize})`,
+        `Number of diverse individuals (${nbDiverseIndividuals}) must be between 0 and population size (${populationSize})`,
       );
     }
 
+    this.fitness = config.fitnessFunction;
     this.population = config.intitialPopulation.map((individual) => ({
       individual,
       score: this.fitness(individual),
     }));
     this.crossover = config.crossoverFunction;
     this.mutate = config.mutationFunction;
-    this.fitness = config.fitnessFunction;
+
     this.distantIndividuals = distantIndividualsFunction;
     this.enableCrossover = enableCrossover;
     this.enableMutation = enableMutation;
     this.populationSize = populationSize;
     this.seed = seed;
-    this.nbDiverseGenes = nbDiverseGenes;
+    this.nbDiverseIndividuals = nbDiverseIndividuals;
     this.bestScoredIndividuals = [];
     this.scoreDirection = config.scoreDirection;
   }
@@ -151,6 +155,7 @@ export class GeneticAlgorithm<Type> {
     const randomGen = new Random(this.seed);
 
     const originalIndividuals = this.population.map((ind) => ind.individual);
+    console.log('Original Individuals:', originalIndividuals);
 
     const crossovered: Type[] = [];
     // apply crossover
@@ -163,18 +168,18 @@ export class GeneticAlgorithm<Type> {
 
       for (let i = 0; i < nbCrossovers; i++) {
         // todo: enhance selection of parents
-        const parent1 =
-          originalIndividuals[
-            Math.floor(randomGen.random() * this.population.length)
-          ];
-        const parent2 =
-          originalIndividuals[
-            Math.floor(randomGen.random() * this.population.length)
-          ];
-        const [child1, child2] = this.crossover(parent1, parent2);
+
+        const parents = randomGen.choice(originalIndividuals, {
+          size: 2,
+          replace: false,
+        });
+        const [child1, child2] = this.crossover(parents[0], parents[1]);
         crossovered.push(child1, child2);
       }
     }
+
+    console.log('Crossovered Individuals:', crossovered);
+
     // apply mutation to original and crossovered individuals
     const mutated: Type[] = [];
     if (this.enableMutation) {
@@ -183,6 +188,8 @@ export class GeneticAlgorithm<Type> {
         mutated.push(individual);
       }
     }
+    console.log('Mutated Individuals:', mutated);
+
     const newIndividuals = [...crossovered, ...mutated];
     const newScoredIndividuals: Array<ScoredIndividual<Type>> =
       newIndividuals.map((individual) => ({
@@ -201,14 +208,14 @@ export class GeneticAlgorithm<Type> {
 
     this.population = newPopulation.slice(
       0,
-      this.populationSize - this.nbDiverseGenes,
+      this.populationSize - this.nbDiverseIndividuals,
     );
     // select most diverse individuals if needed
-    if (this.nbDiverseGenes > 0) {
+    if (this.nbDiverseIndividuals > 0) {
       // there is a probability that one of the individuals selected is already in the population
       const diverseIndividuals = this.distantIndividuals(
         newPopulation,
-        this.nbDiverseGenes,
+        this.nbDiverseIndividuals,
       );
       this.population.push(...diverseIndividuals);
     }
