@@ -101,9 +101,14 @@ export class TextileGA {
       population: ScoredIndividual<Gene>[],
       nbIndividuals: number,
     ) => {
-      return getDistantGenes(population, {
+      const genes = population.map((individual) => individual.data);
+      const distantIndividuals = getDistantGenes(genes, {
         numberOfGenes: nbIndividuals,
       });
+      return distantIndividuals.map((gene) => ({
+        data: gene,
+        score: gene.fitness.score,
+      }));
     };
 
     // assign values to class properties

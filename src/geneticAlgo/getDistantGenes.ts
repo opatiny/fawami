@@ -1,7 +1,6 @@
 import { kmeans } from 'ml-kmeans';
 
-import { Gene } from './Gene.ts';
-import type { ScoredIndividual } from '../gaLib/GeneticAlgorithm.ts';
+import type { Gene } from './Gene.ts';
 
 export interface GetDistantGenesOptions {
   /**
@@ -23,22 +22,16 @@ export interface GetDistantGenesOptions {
  * @returns The most distant genes
  */
 export function getDistantGenes(
-  population: Gene[] | ScoredIndividual<Gene>[],
+  genes: Gene[],
   options: GetDistantGenesOptions = {},
-): Gene[] | ScoredIndividual<Gene>[] {
+): Gene[] {
   const { numberOfGenes = 10, debug = false } = options;
 
-  if (population.length < numberOfGenes) {
+  if (genes.length < numberOfGenes) {
     throw new Error('Desired number of genes larger than population size');
-  } else if (population.length === numberOfGenes) {
-    return population;
+  } else if (genes.length === numberOfGenes) {
+    return genes;
   }
-
-  const genes = (
-    population[0] instanceof Gene
-      ? population
-      : population.map((individual) => individual.data)
-  ) as Gene[];
 
   const data = genes.map((gene) => gene.getDataVector());
   const kmeansResult = kmeans(data, numberOfGenes, {});
@@ -47,7 +40,7 @@ export function getDistantGenes(
     console.log('clusters:', kmeansResult.clusters);
   }
 
-  const distantIndividuals: Gene[] | ScoredIndividual<Gene>[] = [];
+  const distantGenes: Gene[] = [];
   const selectedIndices = [];
   for (let i = 0; i < numberOfGenes; i++) {
     // find all indices of genes in cluster i
@@ -58,7 +51,7 @@ export function getDistantGenes(
 
     // select first gene in the cluster
     const selectedGeneIndex = clusterIndices[0];
-    distantIndividuals.push(population[selectedGeneIndex]);
+    distantGenes.push(genes[selectedGeneIndex]);
     selectedIndices.push(selectedGeneIndex);
   }
 
@@ -69,5 +62,5 @@ export function getDistantGenes(
     );
   }
 
-  return distantIndividuals;
+  return distantGenes;
 }
