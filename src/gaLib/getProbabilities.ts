@@ -16,6 +16,7 @@ export interface ProbabilitiesOptions {
 /**
  * Compute a probability distribution from the scores of the individuals.
  * The better the score, the higher the probability.
+ * An exponent of 0 gives a uniform distribution.
  * @param individuals - Array of scored individuals
  * @param options - Options for computing probabilities
  * @returns Array of probabilities

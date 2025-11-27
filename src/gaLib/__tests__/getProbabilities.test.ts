@@ -40,6 +40,18 @@ test('exponent 2', async () => {
   expect(result).toStrictEqual(expected);
 });
 
+test('exponent 0', async () => {
+  const population = [
+    { score: 1, data: {} },
+    { score: 2, data: {} },
+    { score: 3, data: {} },
+  ];
+  const result = getProbabilities(population, { exponent: 0 });
+  const expected = [1 / 3, 1 / 3, 1 / 3];
+
+  expect(result).toStrictEqual(expected);
+});
+
 test('min score type', async () => {
   const population = [
     { score: 1, data: {} },
