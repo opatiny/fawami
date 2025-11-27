@@ -4,17 +4,24 @@ import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 
 import { Gene } from './Gene.ts';
 
-export interface Crossover1PointOptions {
-  /**
-   * Seed for random number generator.
-   * @default A random seed
-   */
-  seed?: number;
+export interface CrossoverOptions {
   /**
    * Minimum fraction of the gene to crossover. A value between 0 and 0.5.
    * @default 0
    */
   minCrossoverFraction?: number;
+}
+
+export const DefaultCrossoverOptions: CrossoverOptions = {
+  minCrossoverFraction: 0,
+};
+
+export interface Crossover1PointOptions extends CrossoverOptions {
+  /**
+   * Seed for random number generator.
+   * @default A random seed
+   */
+  seed?: number;
 
   debug?: boolean;
 }
@@ -33,7 +40,7 @@ export function crossover1Point(
 ): [Gene, Gene] {
   const {
     seed = getDefaultSeed(),
-    minCrossoverFraction = 0,
+    minCrossoverFraction = DefaultCrossoverOptions.minCrossoverFraction!,
     debug = false,
   } = options;
 

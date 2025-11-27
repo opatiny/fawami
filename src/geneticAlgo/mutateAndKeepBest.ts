@@ -2,7 +2,7 @@ import type { Image } from 'image-js';
 
 import type { Gene } from './Gene.ts';
 import { mutateTranslate } from './mutateTranslate.ts';
-import { sortGenesByScore } from './sortGenesByScore.ts';
+import { sortGenesByScore } from './utils/sortGenesByScore.ts';
 
 export interface MutateAndKeepBestOptions {
   /**

@@ -8,6 +8,8 @@ type DataType = number[];
 
 const randomGen = new Random(42);
 
+const debug = false;
+
 function crossover(parent1: DataType, parent2: DataType): [DataType, DataType] {
   const crossoverPoint = Math.floor(randomGen.random() * parent1.length);
   const child1 = parent1
@@ -57,27 +59,21 @@ const options: OptionsGA<DataType> = {
 const ga = new GeneticAlgorithm<DataType>(config, options);
 
 test('should compute the next generation correctly', () => {
-  ga.computeNextGeneration(true);
+  ga.computeNextGeneration(debug);
 
   const gen1 = ga.population;
-
-  console.log('New Generation:', gen1);
 
   expect(gen1).toHaveLength(4);
 });
 
 test('should evolve for multiple generations', () => {
-  ga.evolve(10, true);
+  ga.evolve(10, debug);
 
   const finalGen = ga.population;
-
-  console.log('Final Generation:', finalGen);
 
   expect(finalGen).toHaveLength(4);
   expect(ga.iteration).toBe(11);
   expect(ga.bestScoredIndividuals).toHaveLength(11);
-
-  console.log('Best Individuals Over Generations:', ga.bestScoredIndividuals);
 
   // expect score to be increasing at each generation
   for (let i = 1; i < ga.bestScoredIndividuals.length; i++) {

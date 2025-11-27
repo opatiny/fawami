@@ -7,12 +7,19 @@ import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 
 import { Gene } from './Gene.ts';
 
-export interface MutateTranslateOptions {
+export interface MutateOptions {
   /**
    * Amplitude of the translation in pixels.
    * @default 10
    */
   translationAmplitude?: number;
+}
+
+export const DefaultMutateOptions: MutateOptions = {
+  translationAmplitude: 10,
+};
+
+export interface MutateTranslateOptions extends MutateOptions {
   /**
    * Seed for the random number generator.
    * @default A random seed
@@ -39,7 +46,8 @@ export function mutateTranslate(
   options: MutateTranslateOptions = {},
 ): Gene {
   const {
-    translationAmplitude = 10,
+    // the ! is the non-null assertion operator
+    translationAmplitude = DefaultMutateOptions.translationAmplitude!,
     seed = getDefaultSeed(),
     debug = false,
   } = options;

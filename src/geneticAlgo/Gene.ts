@@ -1,9 +1,9 @@
 import type { PatternPieces } from '../PatternPiece.ts';
 
-import type { GetDataVectorOptions } from './getDataVector.ts';
-import { getDataVector } from './getDataVector.ts';
 import type { FitnessData, FitnessWeights } from './getFitness.ts';
 import { DefaultFitnessWeights, getFitness } from './getFitness.ts';
+import type { GetDataVectorOptions } from './utils/getDataVector.ts';
+import { getDataVector } from './utils/getDataVector.ts';
 
 export interface GeneOptions {
   fitnessWeights?: FitnessWeights;
@@ -16,16 +16,13 @@ export class Gene {
 
   public constructor(patternPieces: PatternPieces, options: GeneOptions = {}) {
     this.data = patternPieces;
-    this.fitness = getFitness(this.data, {
-      weights: {
-        ...DefaultFitnessWeights,
-        ...options.fitnessWeights,
-      },
-    });
     this.fitnessWeights = {
       ...DefaultFitnessWeights,
       ...options.fitnessWeights,
     };
+    this.fitness = getFitness(this.data, {
+      weights: this.fitnessWeights,
+    });
   }
 
   toJSON() {

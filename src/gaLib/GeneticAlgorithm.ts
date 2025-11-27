@@ -16,9 +16,9 @@ export type ScoreType = 'max' | 'min';
 
 type CrossoverFunc<Type> = (parent1: Type, parent2: Type) => [Type, Type];
 
-type MutationFunc<Type> = (gene: Type) => Type;
+type MutationFunc<Type> = (individual: Type) => Type;
 
-type FitnessFunc<Type> = (gene: Type) => number;
+type FitnessFunc<Type> = (individual: Type) => number;
 
 type DistantIndividualsFunc<Type> = (
   population: Array<ScoredIndividual<Type>>,
@@ -188,7 +188,6 @@ export class GeneticAlgorithm<Type> {
         exponent: this.options.probabilityExponent,
       });
       for (let i = 0; i < nbCrossovers; i++) {
-        // todo: enhance selection of parents
         const parents = randomGen.choice(originalIndividuals, {
           size: 2,
           replace: true,

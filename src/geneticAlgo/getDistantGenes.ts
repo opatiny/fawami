@@ -1,6 +1,7 @@
 import { kmeans } from 'ml-kmeans';
 
-import type { Gene } from './Gene.ts';
+import { Gene } from './Gene.ts';
+import type { ScoredIndividual } from '../gaLib/GeneticAlgorithm.ts';
 
 export interface GetDistantGenesOptions {
   /**
@@ -22,16 +23,22 @@ export interface GetDistantGenesOptions {
  * @returns The most distant genes
  */
 export function getDistantGenes(
-  genes: Gene[],
+  population: Gene[] | ScoredIndividual<Gene>[],
   options: GetDistantGenesOptions = {},
-): Gene[] {
+): Gene[] | ScoredIndividual<Gene>[] {
   const { numberOfGenes = 10, debug = false } = options;
 
-  if (genes.length < numberOfGenes) {
+  if (population.length < numberOfGenes) {
     throw new Error('Desired number of genes larger than population size');
-  } else if (genes.length === numberOfGenes) {
-    return genes;
+  } else if (population.length === numberOfGenes) {
+    return population;
   }
+
+  const genes = (
+    population[0] instanceof Gene
+      ? population
+      : population.map((individual) => individual.data)
+  ) as Gene[];
 
   const data = genes.map((gene) => gene.getDataVector());
   const kmeansResult = kmeans(data, numberOfGenes, {});
