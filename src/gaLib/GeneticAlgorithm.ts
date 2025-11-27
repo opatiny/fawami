@@ -1,8 +1,10 @@
 // this should be completely generic in order to be used in other projects
+
 import { Random } from 'ml-random';
 
 import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 
+import { getDefaultOptions } from './getDefaultOptions.ts';
 import { getProbabilities } from './getProbabilities.ts';
 
 export interface ScoredIndividual<Type> {
@@ -39,59 +41,74 @@ export interface ConfigGA<Type> {
   scoreType: ScoreType;
 }
 
-export interface OptionsGA<Type> {
+/**
+ * Internal options with all fields required
+ */
+export interface InternalOptionsGA<Type> {
   /**
    * Function to select the most diverse individuals in the population
    * @default Takes the N random individuals
    */
-  distantIndividualsFunction?: DistantIndividualsFunc<Type>;
+  getDistantIndividuals: DistantIndividualsFunc<Type>;
   /**
    * Enable crossover?
    * @default true
    */
-  enableCrossover?: boolean;
+  enableCrossover: boolean;
   /**
    * Enable mutation?
    * @default true
    */
-  enableMutation?: boolean;
+  enableMutation: boolean;
   /**
    * Population size
    * @default 100
    */
-  populationSize?: number;
+  populationSize: number;
   /**
    * Seed for the random number generator
    * @default A random seed
    */
-  seed?: number;
+  seed: number;
   /**
    * Number of individuals to select that are the most diverse.
    * Should be less than population size.
    * Set to 0 to disable diversity selection.
    * @default 10
    */
-  nbDiverseIndividuals?: number;
+  nbDiverseIndividuals: number;
   /**
    * Exponent to apply to the score when computing probabilities for selecting parents for crossover.
    * @default 1
    */
-  probabilityExponent?: number;
+  probabilityExponent: number;
+  /**
+   * Enable debug mode
+   * @default false
+   */
+  debug: boolean;
 }
 
+/**
+ * Type with all options actually optional
+ */
+export type OptionsGA<Type> = Partial<InternalOptionsGA<Type>>;
+
 export class GeneticAlgorithm<Type> {
-  public population: Array<ScoredIndividual<Type>>;
+  // config
   public crossover: CrossoverFunc<Type>;
   public mutate: MutationFunc<Type>;
   public fitness: FitnessFunc<Type>;
+  public readonly scoreType: ScoreType;
 
-  public distantIndividuals: DistantIndividualsFunc<Type>;
-  public nbDiverseIndividuals: number;
-  public enableCrossover: boolean;
-  public enableMutation: boolean;
-  public populationSize: number;
-  public seed: number;
+  // options
+  public options: InternalOptionsGA<Type>;
 
+  // results
+  /**
+   * Population at the current iteration
+   */
+  public population: Array<ScoredIndividual<Type>>;
   /**
    * Number of iterations performed
    */
@@ -100,148 +117,146 @@ export class GeneticAlgorithm<Type> {
    * Individuals with the best score at each iteration
    */
   public readonly bestScoredIndividuals: Array<ScoredIndividual<Type>>;
-  public readonly scoreType: ScoreType;
 
-  public constructor(config: ConfigGA<Type>, options: OptionsGA<Type> = {}) {
-    const { seed = getDefaultSeed() } = options;
+  public constructor(
+    config: ConfigGA<Type>,
+    userOptions: OptionsGA<Type> = {},
+  ) {
+    const { seed = getDefaultSeed() } = userOptions;
 
-    function randomDistantIndividuals<Type>(
-      population: Type[],
-      nbIndividuals: number,
-    ): Type[] {
-      const randomGen = new Random(seed);
-      return randomGen.choice(population, {
-        size: nbIndividuals,
-        replace: false,
-      });
+    const defaultOptions = getDefaultOptions<Type>(seed);
+
+    const options: InternalOptionsGA<Type> = {
+      ...defaultOptions,
+      ...userOptions,
+    };
+
+    if (options.debug) {
+      console.log(userOptions);
     }
 
-    console.log(options);
-
-    const {
-      enableCrossover = true,
-      enableMutation = true,
-      populationSize = 100,
-      nbDiverseIndividuals = 10,
-      distantIndividualsFunction = randomDistantIndividuals,
-      probabilityExponent = 1,
-    } = options;
-
-    if (config.intitialPopulation.length !== populationSize) {
+    if (config.intitialPopulation.length !== options.populationSize) {
       throw new Error(
-        `Initial population size (${config.intitialPopulation.length}) must match the populationSize parameter (${populationSize})`,
+        `Initial population size (${config.intitialPopulation.length}) must match the populationSize parameter (${options.populationSize})`,
       );
     }
 
-    if (nbDiverseIndividuals > populationSize || nbDiverseIndividuals < 0) {
+    if (
+      options.nbDiverseIndividuals > options.populationSize ||
+      options.nbDiverseIndividuals < 0
+    ) {
       throw new Error(
-        `Number of diverse individuals (${nbDiverseIndividuals}) must be between 0 and population size (${populationSize})`,
+        `Number of diverse individuals (${options.nbDiverseIndividuals}) must be between 0 and population size (${options.populationSize})`,
       );
     }
 
+    // config
     this.fitness = config.fitnessFunction;
-    this.population = config.intitialPopulation.map((individual) => ({
-      individual,
-      score: this.fitness(individual),
-    }));
     this.crossover = config.crossoverFunction;
     this.mutate = config.mutationFunction;
-
-    this.distantIndividuals = distantIndividualsFunction;
-    this.enableCrossover = enableCrossover;
-    this.enableMutation = enableMutation;
-    this.populationSize = populationSize;
-    this.seed = seed;
-    this.nbDiverseIndividuals = nbDiverseIndividuals;
-    this.bestScoredIndividuals = [];
     this.scoreType = config.scoreType;
+
+    // options
+    this.options = options;
+
+    // results
+    this.population = config.intitialPopulation.map((individual) => ({
+      data: individual,
+      score: this.fitness(individual),
+    }));
+    this.bestScoredIndividuals = [];
     this.iteration = 0;
-    this.probabilityExponent = probabilityExponent;
   }
 
   public computeNextGeneration(debug = false): void {
     // create random generator
-    const randomGen = new Random(this.seed);
+    const randomGen = new Random(this.options.seed);
 
     const originalIndividuals = this.population.map((ind) => ind.data);
-    console.log('Original Individuals:', originalIndividuals);
 
     const crossovered: Type[] = [];
     // apply crossover
-    if (this.enableCrossover) {
-      const nbCrossovers = Math.floor(this.populationSize / 2);
+    if (this.options.enableCrossover) {
+      const nbCrossovers = Math.floor(this.options.populationSize / 2);
 
       if (debug) {
         console.log(`Performing ${nbCrossovers} crossovers`);
       }
 
       // compute probabilities for selection based on fitness scores
-      const totalScore = this.population.reduce(
-        (acc, ind) => acc + ind.score,
-        0,
-      );
-      const probabilities = this.population.map((ind) => {
-        // normalize score between 0 and 1
-        return ind.score / totalScore;
+      const probabilities = getProbabilities(this.population, {
+        exponent: this.options.probabilityExponent,
       });
       for (let i = 0; i < nbCrossovers; i++) {
         // todo: enhance selection of parents
-
         const parents = randomGen.choice(originalIndividuals, {
           size: 2,
-          replace: false,
-          probabilities: getProbabilities(this.population, { exponent: 1 }),
+          replace: true,
+          probabilities,
         });
         const [child1, child2] = this.crossover(parents[0], parents[1]);
         crossovered.push(child1, child2);
       }
     }
 
-    console.log('Crossovered Individuals:', crossovered);
+    if (debug) {
+      console.log('Crossovered Individuals:', crossovered);
+    }
 
     // apply mutation to original and crossovered individuals
     const mutated: Type[] = [];
-    if (this.enableMutation) {
-      for (let individual of [...originalIndividuals, ...crossovered]) {
-        individual = this.mutate(individual);
-        mutated.push(individual);
+    if (this.options.enableMutation) {
+      const toMutate = [...originalIndividuals, ...crossovered];
+      for (const individual of toMutate) {
+        const mutatedIndividual = this.mutate(individual);
+        mutated.push(mutatedIndividual);
       }
     }
-    console.log('Mutated Individuals:', mutated);
+    if (debug) {
+      console.log('Mutated Individuals:', mutated);
+    }
 
     const newIndividuals = [...crossovered, ...mutated];
     const newScoredIndividuals: Array<ScoredIndividual<Type>> =
       newIndividuals.map((individual) => ({
-        individual,
+        data: individual,
         score: this.fitness(individual),
       }));
 
     const newPopulation = [...this.population, ...newScoredIndividuals];
 
     // sort by fitness score
-    if (this.scoreDirection === 'max') {
+    if (this.scoreType === 'max') {
       newPopulation.sort((a, b) => b.score - a.score);
     } else {
       newPopulation.sort((a, b) => a.score - b.score);
     }
 
-    console.log('all new individuals:', newPopulation);
     this.population = newPopulation.slice(
       0,
-      this.populationSize - this.nbDiverseIndividuals,
+      this.options.populationSize - this.options.nbDiverseIndividuals,
     );
 
     // select most diverse individuals if needed
-    if (this.nbDiverseIndividuals > 0) {
+    if (this.options.nbDiverseIndividuals > 0) {
       // there is a probability that one of the individuals selected is already in the population
-      const diverseIndividuals = this.distantIndividuals(
+      const diverseIndividuals = this.options.getDistantIndividuals(
         newPopulation,
-        this.nbDiverseIndividuals,
+        this.options.nbDiverseIndividuals,
       );
       this.population.push(...diverseIndividuals);
     }
 
     this.iteration++;
     this.bestScoredIndividuals.push(this.population[0]);
+  }
+
+  public evolve(nbGenerations: number, debug = false): void {
+    for (let i = 0; i < nbGenerations; i++) {
+      if (debug) {
+        console.log(`Current generation: ${this.iteration}`);
+      }
+      this.computeNextGeneration();
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Random } from 'ml-random';
-import { describe, expect, it } from 'vitest';
+import { expect, test } from 'vitest';
 
 import type { ConfigGA, OptionsGA } from '../GeneticAlgorithm.ts';
 import { GeneticAlgorithm } from '../GeneticAlgorithm.ts';
@@ -21,8 +21,10 @@ function crossover(parent1: DataType, parent2: DataType): [DataType, DataType] {
 
 function mutate(gene: DataType): DataType {
   const mutationPoint = Math.floor(randomGen.random() * gene.length);
-  const mutatedGene = [...gene];
-  mutatedGene[mutationPoint] += Math.round((randomGen.random() - 0.5) * 2); // small random change
+  const mutatedGene = gene.slice();
+
+  const mutationValue = randomGen.randInt(-1, 2);
+  mutatedGene[mutationPoint] += mutationValue; // small random change
   return mutatedGene;
 }
 
@@ -31,38 +33,45 @@ function fitness(gene: DataType): number {
   return gene.reduce((acc, val) => acc + val, 0);
 }
 
-describe('GeneticAlgorithm', () => {
-  it('should compute the next generation correctly', () => {
-    const initialPopulation: DataType[] = [
-      [1, 2, 3],
-      [4, 5, 6],
-      [7, 8, 9],
-      [10, 11, 12],
-    ];
+const initialPopulation: DataType[] = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [10, 11, 12],
+];
 
-    const config: ConfigGA<DataType> = {
-      intitialPopulation: initialPopulation,
+const config: ConfigGA<DataType> = {
+  intitialPopulation: initialPopulation,
+  crossoverFunction: crossover,
+  mutationFunction: mutate,
+  fitnessFunction: fitness,
+  scoreType: 'max' as const,
+};
+const options: OptionsGA<DataType> = {
+  populationSize: 4,
+  nbDiverseIndividuals: 0,
+  seed: 0,
+  enableCrossover: true,
+  enableMutation: true,
+};
+const ga = new GeneticAlgorithm<DataType>(config, options);
 
-      crossoverFunction: crossover,
-      mutationFunction: mutate,
-      fitnessFunction: fitness,
-      scoreType: 'max' as const,
-    };
-    const options: OptionsGA<DataType> = {
-      populationSize: 4,
-      nbDiverseIndividuals: 0,
-      seed: 0,
-      enableCrossover: true,
-      enableMutation: true,
-    };
-    const ga = new GeneticAlgorithm<DataType>(config, options);
+test('should compute the next generation correctly', () => {
+  ga.computeNextGeneration(true);
 
-    ga.computeNextGeneration(true);
+  const gen1 = ga.population;
 
-    const newGen = ga.population;
+  console.log('New Generation:', gen1);
 
-    console.log('New Generation:', newGen);
+  expect(gen1).toHaveLength(4);
+});
 
-    expect(newGen).toHaveLength(4);
-  });
+test('should evolve for multiple generations', () => {
+  ga.evolve(5);
+
+  const finalGen = ga.population;
+
+  console.log('Final Generation after 5 evolutions:', finalGen);
+
+  expect(finalGen).toHaveLength(4);
 });
