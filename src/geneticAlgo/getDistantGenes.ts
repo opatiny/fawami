@@ -47,7 +47,7 @@ export function getDistantGenes(
     console.log('clusters:', kmeansResult.clusters);
   }
 
-  const distantGenes: Gene[] = [];
+  const distantIndividuals: Gene[] | ScoredIndividual<Gene>[] = [];
   const selectedIndices = [];
   for (let i = 0; i < numberOfGenes; i++) {
     // find all indices of genes in cluster i
@@ -58,7 +58,7 @@ export function getDistantGenes(
 
     // select first gene in the cluster
     const selectedGeneIndex = clusterIndices[0];
-    distantGenes.push(genes[selectedGeneIndex]);
+    distantIndividuals.push(population[selectedGeneIndex]);
     selectedIndices.push(selectedGeneIndex);
   }
 
@@ -69,5 +69,5 @@ export function getDistantGenes(
     );
   }
 
-  return distantGenes;
+  return distantIndividuals;
 }
