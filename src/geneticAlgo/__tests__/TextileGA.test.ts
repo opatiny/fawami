@@ -46,4 +46,6 @@ test('compute first generation', () => {
   console.log(textileGa.ga.bestScoredIndividuals);
 
   expect(textileGa.ga.population.length).toBe(5);
+  expect(textileGa.ga.bestScoredIndividuals.length).toBe(1);
+  expect(textileGa.ga.iteration).toBe(1);
 });

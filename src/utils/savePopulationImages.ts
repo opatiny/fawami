@@ -62,7 +62,7 @@ export function savePopulationImages(
     const gene = genes[i] as Gene;
     const fabricClone = fabric.clone();
 
-    drawPieces(fabricClone, gene.data);
+    drawPieces(fabricClone, gene.patternPieces);
     writeSync(
       join(
         path,

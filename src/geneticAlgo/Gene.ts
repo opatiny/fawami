@@ -10,17 +10,17 @@ export interface GeneOptions {
 }
 
 export class Gene {
-  public readonly data: PatternPieces;
+  public readonly patternPieces: PatternPieces;
   public readonly fitness: FitnessData;
   public readonly fitnessWeights: FitnessWeights = DefaultFitnessWeights;
 
   public constructor(patternPieces: PatternPieces, options: GeneOptions = {}) {
-    this.data = patternPieces;
+    this.patternPieces = patternPieces;
     this.fitnessWeights = {
       ...DefaultFitnessWeights,
       ...options.fitnessWeights,
     };
-    this.fitness = getFitness(this.data, {
+    this.fitness = getFitness(this.patternPieces, {
       weights: this.fitnessWeights,
     });
   }

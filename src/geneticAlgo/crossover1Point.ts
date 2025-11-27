@@ -44,7 +44,7 @@ export function crossover1Point(
     debug = false,
   } = options;
 
-  if (parent1.data.length !== parent2.data.length) {
+  if (parent1.patternPieces.length !== parent2.patternPieces.length) {
     throw new Error('crossover1Point: Both parents must have the same length');
   }
 
@@ -56,7 +56,7 @@ export function crossover1Point(
 
   const xsadd = new XSadd(seed);
 
-  const length = parent1.data.length;
+  const length = parent1.patternPieces.length;
 
   const minCrossoverPoint = Math.floor(length * minCrossoverFraction);
   const crossoverLength = length - 2 * minCrossoverPoint;
@@ -69,12 +69,12 @@ export function crossover1Point(
   }
 
   const child1Pieces = [
-    ...parent1.data.slice(0, crossoverPoint),
-    ...parent2.data.slice(crossoverPoint),
+    ...parent1.patternPieces.slice(0, crossoverPoint),
+    ...parent2.patternPieces.slice(crossoverPoint),
   ];
   const child2Pieces = [
-    ...parent2.data.slice(0, crossoverPoint),
-    ...parent1.data.slice(crossoverPoint),
+    ...parent2.patternPieces.slice(0, crossoverPoint),
+    ...parent1.patternPieces.slice(crossoverPoint),
   ];
 
   const child1 = new Gene(child1Pieces);

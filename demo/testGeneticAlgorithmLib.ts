@@ -59,8 +59,8 @@ function fitness(gene: Gene): number {
 }
 
 function compare(a: Gene, b: Gene): boolean {
-  const fitnessA = getFitness(a.data).score;
-  const fitnessB = getFitness(b.data).score;
+  const fitnessA = getFitness(a.patternPieces).score;
+  const fitnessB = getFitness(b.patternPieces).score;
   return fitnessA >= fitnessB;
 }
 

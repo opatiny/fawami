@@ -54,7 +54,7 @@ export function mutateTranslate(
 
   // clone pattern pieces
   const newPieces = [];
-  for (const piece of gene.data) {
+  for (const piece of gene.patternPieces) {
     const newPiece = PatternPiece.clone(piece);
     newPieces.push(newPiece);
   }
