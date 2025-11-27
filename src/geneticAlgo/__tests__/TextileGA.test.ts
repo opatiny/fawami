@@ -34,6 +34,7 @@ test('test constructor', () => {
   expect(textileGa.ga.options.populationSize).toBe(5);
   expect(textileGa.ga.population.length).toBe(5);
   expect(textileGa.ga.options.seed).toBe(textileGa.seed);
+  expect(textileGa.ga.scoreType).toEqual('min');
 });
 
 test('compute first generation', () => {
@@ -48,4 +49,19 @@ test('compute first generation', () => {
   expect(textileGa.ga.population.length).toBe(5);
   expect(textileGa.ga.bestScoredIndividuals.length).toBe(1);
   expect(textileGa.ga.iteration).toBe(1);
+});
+
+test('do 5 iterations with seed', () => {
+  const textileGa = new TextileGA(fabric, pieces, {
+    seed: 0,
+    optionsGA: { populationSize: 5, nbDiverseIndividuals: 0 },
+  });
+
+  textileGa.ga.evolve(5);
+  console.log({ bestIndividuals: textileGa.ga.bestScoredIndividuals });
+  console.log(textileGa.getBestScores());
+
+  expect(textileGa.ga.population.length).toBe(5);
+  expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
+  expect(textileGa.ga.iteration).toBe(5);
 });

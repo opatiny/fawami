@@ -146,4 +146,24 @@ export class TextileGA {
       }));
     };
   }
+
+  public getBestScores(): number[] {
+    return this.ga.bestScoredIndividuals.map((ind) => ind.score);
+  }
+
+  public plotScores(path: string): void {
+    // todo
+  }
+
+  public saveOptions(path: string): void {
+    // todo
+  }
+
+  public saveBestGenesImages(path: string): void {
+    // todo
+  }
+
+  public savePopulationImages(path: string): void {
+    // todo
+  }
 }
