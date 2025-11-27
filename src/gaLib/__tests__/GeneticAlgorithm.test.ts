@@ -45,7 +45,7 @@ const config: ConfigGA<DataType> = {
   crossoverFunction: crossover,
   mutationFunction: mutate,
   fitnessFunction: fitness,
-  scoreType: 'max' as const,
+  scoreType: 'max',
 };
 const options: OptionsGA<DataType> = {
   populationSize: 4,
@@ -67,11 +67,22 @@ test('should compute the next generation correctly', () => {
 });
 
 test('should evolve for multiple generations', () => {
-  ga.evolve(5);
+  ga.evolve(10, true);
 
   const finalGen = ga.population;
 
-  console.log('Final Generation after 5 evolutions:', finalGen);
+  console.log('Final Generation:', finalGen);
 
   expect(finalGen).toHaveLength(4);
+  expect(ga.iteration).toBe(11);
+  expect(ga.bestScoredIndividuals).toHaveLength(11);
+
+  console.log('Best Individuals Over Generations:', ga.bestScoredIndividuals);
+
+  // expect score to be increasing at each generation
+  for (let i = 1; i < ga.bestScoredIndividuals.length; i++) {
+    expect(ga.bestScoredIndividuals[i].score).toBeGreaterThanOrEqual(
+      ga.bestScoredIndividuals[i - 1].score,
+    );
+  }
 });
