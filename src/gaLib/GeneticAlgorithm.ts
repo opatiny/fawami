@@ -2,10 +2,11 @@
 import { Random } from 'ml-random';
 
 import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
-import { getProbabilities } from '../utils/getProbabilities.ts';
+
+import { getProbabilities } from './getProbabilities.ts';
 
 export interface ScoredIndividual<Type> {
-  individual: Type;
+  data: Type;
   score: number;
 }
 
@@ -162,7 +163,7 @@ export class GeneticAlgorithm<Type> {
     // create random generator
     const randomGen = new Random(this.seed);
 
-    const originalIndividuals = this.population.map((ind) => ind.individual);
+    const originalIndividuals = this.population.map((ind) => ind.data);
     console.log('Original Individuals:', originalIndividuals);
 
     const crossovered: Type[] = [];
