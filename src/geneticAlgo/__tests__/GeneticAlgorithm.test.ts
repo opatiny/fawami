@@ -46,12 +46,12 @@ describe('GeneticAlgorithm', () => {
       crossoverFunction: crossover,
       mutationFunction: mutate,
       fitnessFunction: fitness,
-      scoreDirection: 'max' as const,
+      scoreType: 'max' as const,
     };
     const options: OptionsGA<DataType> = {
       populationSize: 4,
       nbDiverseIndividuals: 0,
-      seed: 42,
+      seed: 0,
       enableCrossover: true,
       enableMutation: true,
     };

@@ -2,11 +2,14 @@
 import { Random } from 'ml-random';
 
 import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
+import { getProbabilities } from '../utils/getProbabilities.ts';
 
-interface ScoredIndividual<Type> {
+export interface ScoredIndividual<Type> {
   individual: Type;
   score: number;
 }
+
+export type ScoreType = 'max' | 'min';
 
 type CrossoverFunc<Type> = (parent1: Type, parent2: Type) => [Type, Type];
 
@@ -32,7 +35,7 @@ export interface ConfigGA<Type> {
   /**
    * Define whether a higher score is better ('max') or a lower score is better ('min')
    */
-  scoreDirection: 'max' | 'min';
+  scoreType: ScoreType;
 }
 
 export interface OptionsGA<Type> {
@@ -41,19 +44,16 @@ export interface OptionsGA<Type> {
    * @default Takes the N random individuals
    */
   distantIndividualsFunction?: DistantIndividualsFunc<Type>;
-
   /**
    * Enable crossover?
    * @default true
    */
   enableCrossover?: boolean;
-
   /**
    * Enable mutation?
    * @default true
    */
   enableMutation?: boolean;
-
   /**
    * Population size
    * @default 100
@@ -71,6 +71,11 @@ export interface OptionsGA<Type> {
    * @default 10
    */
   nbDiverseIndividuals?: number;
+  /**
+   * Exponent to apply to the score when computing probabilities for selecting parents for crossover.
+   * @default 1
+   */
+  probabilityExponent?: number;
 }
 
 export class GeneticAlgorithm<Type> {
@@ -94,7 +99,7 @@ export class GeneticAlgorithm<Type> {
    * Individuals with the best score at each iteration
    */
   public readonly bestScoredIndividuals: Array<ScoredIndividual<Type>>;
-  public readonly scoreDirection: 'max' | 'min';
+  public readonly scoreType: ScoreType;
 
   public constructor(config: ConfigGA<Type>, options: OptionsGA<Type> = {}) {
     const { seed = getDefaultSeed() } = options;
@@ -118,6 +123,7 @@ export class GeneticAlgorithm<Type> {
       populationSize = 100,
       nbDiverseIndividuals = 10,
       distantIndividualsFunction = randomDistantIndividuals,
+      probabilityExponent = 1,
     } = options;
 
     if (config.intitialPopulation.length !== populationSize) {
@@ -147,7 +153,9 @@ export class GeneticAlgorithm<Type> {
     this.seed = seed;
     this.nbDiverseIndividuals = nbDiverseIndividuals;
     this.bestScoredIndividuals = [];
-    this.scoreDirection = config.scoreDirection;
+    this.scoreType = config.scoreType;
+    this.iteration = 0;
+    this.probabilityExponent = probabilityExponent;
   }
 
   public computeNextGeneration(debug = false): void {
@@ -166,12 +174,22 @@ export class GeneticAlgorithm<Type> {
         console.log(`Performing ${nbCrossovers} crossovers`);
       }
 
+      // compute probabilities for selection based on fitness scores
+      const totalScore = this.population.reduce(
+        (acc, ind) => acc + ind.score,
+        0,
+      );
+      const probabilities = this.population.map((ind) => {
+        // normalize score between 0 and 1
+        return ind.score / totalScore;
+      });
       for (let i = 0; i < nbCrossovers; i++) {
         // todo: enhance selection of parents
 
         const parents = randomGen.choice(originalIndividuals, {
           size: 2,
           replace: false,
+          probabilities: getProbabilities(this.population, { exponent: 1 }),
         });
         const [child1, child2] = this.crossover(parents[0], parents[1]);
         crossovered.push(child1, child2);
@@ -206,10 +224,12 @@ export class GeneticAlgorithm<Type> {
       newPopulation.sort((a, b) => a.score - b.score);
     }
 
+    console.log('all new individuals:', newPopulation);
     this.population = newPopulation.slice(
       0,
       this.populationSize - this.nbDiverseIndividuals,
     );
+
     // select most diverse individuals if needed
     if (this.nbDiverseIndividuals > 0) {
       // there is a probability that one of the individuals selected is already in the population
