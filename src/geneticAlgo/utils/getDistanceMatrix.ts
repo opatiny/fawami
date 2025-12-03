@@ -1,6 +1,6 @@
 import { Matrix } from 'ml-matrix';
 
-import type { Gene } from './Gene.ts';
+import type { Gene } from '../Gene.ts';
 import { getGenesDistance } from './getGenesDistance.ts';
 
 /**

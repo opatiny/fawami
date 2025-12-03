@@ -1,6 +1,6 @@
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../../PatternPiece.ts';
 
-import type { Gene } from './Gene.ts';
+import type { Gene } from '../Gene.ts';
 
 export interface GetGenesDistanceOptions {
   /**
@@ -34,16 +34,16 @@ export function getGenesDistance(
 ): number {
   const { centerWeight = 1, orientationWeight = 100, debug = false } = options;
 
-  if (gene1.data.length !== gene2.data.length) {
+  if (gene1.patternPieces.length !== gene2.patternPieces.length) {
     throw new Error('Both genes must have the same length');
   }
 
   let centerDistance = 0;
   let orientationDistance = 0;
 
-  for (let i = 0; i < gene1.data.length; i++) {
-    const piece1 = gene1.data[i] as PatternPiece;
-    const piece2 = gene2.data[i] as PatternPiece;
+  for (let i = 0; i < gene1.patternPieces.length; i++) {
+    const piece1 = gene1.patternPieces[i] as PatternPiece;
+    const piece2 = gene2.patternPieces[i] as PatternPiece;
 
     const center1 = piece1.centerOrigin;
     const center2 = piece2.centerOrigin;

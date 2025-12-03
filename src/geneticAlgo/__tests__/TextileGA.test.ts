@@ -3,6 +3,8 @@ import { PatternPiece } from '../../PatternPiece.ts';
 import { Image } from 'image-js';
 import { TextileGA } from '../TextileGA.ts';
 
+const currentDir = import.meta.dirname;
+
 const mask1 = testUtils.createMask([
   [1, 1, 1],
   [1, 1, 1],
@@ -53,15 +55,20 @@ test('do 5 iterations with seed', () => {
     optionsGA: { populationSize: 5, nbDiverseIndividuals: 0 },
   });
 
-  textileGa.savePopulationImages();
+  textileGa.savePopulationImages({ path: import.meta.dirname });
 
-  textileGa.ga.evolve(5);
-  console.log({ bestIndividuals: textileGa.ga.bestScoredIndividuals });
-  console.log(textileGa.getBestScores());
+  textileGa.ga.evolve(5, true);
+  console.log('best scores:', textileGa.getBestScores());
 
   expect(textileGa.ga.population.length).toBe(5);
   expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
   expect(textileGa.ga.iteration).toBe(5);
 
   textileGa.saveBestGenesImages();
+
+  const distances = textileGa.getDistanceMatrix();
+
+  textileGa.plotBestScores({ path: currentDir, debug: true });
+
+  console.log(distances);
 });

@@ -29,6 +29,9 @@ import {
   savePopulationImages as saveImages,
   type SavePopulationImagesOptions,
 } from '../utils/savePopulationImages.ts';
+import { Matrix } from 'ml-matrix';
+import { getDistanceMatrix as getDistances } from './utils/getDistanceMatrix.ts';
+import { plotScores, type PlotScoresOptions } from '../utils/plotScores.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -86,8 +89,6 @@ export class TextileGA {
       crossoverOptions,
       outdir = import.meta.dirname,
     } = options;
-
-    console.log({ seed });
 
     // create correct options for GA
     const defaultOptionsGA = getDefaultOptions<Gene>(seed);
@@ -147,7 +148,6 @@ export class TextileGA {
   }
 
   private getInitialPopulation(populationSize: number, seed: number): Gene[] {
-    console.log('create initial population, seed =', seed);
     const genes = getRandomGenes(this.fabric, this.patternPieces, {
       populationSize,
       seedRandomGenerator: seed !== undefined ? true : false,
@@ -172,7 +172,12 @@ export class TextileGA {
     return this.ga.bestScoredIndividuals.map((ind) => ind.score);
   }
 
-  public plotScores(path: string): void {
+  public plotBestScores(options: PlotScoresOptions = {}): void {
+    const scores = this.getBestScores();
+    plotScores(scores, { name: 'bestScores.svg', ...options });
+  }
+
+  public plotDistanceHeatmap(path: string): void {
     // todo
   }
 
@@ -180,6 +185,10 @@ export class TextileGA {
     // todo
   }
 
+  /**
+   * Save images of the best gene of each iteration
+   * @param options - Options
+   */
   public saveBestGenesImages(options: SavePopulationImagesOptions = {}): void {
     const genes = this.ga.bestScoredIndividuals.map((ind) => ind.data);
     saveImages(this.fabric, genes, {
@@ -190,6 +199,10 @@ export class TextileGA {
     });
   }
 
+  /**
+   * Save images of the current population
+   * @param options - Options
+   */
   public savePopulationImages(options: SavePopulationImagesOptions = {}): void {
     const genes = this.ga.population.map((ind) => ind.data);
     saveImages(this.fabric, genes, {
@@ -198,5 +211,14 @@ export class TextileGA {
       nameBase: 'gene',
       ...options,
     });
+  }
+
+  /**
+   * Compute the distances between all individuals of the current population.
+   * @returns The distance matrix
+   */
+  public getDistanceMatrix(): Matrix {
+    const genes = this.ga.population.map((ind) => ind.data);
+    return getDistances(genes);
   }
 }

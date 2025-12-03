@@ -250,10 +250,19 @@ export class GeneticAlgorithm<Type> {
     this.bestScoredIndividuals.push(this.population[0]);
   }
 
+  public getScores(): number[] {
+    return this.population.map((ind) => ind.score);
+  }
+
+  public getBestScores(): number[] {
+    return this.bestScoredIndividuals.map((ind) => ind.score);
+  }
+
   public evolve(nbGenerations: number, debug = false): void {
     for (let i = 0; i < nbGenerations; i++) {
       if (debug) {
         console.log(`Current generation: ${this.iteration}`);
+        console.log('Current scores:', this.getScores());
       }
       this.computeNextGeneration();
     }

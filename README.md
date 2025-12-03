@@ -38,6 +38,10 @@ Node.js
 
 - install newest version of package: `npm i image-js@latest`
 
+## Generating SVG charts
+
+We are using the `echarts` library, which allows to create backend and frontend charts: https://echarts.apache.org/examples/en/index.html
+
 ## Create a gif from set of images in the command line
 
 This command adds a longer delay (of 100) before the first and last images.
