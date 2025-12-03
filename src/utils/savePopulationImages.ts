@@ -9,15 +9,15 @@ import type { Gene } from '../geneticAlgo/Gene.ts';
 
 import { drawPieces } from './drawPieces.ts';
 
-export interface SaveGenerationImagesOptions {
+export interface SavePopulationImagesOptions {
   /**
-   * Output dfirectory, created if it does not exist.
+   * Output directory, created if it does not exist.
    * @default 'sequences'
    */
   outdir?: string;
-
   /**
-   * Path where the function is called.
+   * Path where to create the output directory.
+   * @default import.meta.dirname
    */
   path?: string;
   /**
@@ -36,7 +36,7 @@ export interface SaveGenerationImagesOptions {
 export function savePopulationImages(
   fabric: Image,
   genes: Gene[],
-  options: SaveGenerationImagesOptions = {},
+  options: SavePopulationImagesOptions = {},
 ): void {
   const {
     outdir = 'sequences',

@@ -25,6 +25,11 @@ import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 import { getDefaultOptions } from '../gaLib/getDefaultOptions.ts';
 import { getDistantGenes } from './getDistantGenes.ts';
 
+import {
+  savePopulationImages as saveImages,
+  type SavePopulationImagesOptions,
+} from '../utils/savePopulationImages.ts';
+
 export interface OptionsTextileGA {
   /**
    * Seed used for all random values in the genetic algorithm ("top-level" seed).
@@ -47,9 +52,16 @@ export interface OptionsTextileGA {
    * Crossover options
    */
   crossoverOptions?: CrossoverOptions;
+  /**
+   * Path to output directory for saving data.
+   */
+  outdir?: string;
 }
 
 export class TextileGA {
+  /**
+   * Array of pattern pieces as extracted from the original pattern image.
+   */
   public readonly patternPieces: PatternPiece[];
   public readonly fabric: Image;
 
@@ -57,6 +69,7 @@ export class TextileGA {
   public fitnessWeights: FitnessWeights;
   public mutateOptions?: MutateOptions;
   public crossoverOptions?: CrossoverOptions;
+  public outdir?: string;
 
   public readonly ga: GeneticAlgorithm<Gene>;
 
@@ -71,7 +84,10 @@ export class TextileGA {
       fitnessWeights,
       mutateOptions,
       crossoverOptions,
+      outdir = import.meta.dirname,
     } = options;
+
+    console.log({ seed });
 
     // create correct options for GA
     const defaultOptionsGA = getDefaultOptions<Gene>(seed);
@@ -88,7 +104,10 @@ export class TextileGA {
 
     // create correct config for GA
     const gaConfig = {
-      intitialPopulation: this.getInitialPopulation(gaOptions.populationSize),
+      intitialPopulation: this.getInitialPopulation(
+        gaOptions.populationSize as number,
+        seed,
+      ), // it is in defaultOptionsGA
       crossoverFunction: this.getCrossoverFunction(seed, crossoverOptions),
       mutationFunction: this.getMutationFunction(seed, mutateOptions),
       fitnessFunction: this.getFitnessFunction(),
@@ -104,6 +123,7 @@ export class TextileGA {
     this.fitnessWeights = { ...DefaultFitnessWeights, ...fitnessWeights };
     this.mutateOptions = { ...DefaultMutateOptions, ...mutateOptions };
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
+    this.outdir = outdir;
 
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
   }
@@ -126,10 +146,11 @@ export class TextileGA {
     };
   }
 
-  private getInitialPopulation(populationSize: number): Gene[] {
+  private getInitialPopulation(populationSize: number, seed: number): Gene[] {
+    console.log('create initial population, seed =', seed);
     const genes = getRandomGenes(this.fabric, this.patternPieces, {
       populationSize,
-      seedRandomGenerator: this.seed ? true : false,
+      seedRandomGenerator: seed !== undefined ? true : false,
     });
     return genes;
   }
@@ -159,11 +180,23 @@ export class TextileGA {
     // todo
   }
 
-  public saveBestGenesImages(path: string): void {
-    // todo
+  public saveBestGenesImages(options: SavePopulationImagesOptions = {}): void {
+    const genes = this.ga.bestScoredIndividuals.map((ind) => ind.data);
+    saveImages(this.fabric, genes, {
+      path: this.outdir,
+      outdir: 'bestGenes',
+      nameBase: 'iteration',
+      ...options,
+    });
   }
 
-  public savePopulationImages(path: string): void {
-    // todo
+  public savePopulationImages(options: SavePopulationImagesOptions = {}): void {
+    const genes = this.ga.population.map((ind) => ind.data);
+    saveImages(this.fabric, genes, {
+      path: this.outdir,
+      outdir: 'population',
+      nameBase: 'gene',
+      ...options,
+    });
   }
 }
