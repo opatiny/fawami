@@ -1,3 +1,4 @@
+// todo: fix this import
 import * as echarts from 'echarts';
 import { writeFileSync } from 'fs';
 import { join } from 'path';

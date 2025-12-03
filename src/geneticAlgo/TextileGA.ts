@@ -32,6 +32,7 @@ import {
 import { Matrix } from 'ml-matrix';
 import { getDistanceMatrix as getDistances } from './utils/getDistanceMatrix.ts';
 import { plotScores, type PlotScoresOptions } from '../utils/plotScores.ts';
+import { plotHeatMap, type PlotHeatMapOptions } from '../utils/plotHeatMap.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -177,8 +178,18 @@ export class TextileGA {
     plotScores(scores, { name: 'bestScores.svg', ...options });
   }
 
-  public plotDistanceHeatmap(path: string): void {
-    // todo
+  /**
+   * Plot the distance between the individuals as a heat map. Green indicates that the individuals
+   * are similar, red that they are different.
+   * @param options
+   */
+  public plotDistanceHeatmap(options: PlotHeatMapOptions = {}): void {
+    const distances = this.getDistanceMatrix();
+    plotHeatMap(distances, {
+      path: this.outdir,
+      name: 'distanceHeatmap.svg',
+      ...options,
+    });
   }
 
   public saveOptions(path: string): void {
@@ -190,9 +201,10 @@ export class TextileGA {
    * @param options - Options
    */
   public saveBestGenesImages(options: SavePopulationImagesOptions = {}): void {
+    const { path = this.outdir } = options;
     const genes = this.ga.bestScoredIndividuals.map((ind) => ind.data);
     saveImages(this.fabric, genes, {
-      path: this.outdir,
+      path: path,
       outdir: 'bestGenes',
       nameBase: 'iteration',
       ...options,
@@ -204,9 +216,10 @@ export class TextileGA {
    * @param options - Options
    */
   public savePopulationImages(options: SavePopulationImagesOptions = {}): void {
+    const { path = this.outdir } = options;
     const genes = this.ga.population.map((ind) => ind.data);
     saveImages(this.fabric, genes, {
-      path: this.outdir,
+      path: path,
       outdir: 'population',
       nameBase: 'gene',
       ...options,

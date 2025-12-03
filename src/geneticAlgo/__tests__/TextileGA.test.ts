@@ -55,20 +55,32 @@ test('do 5 iterations with seed', () => {
     optionsGA: { populationSize: 5, nbDiverseIndividuals: 0 },
   });
 
-  textileGa.savePopulationImages({ path: import.meta.dirname });
-
   textileGa.ga.evolve(5, true);
   console.log('best scores:', textileGa.getBestScores());
 
   expect(textileGa.ga.population.length).toBe(5);
   expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
   expect(textileGa.ga.iteration).toBe(5);
+});
 
-  textileGa.saveBestGenesImages();
+test('population size = 100', () => {
+  const textileGa = new TextileGA(fabric, pieces, {
+    seed: 0,
+    optionsGA: { populationSize: 100, nbDiverseIndividuals: 0 },
+  });
+  textileGa.savePopulationImages({ path: currentDir });
 
-  const distances = textileGa.getDistanceMatrix();
+  textileGa.ga.evolve(5, true);
+
+  textileGa.saveBestGenesImages({ path: currentDir });
 
   textileGa.plotBestScores({ path: currentDir, debug: true });
 
-  console.log(distances);
+  const distances = textileGa.getDistanceMatrix();
+
+  textileGa.plotDistanceHeatmap({ path: currentDir, debug: true });
+
+  expect(textileGa.ga.population.length).toBe(100);
+  expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
+  expect(textileGa.ga.iteration).toBe(5);
 });
