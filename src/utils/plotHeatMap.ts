@@ -3,6 +3,7 @@ import { Matrix } from 'ml-matrix';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { dark } from './heatMapColors.ts';
+import { get } from 'node:http';
 
 export interface PlotHeatMapOptions {
   /**
@@ -47,12 +48,13 @@ export function plotHeatMap(
     renderer: 'svg', // use SVG renderer
     ssr: true, // enable server-side rendering mode
     width: 800,
-    height: 600,
+    height: 800,
   });
 
-  console.log(matrix.to2DArray());
+  const formattedData = getHeatMapData(matrix);
 
   const option = {
+    animation: false,
     tooltip: {},
     grid: {
       right: 140,
@@ -60,11 +62,11 @@ export function plotHeatMap(
     },
     xAxis: {
       type: 'category',
-      //data: Array.from({ length: matrix.columns }, (_, i) => i.toString()),
+      data: formattedData.xData,
     },
     yAxis: {
       type: 'category',
-      //data: Array.from({ length: matrix.rows }, (_, i) => i.toString()),
+      data: formattedData.yData,
     },
     visualMap: {
       type: 'piecewise',
@@ -81,17 +83,15 @@ export function plotHeatMap(
     },
     series: [
       {
-        name: 'Gaussian',
         type: 'heatmap',
-        data: matrix,
+        data: formattedData.data,
         emphasis: {
           itemStyle: {
             borderColor: '#333',
             borderWidth: 1,
           },
         },
-        progressive: 1000,
-        animation: false,
+        progressive: 0,
       },
     ],
   };
@@ -104,4 +104,26 @@ export function plotHeatMap(
     console.log('SVG saved successfully!');
   }
   chart.dispose();
+}
+
+function getHeatMapData(matrix: Matrix): {
+  data: Array<[number, number, number]>;
+  yData: number[];
+  xData: number[];
+} {
+  const data: Array<[number, number, number]> = [];
+  const yData: number[] = [];
+  const xData: number[] = [];
+  for (let i = 0; i < matrix.rows; i++) {
+    yData.push(matrix.rows - i - 1);
+    for (let j = 0; j < matrix.columns; j++) {
+      data.push([j, matrix.rows - i - 1, matrix.get(i, j)]);
+    }
+  }
+  for (let j = 0; j < matrix.columns; j++) {
+    xData.push(j);
+  }
+
+  console.log(data.length);
+  return { data, yData, xData };
 }

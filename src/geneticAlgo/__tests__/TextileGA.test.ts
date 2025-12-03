@@ -70,6 +70,12 @@ test('population size = 100', () => {
   });
   textileGa.savePopulationImages({ path: currentDir });
 
+  textileGa.plotDistanceHeatmap({
+    path: currentDir,
+    debug: true,
+    name: 'heatmap-iteration0.svg',
+  });
+
   textileGa.ga.evolve(5, true);
 
   textileGa.saveBestGenesImages({ path: currentDir });
@@ -78,7 +84,13 @@ test('population size = 100', () => {
 
   const distances = textileGa.getDistanceMatrix();
 
-  textileGa.plotDistanceHeatmap({ path: currentDir, debug: true });
+  console.log('Distance matrix:', distances.toString());
+
+  textileGa.plotDistanceHeatmap({
+    path: currentDir,
+    debug: true,
+    name: 'heatmap-iteration5.svg',
+  });
 
   expect(textileGa.ga.population.length).toBe(100);
   expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
