@@ -9,6 +9,7 @@ import { mutateAndKeepBest } from '../src/geneticAlgo/mutateAndKeepBest.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
 import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
+import { TextileGA } from '../src/geneticAlgo/TextileGA.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };
@@ -16,6 +17,8 @@ const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 
 const path = join(import.meta.dirname, '../data/', img2);
+
+const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
 const fabric = getRectangleFabric(dim2);
@@ -30,33 +33,43 @@ const pieces = extractPatternPieces(pattern, { debug: true });
 
 console.log(`Extracted ${pieces.length} pieces`);
 
-// create initial generation for genetic algorithm
-const initialPopulation = getRandomGenes(fabric, pieces, {
-  populationSize: 10,
-  seedRandomGenerator: true,
-  rotatePieces: true,
+const textileOptimizer = new TextileGA(fabric, pieces, {
+  seed: 0,
+  optionsGA: {
+    populationSize: 10,
+    nbDiverseIndividuals: 0,
+    enableMutation: false,
+    enableCrossover: true,
+  },
+  crossoverOptions: { minCrossoverFraction: 0.2 },
 });
 
-// save all sequences to images
-savePopulationImages(fabric, initialPopulation, { path: import.meta.dirname });
-
-const gene1 = initialPopulation[0];
-
-// mutate a gene multiple times and select the best ones
-const bestMutants = mutateAndKeepBest(fabric, gene1, {
-  populationSize: 10,
-  nbIterations: 100,
-  debug: false,
+textileOptimizer.savePopulationImages({
+  path: currentDir,
+  outdir: `population-iteration0`,
 });
 
-savePopulationImages(fabric, bestMutants, {
-  outdir: 'sortedMutants',
-  path: import.meta.dirname,
-  nameBase: 'generation',
+textileOptimizer.plotDistanceHeatmap({
+  path: currentDir,
+  debug: true,
+  name: 'heatmap-iteration0.svg',
 });
 
-// test getDistantGenes
-const distantGenes = getDistantGenes(bestMutants, {
-  numberOfGenes: 5,
-  debug: false,
-});
+const nbIterations = 5;
+for (let i = 1; i <= nbIterations; i++) {
+  console.log(`\n--- Iteration ${i} ---`);
+
+  textileOptimizer.ga.computeNextGeneration();
+
+  textileOptimizer.savePopulationImages({
+    path: currentDir,
+    outdir: `population-iteration${i}`,
+  });
+
+  textileOptimizer.plotDistanceHeatmap({
+    path: currentDir,
+    debug: false,
+    name: `heatmap-iteration${i}.svg`,
+  });
+  console.log('New best score: ', textileOptimizer.getBestScores()[0]);
+}

@@ -3,15 +3,15 @@ import { join } from 'node:path';
 import geneticAlgorithmConstructor from 'geneticalgorithm';
 import { write } from 'image-js';
 
-import { extractPatternPieces } from '../src/extractPatternPieces.ts';
-import type { Gene } from '../src/geneticAlgo/Gene.ts';
-import { crossover1Point } from '../src/geneticAlgo/crossover1Point.ts';
-import { getFitness } from '../src/geneticAlgo/getFitness.ts';
-import { getRandomGenes } from '../src/geneticAlgo/getRandomGenes.ts';
-import { mutateTranslate } from '../src/geneticAlgo/mutateTranslate.ts';
-import { getRectangleFabric } from '../src/getRectangleFabric.ts';
-import { svgToIjs } from '../src/svgToIjs.ts';
-import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
+import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
+import type { Gene } from '../../src/geneticAlgo/Gene.ts';
+import { crossover1Point } from '../../src/geneticAlgo/crossover1Point.ts';
+import { getFitness } from '../../src/geneticAlgo/getFitness.ts';
+import { getRandomGenes } from '../../src/geneticAlgo/getRandomGenes.ts';
+import { mutateTranslate } from '../../src/geneticAlgo/mutateTranslate.ts';
+import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
+import { svgToIjs } from '../../src/svgToIjs.ts';
+import { savePopulationImages } from '../../src/utils/savePopulationImages.ts';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };

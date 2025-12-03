@@ -68,7 +68,10 @@ test('population size = 100', () => {
     seed: 0,
     optionsGA: { populationSize: 100, nbDiverseIndividuals: 0 },
   });
-  textileGa.savePopulationImages({ path: currentDir });
+  textileGa.savePopulationImages({
+    path: currentDir,
+    outdir: 'initialPopulation',
+  });
 
   textileGa.plotDistanceHeatmap({
     path: currentDir,
@@ -85,6 +88,11 @@ test('population size = 100', () => {
   const distances = textileGa.getDistanceMatrix();
 
   console.log('Distance matrix:', distances.toString());
+
+  textileGa.savePopulationImages({
+    path: currentDir,
+    outdir: 'population-iteration5',
+  });
 
   textileGa.plotDistanceHeatmap({
     path: currentDir,

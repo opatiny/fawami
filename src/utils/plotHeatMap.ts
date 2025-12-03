@@ -71,7 +71,7 @@ export function plotHeatMap(
     visualMap: {
       type: 'piecewise',
       min: 0,
-      max: Math.ceil(matrix.max()),
+      max: Math.ceil(matrix.max() / nbColors) * nbColors,
       left: 'right',
       top: 'center',
       calculable: true,
@@ -124,6 +124,5 @@ function getHeatMapData(matrix: Matrix): {
     xData.push(j);
   }
 
-  console.log(data.length);
   return { data, yData, xData };
 }
