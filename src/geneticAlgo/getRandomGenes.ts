@@ -4,6 +4,7 @@ import type { PatternPieces } from '../PatternPiece.ts';
 import { getRandomPieces } from '../getRandomPieces.ts';
 
 import { Gene } from './Gene.ts';
+import { Random } from 'ml-random';
 
 export interface GetRandomGenesOptions {
   /**
@@ -17,10 +18,10 @@ export interface GetRandomGenesOptions {
    */
   rotatePieces?: boolean;
   /**
-   * Should the random generator be seeded for each gene? If true, you will get the same genes each time.
-   * @default false
+   * Random generator to use
+   * @default New random generator without seed
    */
-  seedRandomGenerator?: boolean;
+  randomGen?: Random;
 }
 
 /**
@@ -37,7 +38,7 @@ export function getRandomGenes(
 ) {
   const {
     populationSize = 10,
-    seedRandomGenerator = false,
+    randomGen = new Random(),
     rotatePieces = false,
   } = options;
 
@@ -46,7 +47,7 @@ export function getRandomGenes(
   for (let i = 0; i < populationSize; i++) {
     const randomPieces = getRandomPieces(fabric, pieces, {
       rotatePieces,
-      seed: seedRandomGenerator ? i : undefined,
+      randomGen: randomGen,
     });
     const gene = new Gene(randomPieces);
     genes.push(gene);

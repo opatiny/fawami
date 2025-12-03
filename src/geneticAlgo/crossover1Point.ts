@@ -1,8 +1,5 @@
-import { XSadd } from 'ml-xsadd';
-
-import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
-
 import { Gene } from './Gene.ts';
+import { Random } from 'ml-random';
 
 export interface CrossoverOptions {
   /**
@@ -18,10 +15,10 @@ export const DefaultCrossoverOptions: CrossoverOptions = {
 
 export interface Crossover1PointOptions extends CrossoverOptions {
   /**
-   * Seed for random number generator.
-   * @default A random seed
+   * Random generator
+   * @default New random generator without seed
    */
-  seed?: number;
+  randomGen?: Random;
 
   debug?: boolean;
 }
@@ -39,7 +36,7 @@ export function crossover1Point(
   options: Crossover1PointOptions = {},
 ): [Gene, Gene] {
   const {
-    seed = getDefaultSeed(),
+    randomGen = new Random(),
     minCrossoverFraction = DefaultCrossoverOptions.minCrossoverFraction!,
     debug = false,
   } = options;
@@ -54,15 +51,13 @@ export function crossover1Point(
     );
   }
 
-  const xsadd = new XSadd(seed);
-
   const length = parent1.patternPieces.length;
 
-  const minCrossoverPoint = Math.floor(length * minCrossoverFraction);
+  const minCrossoverPoint = Math.ceil(length * minCrossoverFraction);
   const crossoverLength = length - 2 * minCrossoverPoint;
 
   const crossoverPoint =
-    minCrossoverPoint + Math.floor(xsadd.getFloat() * crossoverLength);
+    minCrossoverPoint + Math.floor(randomGen.random() * crossoverLength);
 
   if (debug) {
     console.log(`crossover point: ${crossoverPoint}, genes length: ${length}`);

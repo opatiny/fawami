@@ -4,13 +4,14 @@ import { XSadd } from 'ml-xsadd';
 import type { Orientation, PatternPieces } from './PatternPiece.ts';
 import { PatternPiece } from './PatternPiece.ts';
 import { getDefaultSeed } from './utils/getDefaultSeed.ts';
+import { Random } from 'ml-random';
 
 export interface GetRandomPiecesOptions {
   /**
-   * Seed for the random number generator. By default, there is no seed.
-   * @default A random seed
+   * Random generator to use
+   * @default New random generator without seed
    */
-  seed?: number;
+  randomGen?: Random;
   /**
    * Whether to rotate pieces randomly.
    * @default false
@@ -30,9 +31,7 @@ export function getRandomPieces(
   pieces: PatternPieces,
   options: GetRandomPiecesOptions = {},
 ): PatternPieces {
-  const { seed = getDefaultSeed(), rotatePieces = false } = options;
-
-  const xsadd = new XSadd(seed);
+  const { randomGen = new Random(), rotatePieces = false } = options;
 
   const randomPieces: PatternPieces = [];
   for (let i = 0; i < pieces.length; i++) {
@@ -40,7 +39,7 @@ export function getRandomPieces(
 
     if (rotatePieces) {
       const orientations = [0, 90, 180, 270];
-      const randIndex = Math.floor(xsadd.getFloat() * orientations.length);
+      const randIndex = Math.floor(randomGen.random() * orientations.length);
       piece.orientation = orientations[randIndex] as Orientation;
     }
 
@@ -55,8 +54,8 @@ export function getRandomPieces(
       throw new Error(`Mask ${i} is too large to fit in the fabric`);
     }
 
-    const x = Math.floor(xsadd.getFloat() * (maxX - minX + 1)) + minX;
-    const y = Math.floor(xsadd.getFloat() * (maxY - minY + 1)) + minY;
+    const x = Math.floor(randomGen.random() * (maxX - minX + 1)) + minX;
+    const y = Math.floor(randomGen.random() * (maxY - minY + 1)) + minY;
     const newPiece = PatternPiece.clone(piece);
     newPiece.centerOrigin = { row: y, column: x };
     randomPieces.push(newPiece);

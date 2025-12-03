@@ -1,4 +1,4 @@
-import type { Gene } from './Gene.ts';
+import type { Gene } from '../Gene.ts';
 
 export interface GetDataVectorOptions {
   /**
@@ -23,7 +23,7 @@ export function getDataVector(
   if (normalize) {
     let maxRow = 0;
     let maxColumn = 0;
-    for (const piece of gene.data) {
+    for (const piece of gene.patternPieces) {
       if (piece.centerOrigin.row > maxRow) {
         maxRow = piece.centerOrigin.row;
       }
@@ -31,13 +31,13 @@ export function getDataVector(
         maxColumn = piece.centerOrigin.column;
       }
     }
-    return gene.data.flatMap((piece) => [
+    return gene.patternPieces.flatMap((piece) => [
       piece.centerOrigin.row / maxRow,
       piece.centerOrigin.column / maxColumn,
       piece.orientation / 270,
     ]);
   } else {
-    return gene.data.flatMap((piece) => [
+    return gene.patternPieces.flatMap((piece) => [
       piece.centerOrigin.row,
       piece.centerOrigin.column,
       piece.orientation,

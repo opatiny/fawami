@@ -117,6 +117,10 @@ export class GeneticAlgorithm<Type> {
    * Individuals with the best score at each iteration
    */
   public readonly bestScoredIndividuals: Array<ScoredIndividual<Type>>;
+  /**
+   * Random number generator instance
+   */
+  private randomGen: Random;
 
   public constructor(
     config: ConfigGA<Type>,
@@ -159,6 +163,9 @@ export class GeneticAlgorithm<Type> {
     // options
     this.options = options;
 
+    // private
+    this.randomGen = new Random(seed);
+
     // results
     this.population = config.intitialPopulation.map((individual) => ({
       data: individual,
@@ -170,7 +177,7 @@ export class GeneticAlgorithm<Type> {
 
   public computeNextGeneration(debug = false): void {
     // create random generator
-    const randomGen = new Random(this.options.seed);
+    const randomGen = this.randomGen;
 
     const originalIndividuals = this.population.map((ind) => ind.data);
 
@@ -187,19 +194,24 @@ export class GeneticAlgorithm<Type> {
       const probabilities = getProbabilities(this.population, {
         exponent: this.options.probabilityExponent,
       });
+
+      const indices = this.population.map((_, index) => index);
       for (let i = 0; i < nbCrossovers; i++) {
-        const parents = randomGen.choice(originalIndividuals, {
+        const parentsIndices = randomGen.choice(indices, {
           size: 2,
-          replace: true,
-          probabilities,
+          replace: false,
+          // probabilities,
         });
+        if (debug) {
+          console.log({ parentsIndices });
+        }
+        const parents = [
+          originalIndividuals[parentsIndices[0]],
+          originalIndividuals[parentsIndices[1]],
+        ];
         const [child1, child2] = this.crossover(parents[0], parents[1]);
         crossovered.push(child1, child2);
       }
-    }
-
-    if (debug) {
-      console.log('Crossovered Individuals:', crossovered);
     }
 
     // apply mutation to original and crossovered individuals
@@ -210,9 +222,6 @@ export class GeneticAlgorithm<Type> {
         const mutatedIndividual = this.mutate(individual);
         mutated.push(mutatedIndividual);
       }
-    }
-    if (debug) {
-      console.log('Mutated Individuals:', mutated);
     }
 
     const newIndividuals = [...crossovered, ...mutated];

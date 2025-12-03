@@ -34,15 +34,17 @@ const pieces = extractPatternPieces(pattern, { debug: true });
 console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
-  seed: 0,
+  // seed: 0,
   optionsGA: {
     populationSize: 10,
-    nbDiverseIndividuals: 0,
+    nbDiverseIndividuals: 5,
     enableMutation: false,
     enableCrossover: true,
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
 });
+
+console.log({ textileOptimizer });
 
 textileOptimizer.savePopulationImages({
   path: currentDir,
@@ -55,11 +57,11 @@ textileOptimizer.plotDistanceHeatmap({
   name: 'heatmap-iteration0.svg',
 });
 
-const nbIterations = 5;
+const nbIterations = 1;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
-  textileOptimizer.ga.computeNextGeneration();
+  textileOptimizer.ga.computeNextGeneration(true);
 
   textileOptimizer.savePopulationImages({
     path: currentDir,

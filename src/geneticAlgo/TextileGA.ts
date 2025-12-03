@@ -33,6 +33,7 @@ import { Matrix } from 'ml-matrix';
 import { getDistanceMatrix as getDistances } from './utils/getDistanceMatrix.ts';
 import { plotScores, type PlotScoresOptions } from '../utils/plotScores.ts';
 import { plotHeatMap, type PlotHeatMapOptions } from '../utils/plotHeatMap.ts';
+import { Random } from 'ml-random';
 
 export interface OptionsTextileGA {
   /**
@@ -77,6 +78,8 @@ export class TextileGA {
 
   public readonly ga: GeneticAlgorithm<Gene>;
 
+  private randomGen: Random;
+
   public constructor(
     fabric: Image,
     patternPieces: PatternPiece[],
@@ -120,12 +123,13 @@ export class TextileGA {
     gaOptions.getDistantIndividuals = this.getDistantIndividualsFunction();
 
     // assign values to class properties
-
     this.seed = seed;
     this.fitnessWeights = { ...DefaultFitnessWeights, ...fitnessWeights };
     this.mutateOptions = { ...DefaultMutateOptions, ...mutateOptions };
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
     this.outdir = outdir;
+
+    this.randomGen = new Random(seed);
 
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
   }
@@ -138,7 +142,11 @@ export class TextileGA {
 
   private getCrossoverFunction(seed: number, options?: CrossoverOptions) {
     return (parent1: Gene, parent2: Gene): [Gene, Gene] => {
-      return crossover1Point(parent1, parent2, { seed, ...options });
+      return crossover1Point(parent1, parent2, {
+        randomGen: this.randomGen,
+        ...options,
+        debug: true,
+      });
     };
   }
 
@@ -151,7 +159,7 @@ export class TextileGA {
   private getInitialPopulation(populationSize: number, seed: number): Gene[] {
     const genes = getRandomGenes(this.fabric, this.patternPieces, {
       populationSize,
-      seedRandomGenerator: seed !== undefined ? true : false,
+      randomGen: this.randomGen,
     });
     return genes;
   }
