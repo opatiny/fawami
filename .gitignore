@@ -129,3 +129,4 @@ src/**/*.svg
 src/**/*.gif
 
 src/**/config.json
+demo/**/config.json

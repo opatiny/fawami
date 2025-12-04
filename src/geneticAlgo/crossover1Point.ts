@@ -72,8 +72,10 @@ export function crossover1Point(
     ...parent1.patternPieces.slice(crossoverPoint),
   ];
 
-  const child1 = new Gene(child1Pieces);
-  const child2 = new Gene(child2Pieces);
+  const fabric = parent1.fabric;
+
+  const child1 = new Gene(fabric, child1Pieces);
+  const child2 = new Gene(fabric, child2Pieces);
 
   return [child1, child2];
 }

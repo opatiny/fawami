@@ -2,6 +2,7 @@ import { expect, test } from 'vitest';
 
 import { PatternPiece } from '../../PatternPiece.ts';
 import { getFitness } from '../getFitness.ts';
+import { Image } from 'image-js';
 
 const mask1 = testUtils.createMask([
   [1, 1, 1, 1, 1],
@@ -23,9 +24,17 @@ piece2.centerOrigin = { row: 1, column: 1 };
 
 const pieces = [piece1, piece2];
 
+const fabric = new Image(10, 10);
+
 test('all weights to 1', async () => {
-  const fitness = getFitness(pieces, {
-    weights: { overlap: 1, usedLength: 1, averageColumn: 1, averageRow: 1 },
+  const fitness = getFitness(fabric, pieces, {
+    weights: {
+      overlap: 1,
+      usedLength: 1,
+      averageColumn: 1,
+      averageRow: 1,
+      packing: 1,
+    },
   });
   const expected = {
     overlapArea: 9,
@@ -38,7 +47,7 @@ test('all weights to 1', async () => {
 });
 
 test('default weights', async () => {
-  const fitness = getFitness(pieces);
+  const fitness = getFitness(fabric, pieces);
   const expected = {
     overlapArea: 9,
     usedLength: 5,

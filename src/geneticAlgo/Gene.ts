@@ -1,3 +1,4 @@
+import type { Image } from 'image-js';
 import type { PatternPieces } from '../PatternPiece.ts';
 
 import type { FitnessData, FitnessWeights } from './getFitness.ts';
@@ -10,17 +11,23 @@ export interface GeneOptions {
 }
 
 export class Gene {
+  public readonly fabric: Image;
   public readonly patternPieces: PatternPieces;
   public readonly fitness: FitnessData;
   public readonly fitnessWeights: FitnessWeights = DefaultFitnessWeights;
 
-  public constructor(patternPieces: PatternPieces, options: GeneOptions = {}) {
+  public constructor(
+    fabric: Image,
+    patternPieces: PatternPieces,
+    options: GeneOptions = {},
+  ) {
+    this.fabric = fabric;
     this.patternPieces = patternPieces;
     this.fitnessWeights = {
       ...DefaultFitnessWeights,
       ...options.fitnessWeights,
     };
-    this.fitness = getFitness(this.patternPieces, {
+    this.fitness = getFitness(fabric, this.patternPieces, {
       weights: this.fitnessWeights,
     });
   }

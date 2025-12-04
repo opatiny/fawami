@@ -1,4 +1,4 @@
-import type { Point } from 'image-js';
+import type { Image, Point } from 'image-js';
 
 import type { PatternPieces } from '../PatternPiece.ts';
 import { getAverageOrigin } from '../utils/getAverageOrigin.ts';
@@ -73,12 +73,14 @@ export interface FitnessData {
 /**
  * Compute the fitness of a given arrangement of pieces.
  * The fitness is a weighted sum of various parameters, such as overlap area or used length.
+ * All of these parameters are normalized between 0 and 1.
  * Lower fitness is better.
  * @param pieces - Array of pattern pieces
  * @param options - Options for computing fitness
  * @returns The fitness value
  */
 export function getFitness(
+  fabric: Image,
   pieces: PatternPieces,
   options: GetFitnessOptions = {},
 ): FitnessData {
@@ -88,23 +90,33 @@ export function getFitness(
   const usedLength = getUsedLength(pieces);
   const averageOrigin = getAverageOrigin(pieces);
   const packing = computePacking(pieces);
+
+  // normalize values
+  const normalizedUsedLength = usedLength / fabric.width;
+  const normalizedAverageOrigin: Point = {
+    column: averageOrigin.column / fabric.width,
+    row: averageOrigin.row / fabric.height,
+  };
+
   if (debug) {
     console.log('getFitness:', weights);
-    console.log('overlapArea:', overlapArea);
-    console.log('usedLength:', usedLength);
-    console.log('averageOrigin:', averageOrigin);
+    console.log('normalized overlapArea:', overlapArea);
+    console.log('normalized usedLength:', normalizedUsedLength);
+    console.log('normalized averageOrigin:', normalizedAverageOrigin);
+    console.log('packing:', packing);
   }
   // we want to minimize both totalOverlapArea and usedLength
   const score =
     weights.overlap * overlapArea +
-    weights.usedLength * usedLength +
-    weights.averageColumn * averageOrigin.column +
-    weights.averageRow * averageOrigin.row +
+    weights.usedLength * normalizedUsedLength +
+    weights.averageColumn * normalizedAverageOrigin.column +
+    weights.averageRow * normalizedAverageOrigin.row +
     weights.packing * (1 - packing); // we want to maximize packing
+
   return {
     overlapArea,
-    usedLength,
-    averageOrigin,
+    usedLength: normalizedUsedLength,
+    averageOrigin: normalizedAverageOrigin,
     packing,
     score,
   };

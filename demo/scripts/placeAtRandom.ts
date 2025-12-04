@@ -29,7 +29,7 @@ const pattern = await svgToIjs(path);
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
 
 // extract the pieces of the pattern
-const pieces = extractPatternPieces(pattern, true);
+const pieces = extractPatternPieces(pattern, { debug: true });
 
 console.log(`Extracted ${pieces.length} pieces`);
 
@@ -72,5 +72,5 @@ await write(
 );
 
 // compute fitness value
-const fitness = getFitness(randomPieces, { debug: true });
+const fitness = getFitness(fabricRandom, randomPieces, { debug: true });
 console.log(`Fitness: ${fitness}`);

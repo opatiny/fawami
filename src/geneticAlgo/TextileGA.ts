@@ -1,5 +1,4 @@
 import { mkdir } from 'fs/promises';
-import fsExtra from 'fs-extra';
 
 import type { Image } from 'image-js';
 

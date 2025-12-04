@@ -49,7 +49,7 @@ export function getRandomGenes(
       rotatePieces,
       randomGen: randomGen,
     });
-    const gene = new Gene(randomPieces);
+    const gene = new Gene(fabric, randomPieces);
     genes.push(gene);
   }
 

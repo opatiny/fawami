@@ -2,6 +2,7 @@ import { expect, test } from 'vitest';
 
 import { PatternPiece } from '../../PatternPiece.ts';
 import { Gene } from '../Gene.ts';
+import { Image } from 'image-js';
 
 const mask1 = testUtils.createMask([
   [1, 1, 1, 1, 1],
@@ -26,7 +27,9 @@ piece2.orientation = 180;
 
 const pieces = [piece1, piece2];
 
-const gene = new Gene(pieces);
+const fabric = new Image(10, 10);
+
+const gene = new Gene(fabric, pieces);
 
 test('not normalised', async () => {
   const result = gene.getDataVector({ normalize: false });

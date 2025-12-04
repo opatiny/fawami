@@ -18,7 +18,7 @@ test('default options, resolution of 20dpcm', async () => {
   // size: 210x297mm
   const path = getPath('rectangles.svg');
 
-  const image = await svgToIjs(path, 20);
+  const image = await svgToIjs(path, { resolution: 20 });
 
   expect(image).toMatchImageSnapshot();
   expect(image.width).toBe(210 * 2);
