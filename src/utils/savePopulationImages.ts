@@ -11,10 +11,10 @@ import { drawPieces } from './drawPieces.ts';
 
 export interface SavePopulationImagesOptions {
   /**
-   * Output directory, created if it does not exist.
+   * Output directory name, created if it does not exist.
    * @default 'sequences'
    */
-  outdir?: string;
+  dirname?: string;
   /**
    * Path where to create the output directory.
    * @default import.meta.dirname
@@ -39,12 +39,12 @@ export function savePopulationImages(
   options: SavePopulationImagesOptions = {},
 ): void {
   const {
-    outdir = 'sequences',
+    dirname = 'sequences',
     path = import.meta.dirname,
     nameBase = 'sequence',
   } = options;
 
-  const fullOutdir = join(path, outdir);
+  const fullOutdir = join(path, dirname);
 
   // create folder first if it does not exist
   mkdir(fullOutdir, { recursive: true }, (err) => {
@@ -66,7 +66,7 @@ export function savePopulationImages(
     writeSync(
       join(
         path,
-        outdir,
+        dirname,
         `${nameBase}${i.toString().padStart(nbDigits, '0')}.png`,
       ),
       fabricClone,

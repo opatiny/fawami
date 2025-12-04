@@ -69,7 +69,7 @@ test('population size = 100', () => {
     optionsGA: { populationSize: 100, nbDiverseIndividuals: 0 },
   });
   textileGa.savePopulationImages({
-    outdir: 'initialPopulation',
+    dirname: 'initialPopulation',
   });
 
   textileGa.plotDistanceHeatmap({
@@ -84,7 +84,7 @@ test('population size = 100', () => {
   textileGa.plotBestScores({ debug: true });
 
   textileGa.savePopulationImages({
-    outdir: 'population-iteration5',
+    dirname: 'population-iteration5',
   });
 
   textileGa.plotDistanceHeatmap({

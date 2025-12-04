@@ -63,9 +63,15 @@ export interface OptionsTextileGA {
    */
   crossoverOptions?: CrossoverOptions;
   /**
-   * Path to output directory for saving data.
+   * Path where to create the output directory.
    */
-  outdir?: string;
+  path?: string;
+
+  /**
+   * Name of output directory for saving data.
+   * @default today's date in YYYY-MM-DD format
+   */
+  dirname?: string;
 }
 
 export class TextileGA {
@@ -92,14 +98,14 @@ export class TextileGA {
   ) {
     // get todays date as a string YYYY-MM-DD to use in outdir name
     const today = new Date().toISOString().slice(0, 10);
-    const defaultOutdir = join(import.meta.dirname, today);
     const {
       seed = getDefaultSeed(),
       optionsGA,
       fitnessWeights,
       mutateOptions,
       crossoverOptions,
-      outdir = defaultOutdir,
+      path = import.meta.dirname,
+      dirname = today,
     } = options;
 
     // create correct options for GA
@@ -134,7 +140,7 @@ export class TextileGA {
     this.fitnessWeights = { ...DefaultFitnessWeights, ...fitnessWeights };
     this.mutateOptions = { ...DefaultMutateOptions, ...mutateOptions };
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
-    this.outdir = outdir;
+    this.outdir = join(path, dirname);
 
     this.randomGen = new Random(seed);
 
@@ -207,9 +213,13 @@ export class TextileGA {
     return getDistanceMatrix(genes);
   }
 
-  public plotBestScores(options: PlotScoresOptions = {}): void {
+  public plotBestScores(options: Omit<PlotScoresOptions, 'path'> = {}): void {
     const scores = this.getBestScores();
-    plotScores(scores, { name: 'bestScores.svg', ...options });
+    plotScores(scores, {
+      path: this.outdir,
+      name: 'bestScores.svg',
+      ...options,
+    });
   }
 
   /**
@@ -217,7 +227,9 @@ export class TextileGA {
    * are similar, red that they are different.
    * @param options
    */
-  public plotDistanceHeatmap(options: PlotHeatMapOptions = {}): void {
+  public plotDistanceHeatmap(
+    options: Omit<PlotHeatMapOptions, 'path'> = {},
+  ): void {
     const distances = this.getDistanceMatrix();
     plotHeatMap(distances, {
       path: this.outdir,
@@ -226,20 +238,23 @@ export class TextileGA {
     });
   }
 
-  public async saveConfig(options: SaveConfigOptions = {}): Promise<void> {
-    await saveConfig(this, options);
+  public async saveConfig(
+    options: Omit<SaveConfigOptions, 'path'> = {},
+  ): Promise<void> {
+    await saveConfig(this, { ...options, outdir: this.outdir });
   }
 
   /**
    * Save images of the best gene of each iteration
    * @param options - Options
    */
-  public saveBestGenesImages(options: SavePopulationImagesOptions = {}): void {
-    const { path = this.outdir } = options;
+  public saveBestGenesImages(
+    options: Omit<SavePopulationImagesOptions, 'path'> = {},
+  ): void {
     const genes = this.ga.bestScoredIndividuals.map((ind) => ind.data);
     saveImages(this.fabric, genes, {
-      path: path,
-      outdir: 'bestGenes',
+      path: this.outdir,
+      dirname: 'bestGenes',
       nameBase: 'iteration',
       ...options,
     });
@@ -249,12 +264,13 @@ export class TextileGA {
    * Save images of the current population
    * @param options - Options
    */
-  public savePopulationImages(options: SavePopulationImagesOptions = {}): void {
-    const { path = this.outdir } = options;
+  public savePopulationImages(
+    options: Omit<SavePopulationImagesOptions, 'path'> = {},
+  ): void {
     const genes = this.ga.population.map((ind) => ind.data);
     saveImages(this.fabric, genes, {
-      path: path,
-      outdir: 'population',
+      path: this.outdir,
+      dirname: 'population',
       nameBase: 'gene',
       ...options,
     });

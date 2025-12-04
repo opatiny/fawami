@@ -42,6 +42,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
     enableCrossover: false,
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
+  mutateOptions: { translationAmplitude: 50 },
 });
 
 console.log({ textileOptimizer });
