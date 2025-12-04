@@ -57,7 +57,7 @@ textileOptimizer.saveConfig();
 
 textileOptimizer.savePopulationImages({
   dirname: `population-iteration0`,
-  addNumbers: true,
+  addText: true,
 });
 
 textileOptimizer.plotDistanceHeatmap({
@@ -65,7 +65,7 @@ textileOptimizer.plotDistanceHeatmap({
   name: 'heatmap-iteration0.svg',
 });
 
-const nbIterations = 1;
+const nbIterations = 10;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
@@ -84,6 +84,6 @@ for (let i = 1; i <= nbIterations; i++) {
   console.log('New best score: ', bestScores[bestScores.length - 1]);
 }
 
-textileOptimizer.saveBestGenesImages({ addNumbers: true });
+textileOptimizer.saveBestGenesImages({ addText: true });
 
 textileOptimizer.plotBestScores({ debug: false });

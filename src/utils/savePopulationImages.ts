@@ -28,10 +28,10 @@ export interface SavePopulationImagesOptions {
    */
   nameBase?: string;
   /**
-   * Add the sequence number on the image?
+   * Add the sequence number on the image, as well as the score.
    * @default false
    */
-  addNumbers?: boolean;
+  addText?: boolean;
 }
 
 /**
@@ -49,10 +49,10 @@ export function savePopulationImages(
     dirname = 'sequences',
     path = import.meta.dirname,
     nameBase = 'sequence',
-    addNumbers = false,
+    addText = false,
   } = options;
 
-  if (addNumbers && Math.max(fabric.width, fabric.height) < 50) {
+  if (addText && Math.max(fabric.width, fabric.height) < 50) {
     throw new Error(
       'Fabric too small to add numbers on images. Increase fabric size or disable addNumbers option.',
     );
@@ -64,8 +64,13 @@ export function savePopulationImages(
 
   const nbDigits = Math.ceil(Math.log10(genes.length - 1));
 
-  const textPosition = { column: 10, row: fabric.height - 10 };
+  const numberPosition = { column: 10, row: fabric.height - 10 };
+
   const textSize = Math.max(Math.round(fabric.height / 30), 12);
+  const scorePosition = {
+    column: numberPosition.column,
+    row: numberPosition.row - textSize - 5,
+  };
 
   for (let i = 0; i < genes.length; i++) {
     const gene = genes[i] as Gene;
@@ -73,12 +78,21 @@ export function savePopulationImages(
 
     drawPieces(fabricClone, gene.patternPieces);
 
-    if (addNumbers) {
-      fabricClone = drawText(fabricClone, {
-        content: i.toString(),
-        position: textPosition,
+    if (addText) {
+      const textBaseOptions = {
         fontColor: [255, 255, 255],
         font: `${textSize}px Arial`,
+      };
+
+      fabricClone = drawText(fabricClone, {
+        ...textBaseOptions,
+        content: `score: ${gene.fitness.score.toFixed(3)}`,
+        position: scorePosition,
+      });
+      fabricClone = drawText(fabricClone, {
+        ...textBaseOptions,
+        content: `#: ${i.toString().padStart(nbDigits, '0')}`,
+        position: numberPosition,
       });
     }
     writeSync(
