@@ -39,6 +39,8 @@ import { plotHeatMap, type PlotHeatMapOptions } from '../utils/plotHeatMap.ts';
 import { Random } from 'ml-random';
 import { saveConfig, type SaveConfigOptions } from './saveConfig.ts';
 import { join } from 'node:path';
+import { create } from 'node:domain';
+import { createOrEmptyDir } from '../utils/createOrEmptyDir.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -85,11 +87,15 @@ export class TextileGA {
   public fitnessWeights: FitnessWeights;
   public mutateOptions?: MutateOptions;
   public crossoverOptions?: CrossoverOptions;
-  public readonly outdir?: string;
 
   public readonly ga: GeneticAlgorithm<Gene>;
 
   private randomGen: Random;
+
+  // options for saving data
+  public readonly outdir?: string;
+  private readonly heatmapsPath?: string;
+  private readonly populationImagesPath?: string;
 
   public constructor(
     fabric: Image,
@@ -140,18 +146,20 @@ export class TextileGA {
     this.fitnessWeights = { ...DefaultFitnessWeights, ...fitnessWeights };
     this.mutateOptions = { ...DefaultMutateOptions, ...mutateOptions };
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
-    this.outdir = join(path, dirname);
 
     this.randomGen = new Random(seed);
 
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
 
-    // ensure outdir exists (sync)
-    mkdir(this.outdir, { recursive: true }).catch((err) => {
-      console.error('Error creating outdir:', err);
-    });
-    // empty output directory
-    fsExtra.emptyDirSync(this.outdir);
+    // setup out directories
+    this.outdir = join(path, dirname);
+    createOrEmptyDir(this.outdir);
+
+    this.heatmapsPath = join(this.outdir, 'heatmaps');
+    createOrEmptyDir(this.heatmapsPath);
+
+    this.populationImagesPath = join(this.outdir, 'populations');
+    createOrEmptyDir(this.populationImagesPath);
   }
 
   private getFitnessFunction() {
@@ -217,7 +225,7 @@ export class TextileGA {
     const scores = this.getBestScores();
     plotScores(scores, {
       path: this.outdir,
-      name: 'bestScores.svg',
+      name: 'convergencePlot.svg',
       ...options,
     });
   }
@@ -232,7 +240,7 @@ export class TextileGA {
   ): void {
     const distances = this.getDistanceMatrix();
     plotHeatMap(distances, {
-      path: this.outdir,
+      path: this.heatmapsPath,
       name: 'distanceHeatmap.svg',
       ...options,
     });
@@ -269,7 +277,7 @@ export class TextileGA {
   ): void {
     const genes = this.ga.population.map((ind) => ind.data);
     saveImages(this.fabric, genes, {
-      path: this.outdir,
+      path: this.populationImagesPath,
       dirname: 'population',
       nameBase: 'gene',
       ...options,

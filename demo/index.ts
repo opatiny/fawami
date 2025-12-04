@@ -34,45 +34,53 @@ const pieces = extractPatternPieces(pattern, { debug: true });
 console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
-  // seed: 0,
+  seed: 0,
   optionsGA: {
-    populationSize: 10,
-    nbDiverseIndividuals: 5,
+    populationSize: 5,
+    nbDiverseIndividuals: 0,
     enableMutation: true,
     enableCrossover: false,
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
   mutateOptions: { translationAmplitude: 50 },
+  fitnessWeights: {
+    averageColumn: 20,
+    averageRow: 10,
+    overlap: 1,
+    usedLength: 0,
+  },
+  path: currentDir,
 });
 
-console.log({ textileOptimizer });
+textileOptimizer.saveConfig();
 
 textileOptimizer.savePopulationImages({
-  path: currentDir,
-  outdir: `population-iteration0`,
+  dirname: `population-iteration0`,
 });
 
 textileOptimizer.plotDistanceHeatmap({
-  path: currentDir,
   debug: true,
   name: 'heatmap-iteration0.svg',
 });
 
-const nbIterations = 1;
+const nbIterations = 20;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
   textileOptimizer.ga.computeNextGeneration(true);
 
   textileOptimizer.savePopulationImages({
-    path: currentDir,
-    outdir: `population-iteration${i}`,
+    dirname: `population-iteration${i}`,
   });
 
   textileOptimizer.plotDistanceHeatmap({
-    path: currentDir,
     debug: false,
     name: `heatmap-iteration${i}.svg`,
   });
-  console.log('New best score: ', textileOptimizer.getBestScores()[0]);
+  const bestScores = textileOptimizer.getBestScores();
+  console.log('New best score: ', bestScores[bestScores.length - 1]);
 }
+
+textileOptimizer.saveBestGenesImages();
+
+textileOptimizer.plotBestScores({ debug: false, name: 'convergencePlot.svg' });

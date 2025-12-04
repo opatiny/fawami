@@ -39,10 +39,11 @@ export function plotScores(
     height: 600,
   });
 
-  console.log('Plotting scores:', scores);
+  if (debug) {
+    console.log('Plotting scores:', scores);
+  }
 
   const xData = scores.map((_, index) => index + 1);
-  console.log('X data:', xData);
 
   const option = {
     animation: false,
