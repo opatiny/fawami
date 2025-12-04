@@ -37,23 +37,19 @@ test('all weights to 1', async () => {
     },
   });
   const expected = {
-    overlapArea: 9,
-    usedLength: 5,
-    averageOrigin: { column: 2, row: 1 },
-    score: 17,
+    overlapArea: 9 / 24,
+    usedLength: 1 / 2,
+    averageOrigin: { column: 2 / 10, row: 1 / 10 },
+    packing: 24 / 15,
+    score: 9 / 24 + 1 / 2 + 2 / 10 + 1 / 10 + (1 - 24 / 15),
   };
 
   expect(fitness).toStrictEqual(expected);
 });
 
 test('default weights', async () => {
-  const fitness = getFitness(fabric, pieces);
-  const expected = {
-    overlapArea: 9,
-    usedLength: 5,
-    averageOrigin: { column: 2, row: 1 },
-    score: 39, // 1*9 + 10*2 + 10 * 1 = 39
-  };
+  const score = getFitness(fabric, pieces).score;
+  const expected = 9 / 24 + 2 + 1;
 
-  expect(fitness).toStrictEqual(expected);
+  expect(score).toStrictEqual(expected);
 });

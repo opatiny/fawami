@@ -49,15 +49,15 @@ export interface GetFitnessOptions {
 
 export interface FitnessData {
   /**
-   * Total overlapping area between pieces (in pixels)
+   * Normalized overlapping area between pieces
    */
   overlapArea: number;
   /**
-   * Length of fabric used
+   * Normalized length of fabric used
    */
   usedLength: number;
   /**
-   * Average origin of the pattern pieces. More powerful than usedLength because usedLength only puts the pressure on the right-most piece.
+   * Normalized average origin of the pattern pieces. More powerful than usedLength because usedLength only puts the pressure on the right-most piece.
    */
   averageOrigin: Point;
   /**
@@ -97,6 +97,13 @@ export function getFitness(
     column: averageOrigin.column / fabric.width,
     row: averageOrigin.row / fabric.height,
   };
+  // easy way of having the overlap with the right order of magnitude
+  // can be larger than 1
+  const maxOverlapArea = pieces.reduce(
+    (sum, piece) => sum + piece.meta!.surface!,
+    0,
+  );
+  const normalizedOverlapArea = overlapArea / maxOverlapArea;
 
   if (debug) {
     console.log('getFitness:', weights);
@@ -107,14 +114,14 @@ export function getFitness(
   }
   // we want to minimize both totalOverlapArea and usedLength
   const score =
-    weights.overlap * overlapArea +
+    weights.overlap * normalizedOverlapArea +
     weights.usedLength * normalizedUsedLength +
     weights.averageColumn * normalizedAverageOrigin.column +
     weights.averageRow * normalizedAverageOrigin.row +
     weights.packing * (1 - packing); // we want to maximize packing
 
   return {
-    overlapArea,
+    overlapArea: normalizedOverlapArea,
     usedLength: normalizedUsedLength,
     averageOrigin: normalizedAverageOrigin,
     packing,
