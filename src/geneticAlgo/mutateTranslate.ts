@@ -80,7 +80,9 @@ export function mutateTranslate(
   }
   clampPiecesPosition(fabric, newPieces);
 
-  return new Gene(gene.fabric, newPieces);
+  return new Gene(gene.fabric, newPieces, {
+    fitnessWeights: gene.fitnessWeights,
+  });
 }
 
 function getRandomOffsetDirection(randomGen: Random = new Random()): number {

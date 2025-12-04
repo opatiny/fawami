@@ -15,6 +15,7 @@ export interface SaveConfigOptions {
    * @default 'config.json'
    */
   fileName?: string;
+  debug?: boolean;
 }
 
 /**
@@ -26,10 +27,15 @@ export async function saveConfig(
   textileGA: TextileGA,
   options: SaveConfigOptions = {},
 ): Promise<void> {
-  const { outdir = textileGA.outdir as string, fileName = 'config.json' } =
-    options;
+  const {
+    outdir = textileGA.outdir as string,
+    fileName = 'config.json',
+    debug = false,
+  } = options;
 
-  console.log('Saving config to', join(outdir, fileName));
+  if (debug) {
+    console.log('Saving config to', join(outdir, fileName));
+  }
 
   const data = {
     seed: textileGA.seed,

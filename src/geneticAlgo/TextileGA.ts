@@ -130,6 +130,7 @@ export class TextileGA {
     const gaConfig = {
       intitialPopulation: this.getInitialPopulation(
         gaOptions.populationSize as number,
+        fitnessWeights,
       ), // it is in defaultOptionsGA
       crossoverFunction: this.getCrossoverFunction(crossoverOptions),
       mutationFunction: this.getMutationFunction(mutateOptions),
@@ -139,10 +140,10 @@ export class TextileGA {
 
     // todo: improve the distance function
     gaOptions.getDistantIndividuals = this.getDistantIndividualsFunction();
-
     // assign values to class properties
     this.seed = seed;
     this.fitnessWeights = { ...DefaultFitnessWeights, ...fitnessWeights };
+
     this.mutateOptions = { ...DefaultMutateOptions, ...mutateOptions };
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
 
@@ -186,10 +187,14 @@ export class TextileGA {
     };
   }
 
-  private getInitialPopulation(populationSize: number): Gene[] {
+  private getInitialPopulation(
+    populationSize: number,
+    fitnessWeights?: FitnessWeights,
+  ): Gene[] {
     const genes = getRandomGenes(this.fabric, this.patternPieces, {
       populationSize,
       randomGen: this.randomGen,
+      fitnessWeights: fitnessWeights,
     });
     return genes;
   }

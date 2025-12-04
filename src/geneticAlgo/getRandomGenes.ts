@@ -5,6 +5,7 @@ import { getRandomPieces } from '../getRandomPieces.ts';
 
 import { Gene } from './Gene.ts';
 import { Random } from 'ml-random';
+import { DefaultFitnessWeights, type FitnessWeights } from './getFitness.ts';
 
 export interface GetRandomGenesOptions {
   /**
@@ -22,6 +23,7 @@ export interface GetRandomGenesOptions {
    * @default New random generator without seed
    */
   randomGen?: Random;
+  fitnessWeights?: FitnessWeights;
 }
 
 /**
@@ -40,6 +42,7 @@ export function getRandomGenes(
     populationSize = 10,
     randomGen = new Random(),
     rotatePieces = false,
+    fitnessWeights = DefaultFitnessWeights,
   } = options;
 
   const genes: Gene[] = [];
@@ -49,7 +52,8 @@ export function getRandomGenes(
       rotatePieces,
       randomGen: randomGen,
     });
-    const gene = new Gene(fabric, randomPieces);
+
+    const gene = new Gene(fabric, randomPieces, { fitnessWeights });
     genes.push(gene);
   }
 

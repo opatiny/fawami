@@ -14,7 +14,7 @@ export class Gene {
   public readonly fabric: Image;
   public readonly patternPieces: PatternPieces;
   public readonly fitness: FitnessData;
-  public readonly fitnessWeights: FitnessWeights = DefaultFitnessWeights;
+  public readonly fitnessWeights: FitnessWeights;
 
   public constructor(
     fabric: Image,
@@ -27,6 +27,7 @@ export class Gene {
       ...DefaultFitnessWeights,
       ...options.fitnessWeights,
     };
+
     this.fitness = getFitness(fabric, this.patternPieces, {
       weights: this.fitnessWeights,
     });

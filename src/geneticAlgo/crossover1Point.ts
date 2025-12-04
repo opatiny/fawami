@@ -74,8 +74,12 @@ export function crossover1Point(
 
   const fabric = parent1.fabric;
 
-  const child1 = new Gene(fabric, child1Pieces);
-  const child2 = new Gene(fabric, child2Pieces);
+  const newGeneOptions = {
+    fitnessWeights: parent1.fitnessWeights,
+  };
+
+  const child1 = new Gene(fabric, child1Pieces, newGeneOptions);
+  const child2 = new Gene(fabric, child2Pieces, newGeneOptions);
 
   return [child1, child2];
 }
