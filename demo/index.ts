@@ -48,6 +48,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
     averageRow: 10,
     overlap: 1,
     usedLength: 0,
+    packing: 0,
   },
   path: currentDir,
 });
@@ -56,6 +57,7 @@ textileOptimizer.saveConfig();
 
 textileOptimizer.savePopulationImages({
   dirname: `population-iteration0`,
+  addNumbers: true,
 });
 
 textileOptimizer.plotDistanceHeatmap({
@@ -71,6 +73,7 @@ for (let i = 1; i <= nbIterations; i++) {
 
   textileOptimizer.savePopulationImages({
     dirname: `population-iteration${i}`,
+    addNumbers: true,
   });
 
   textileOptimizer.plotDistanceHeatmap({

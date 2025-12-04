@@ -28,7 +28,9 @@ export function getDistantGenes(
   const { numberOfGenes = 10, debug = false } = options;
 
   if (genes.length < numberOfGenes) {
-    throw new Error('Desired number of genes larger than population size');
+    throw new Error(
+      'Desired number of distant genes larger than population size',
+    );
   } else if (genes.length === numberOfGenes) {
     return genes;
   }

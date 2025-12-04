@@ -16,7 +16,7 @@ const dim1 = { width: 20, length: 30 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 
-const path = join(import.meta.dirname, '../data/', img2);
+const path = join(import.meta.dirname, '../../data/', img2);
 
 // create a rectangular piece of fabric
 const fabric = getRectangleFabric(dim2);
@@ -48,18 +48,13 @@ const gene1 = initialPopulation[0];
 // mutate a gene multiple times and select the best ones
 const bestMutants = mutateAndKeepBest(fabric, gene1, {
   populationSize: 10,
-  nbIterations: 100,
+  nbIterations: 1,
   debug: false,
 });
 
 savePopulationImages(fabric, bestMutants, {
-  outdir: 'sortedMutants',
+  dirname: 'sortedMutants',
   path: import.meta.dirname,
   nameBase: 'generation',
-});
-
-// test getDistantGenes
-const distantGenes = getDistantGenes(bestMutants, {
-  numberOfGenes: 5,
-  debug: false,
+  addNumbers: true,
 });
