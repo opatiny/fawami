@@ -49,7 +49,7 @@ export interface OptionsTextileGA {
   /**
    * Genetic algorithm options
    */
-  optionsGA?: Omit<OptionsGA<Gene>, 'seed'>;
+  optionsGA?: Omit<OptionsGA<Gene>, 'randomGen'>;
   /**
    * Weights for fitness calculation
    * @default DefaultFitnessWeights
@@ -114,14 +114,15 @@ export class TextileGA {
     } = options;
 
     // create correct options for GA
-    const defaultOptionsGA = getDefaultOptions<Gene>(seed);
+    this.randomGen = new Random(seed);
+
+    const defaultOptionsGA = getDefaultOptions<Gene>(this.randomGen);
 
     const gaOptions: OptionsGA<Gene> = {
       ...defaultOptionsGA,
       ...optionsGA,
+      randomGen: this.randomGen,
     };
-
-    gaOptions.seed = seed;
 
     this.patternPieces = patternPieces;
     this.fabric = fabric;
@@ -147,8 +148,7 @@ export class TextileGA {
     this.mutateOptions = { ...DefaultMutateOptions, ...mutateOptions };
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
 
-    this.randomGen = new Random(seed);
-
+    console.log('gaOptions.randomGen', gaOptions.randomGen);
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
 
     // setup out directories

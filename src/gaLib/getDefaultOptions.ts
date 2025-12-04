@@ -10,26 +10,29 @@ import type {
  * @param seed - Seed for random number generator
  * @returns The default options
  */
-export function getDefaultOptions<Type>(seed: number): InternalOptionsGA<Type> {
+export function getDefaultOptions<Type>(
+  randomGen: Random,
+): InternalOptionsGA<Type> {
   const defaultOptions: InternalOptionsGA<Type> = {
+    randomGen,
     enableCrossover: true,
     enableMutation: true,
     populationSize: 100,
+    initialPopulationSize: 100,
     nbDiverseIndividuals: 10,
-    getDistantIndividuals: getDefaultDistantIndividualsFunction<Type>(seed),
+    getDistantIndividuals:
+      getDefaultDistantIndividualsFunction<Type>(randomGen),
     probabilityExponent: 1,
     debug: false,
-    seed,
   };
   return defaultOptions;
 }
 
-function getDefaultDistantIndividualsFunction<Type>(seed: number) {
+function getDefaultDistantIndividualsFunction<Type>(randomGen: Random) {
   return function randomDistantIndividuals(
     population: Array<ScoredIndividual<Type>>,
     nbIndividuals: number,
   ): Array<ScoredIndividual<Type>> {
-    const randomGen = new Random(seed);
     return randomGen.choice(population, {
       size: nbIndividuals,
       replace: false,

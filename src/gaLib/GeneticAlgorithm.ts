@@ -2,8 +2,6 @@
 
 import { Random } from 'ml-random';
 
-import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
-
 import { getDefaultOptions } from './getDefaultOptions.ts';
 import { getProbabilities } from './getProbabilities.ts';
 
@@ -61,15 +59,19 @@ export interface InternalOptionsGA<Type> {
    */
   enableMutation: boolean;
   /**
+   * Initial population size
+   * @default 100
+   */
+  initialPopulationSize: number;
+  /**
    * Population size
    * @default 100
    */
   populationSize: number;
   /**
-   * Seed for the random number generator
-   * @default A random seed
+   * A random number generator
    */
-  seed: number;
+  randomGen: Random;
   /**
    * Number of individuals to select that are the most diverse.
    * Should be less than population size.
@@ -126,9 +128,11 @@ export class GeneticAlgorithm<Type> {
     config: ConfigGA<Type>,
     userOptions: OptionsGA<Type> = {},
   ) {
-    const { seed = getDefaultSeed() } = userOptions;
+    const { randomGen = new Random() } = userOptions;
 
-    const defaultOptions = getDefaultOptions<Type>(seed);
+    this.randomGen = randomGen;
+
+    const defaultOptions = getDefaultOptions<Type>(this.randomGen);
 
     const options: InternalOptionsGA<Type> = {
       ...defaultOptions,
@@ -163,9 +167,6 @@ export class GeneticAlgorithm<Type> {
     // options
     this.options = options;
 
-    // private
-    this.randomGen = new Random(seed);
-
     // results
     this.population = config.intitialPopulation.map((individual) => ({
       data: individual,
@@ -176,9 +177,6 @@ export class GeneticAlgorithm<Type> {
   }
 
   public computeNextGeneration(debug = false): void {
-    // create random generator
-    const randomGen = this.randomGen;
-
     const originalIndividuals = this.population.map((ind) => ind.data);
 
     const crossovered: Type[] = [];
@@ -197,7 +195,7 @@ export class GeneticAlgorithm<Type> {
 
       const indices = this.population.map((_, index) => index);
       for (let i = 0; i < nbCrossovers; i++) {
-        const parentsIndices = randomGen.choice(indices, {
+        const parentsIndices = this.randomGen.choice(indices, {
           size: 2,
           replace: false,
           // probabilities,
