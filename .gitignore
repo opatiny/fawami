@@ -126,3 +126,5 @@ demo/**/*.gif
 src/**/*.png
 src/**/*.svg
 src/**/*.gif
+
+src/**/config.json
