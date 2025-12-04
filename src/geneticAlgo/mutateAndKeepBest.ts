@@ -3,6 +3,7 @@ import type { Image } from 'image-js';
 import type { Gene } from './Gene.ts';
 import { mutateTranslate } from './mutateTranslate.ts';
 import { sortGenesByScore } from './utils/sortGenesByScore.ts';
+import { Random } from 'ml-random';
 
 export interface MutateAndKeepBestOptions {
   /**
@@ -45,7 +46,8 @@ export function mutateAndKeepBest(
   for (let iteration = 0; iteration < nbIterations; iteration++) {
     const mutants: Gene[] = [bestGene];
     for (let i = 0; i < populationSize; i++) {
-      const mutant = mutateTranslate(fabric, bestGene, { seed: i });
+      // todo: pass random generator?
+      const mutant = mutateTranslate(fabric, bestGene);
       mutants.push(mutant);
     }
     sortGenesByScore(mutants);

@@ -101,7 +101,7 @@ export function plotHeatMap(
   const svg = chart.renderToSVGString();
   writeFileSync(join(path, name), svg, 'utf-8');
   if (debug) {
-    console.log('SVG saved successfully!');
+    console.log('Heatmap saved successfully!');
   }
   chart.dispose();
 }

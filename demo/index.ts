@@ -38,8 +38,8 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   optionsGA: {
     populationSize: 10,
     nbDiverseIndividuals: 5,
-    enableMutation: false,
-    enableCrossover: true,
+    enableMutation: true,
+    enableCrossover: false,
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
 });

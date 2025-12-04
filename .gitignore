@@ -118,6 +118,7 @@ dist
 .DS_Store
 
 lib
+results
 
 demo/**/*.png
 demo/**/*.svg

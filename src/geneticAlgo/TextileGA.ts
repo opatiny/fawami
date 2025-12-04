@@ -1,3 +1,6 @@
+import { mkdir } from 'fs/promises';
+import fsExtra from 'fs-extra';
+
 import type { Image } from 'image-js';
 
 import type { PatternPiece } from '../PatternPiece.ts';
@@ -30,10 +33,12 @@ import {
   type SavePopulationImagesOptions,
 } from '../utils/savePopulationImages.ts';
 import { Matrix } from 'ml-matrix';
-import { getDistanceMatrix as getDistances } from './utils/getDistanceMatrix.ts';
+import { getDistanceMatrix } from './utils/getDistanceMatrix.ts';
 import { plotScores, type PlotScoresOptions } from '../utils/plotScores.ts';
 import { plotHeatMap, type PlotHeatMapOptions } from '../utils/plotHeatMap.ts';
 import { Random } from 'ml-random';
+import { saveConfig, type SaveConfigOptions } from './saveConfig.ts';
+import { join } from 'node:path';
 
 export interface OptionsTextileGA {
   /**
@@ -74,7 +79,7 @@ export class TextileGA {
   public fitnessWeights: FitnessWeights;
   public mutateOptions?: MutateOptions;
   public crossoverOptions?: CrossoverOptions;
-  public outdir?: string;
+  public readonly outdir?: string;
 
   public readonly ga: GeneticAlgorithm<Gene>;
 
@@ -85,13 +90,16 @@ export class TextileGA {
     patternPieces: PatternPiece[],
     options: OptionsTextileGA = {},
   ) {
+    // get todays date as a string YYYY-MM-DD to use in outdir name
+    const today = new Date().toISOString().slice(0, 10);
+    const defaultOutdir = join(import.meta.dirname, today);
     const {
       seed = getDefaultSeed(),
       optionsGA,
       fitnessWeights,
       mutateOptions,
       crossoverOptions,
-      outdir = import.meta.dirname,
+      outdir = defaultOutdir,
     } = options;
 
     // create correct options for GA
@@ -111,10 +119,9 @@ export class TextileGA {
     const gaConfig = {
       intitialPopulation: this.getInitialPopulation(
         gaOptions.populationSize as number,
-        seed,
       ), // it is in defaultOptionsGA
-      crossoverFunction: this.getCrossoverFunction(seed, crossoverOptions),
-      mutationFunction: this.getMutationFunction(seed, mutateOptions),
+      crossoverFunction: this.getCrossoverFunction(crossoverOptions),
+      mutationFunction: this.getMutationFunction(mutateOptions),
       fitnessFunction: this.getFitnessFunction(),
       scoreType: 'min' as ScoreType,
     };
@@ -132,6 +139,13 @@ export class TextileGA {
     this.randomGen = new Random(seed);
 
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
+
+    // ensure outdir exists (sync)
+    mkdir(this.outdir, { recursive: true }).catch((err) => {
+      console.error('Error creating outdir:', err);
+    });
+    // empty output directory
+    fsExtra.emptyDirSync(this.outdir);
   }
 
   private getFitnessFunction() {
@@ -140,23 +154,26 @@ export class TextileGA {
     };
   }
 
-  private getCrossoverFunction(seed: number, options?: CrossoverOptions) {
+  private getCrossoverFunction(options?: CrossoverOptions) {
     return (parent1: Gene, parent2: Gene): [Gene, Gene] => {
       return crossover1Point(parent1, parent2, {
         randomGen: this.randomGen,
         ...options,
-        debug: true,
+        debug: false,
       });
     };
   }
 
-  private getMutationFunction(seed: number, mutateOptions?: MutateOptions) {
+  private getMutationFunction(mutateOptions?: MutateOptions) {
     return (gene: Gene): Gene => {
-      return mutateTranslate(this.fabric, gene, { seed, ...mutateOptions });
+      return mutateTranslate(this.fabric, gene, {
+        randomGen: this.randomGen,
+        ...mutateOptions,
+      });
     };
   }
 
-  private getInitialPopulation(populationSize: number, seed: number): Gene[] {
+  private getInitialPopulation(populationSize: number): Gene[] {
     const genes = getRandomGenes(this.fabric, this.patternPieces, {
       populationSize,
       randomGen: this.randomGen,
@@ -181,6 +198,15 @@ export class TextileGA {
     return this.ga.bestScoredIndividuals.map((ind) => ind.score);
   }
 
+  /**
+   * Compute the distances between all individuals of the current population.
+   * @returns The distance matrix
+   */
+  public getDistanceMatrix(): Matrix {
+    const genes = this.ga.population.map((ind) => ind.data);
+    return getDistanceMatrix(genes);
+  }
+
   public plotBestScores(options: PlotScoresOptions = {}): void {
     const scores = this.getBestScores();
     plotScores(scores, { name: 'bestScores.svg', ...options });
@@ -200,8 +226,8 @@ export class TextileGA {
     });
   }
 
-  public saveOptions(path: string): void {
-    // todo
+  public async saveConfig(options: SaveConfigOptions = {}): Promise<void> {
+    await saveConfig(this, options);
   }
 
   /**
@@ -232,14 +258,5 @@ export class TextileGA {
       nameBase: 'gene',
       ...options,
     });
-  }
-
-  /**
-   * Compute the distances between all individuals of the current population.
-   * @returns The distance matrix
-   */
-  public getDistanceMatrix(): Matrix {
-    const genes = this.ga.population.map((ind) => ind.data);
-    return getDistances(genes);
   }
 }
