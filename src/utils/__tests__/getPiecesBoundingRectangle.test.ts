@@ -1,8 +1,7 @@
 import { expect, test } from 'vitest';
 
-import { PatternPiece } from '../../../PatternPiece.ts';
-import { Gene } from '../../Gene.ts';
-import { getGeneBoundingRectangle } from '../getGeneBoundingRectangle.ts';
+import { PatternPiece } from '../../PatternPiece.ts';
+import { getPiecesBoundingRectangle } from '../getPiecesBoundingRectangle.ts';
 
 const mask1 = testUtils.createMask([
   [1, 1, 1, 1, 1],
@@ -24,10 +23,8 @@ piece2.centerOrigin = { row: 1, column: 1 };
 
 const pieces = [piece1, piece2];
 
-const gene = new Gene(pieces);
-
 test('both pieces in top-left corner', async () => {
-  const result = getGeneBoundingRectangle(gene);
+  const result = getPiecesBoundingRectangle(pieces);
   const expected = {
     origin: { column: 0, row: 0 },
     width: 5,
@@ -37,8 +34,8 @@ test('both pieces in top-left corner', async () => {
 });
 
 test('rotate piece 1', async () => {
-  gene.patternPieces[0].orientation = 90;
-  const result = getGeneBoundingRectangle(gene);
+  pieces[0].orientation = 90;
+  const result = getPiecesBoundingRectangle(pieces);
   const expected = {
     origin: { column: 0, row: -1 },
     width: 4,

@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest';
 
-import { PatternPiece } from '../../../PatternPiece.ts';
-import { Gene } from '../../Gene.ts';
-import { getGeneBoundingRectangle } from '../getGeneBoundingRectangle.ts';
+import { PatternPiece } from '../../PatternPiece.ts';
+import { Gene } from '../../geneticAlgo/Gene.ts';
+import { getPiecesBoundingRectangle } from '../getPiecesBoundingRectangle.ts';
 import { computePacking } from '../computePacking.ts';
 
 const mask1 = testUtils.createMask([
@@ -25,17 +25,15 @@ piece2.centerOrigin = { row: 1, column: 6 };
 
 const pieces = [piece1, piece2];
 
-const gene = new Gene(pieces);
-
 test('packing of 1', async () => {
-  const result = computePacking(gene);
+  const result = computePacking(pieces);
 
   expect(result).toStrictEqual(1);
 });
 
 test('packing less than 1', async () => {
-  gene.patternPieces[0].orientation = 90;
-  const result = computePacking(gene);
+  pieces[0].orientation = 90;
+  const result = computePacking(pieces);
 
   expect(result).toStrictEqual(24 / 35);
 });

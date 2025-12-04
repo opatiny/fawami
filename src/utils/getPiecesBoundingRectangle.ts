@@ -1,5 +1,5 @@
 import type { Point } from 'image-js';
-import type { Gene } from '../geneticAlgo/Gene.ts';
+import type { PatternPiece } from '../PatternPiece.ts';
 
 export interface Rectangle {
   /**
@@ -12,16 +12,16 @@ export interface Rectangle {
 
 /**
  * Get the bounding rectangle of a gene (set of pattern pieces).
- * @param gene - The gene to get the bounding rectangle for
+ * @param pieces - The pattern pieces
  * @returns The bounding rectangle
  */
-export function getGeneBoundingRectangle(gene: Gene): Rectangle {
+export function getPiecesBoundingRectangle(pieces: PatternPiece[]): Rectangle {
   let minX = Infinity;
   let minY = Infinity;
   let maxX = -Infinity;
   let maxY = -Infinity;
 
-  for (const piece of gene.patternPieces) {
+  for (const piece of pieces) {
     const topLeft = piece.getTopLeftOrigin();
     const width = piece.getRotatedWidth();
     const height = piece.getRotatedHeight();
