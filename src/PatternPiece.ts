@@ -75,6 +75,7 @@ export class PatternPiece {
       width: mask.width,
       height: mask.height,
       center,
+      surface: mask.getNbNonZeroPixels(),
       ...options.meta,
     };
 

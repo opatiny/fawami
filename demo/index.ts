@@ -16,12 +16,12 @@ const dim1 = { width: 20, length: 30 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 
-const path = join(import.meta.dirname, '../data/', img2);
+const path = join(import.meta.dirname, '../data/', img1);
 
 const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim2);
+const fabric = getRectangleFabric(dim1);
 
 // convert the SVG to an image-js image
 const pattern = await svgToIjs(path, { resolution: 10 });
@@ -63,7 +63,7 @@ textileOptimizer.plotDistanceHeatmap({
   name: 'heatmap-iteration0.svg',
 });
 
-const nbIterations = 20;
+const nbIterations = 100;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
