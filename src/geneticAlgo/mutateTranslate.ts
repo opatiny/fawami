@@ -6,6 +6,7 @@ import { clampPiecesPosition } from '../utils/clampPiecesPosition.ts';
 import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 
 import { Gene } from './Gene.ts';
+import { Random } from 'ml-random';
 
 export interface MutateOptions {
   /**
@@ -21,10 +22,10 @@ export const DefaultMutateOptions: MutateOptions = {
 
 export interface MutateTranslateOptions extends MutateOptions {
   /**
-   * Seed for the random number generator.
-   * @default A random seed
+   * Random generator
+   * @default New random generator without seed
    */
-  seed?: number;
+  randomGen?: Random;
   /**
    * Enable debug?
    * @default false
@@ -48,7 +49,7 @@ export function mutateTranslate(
   const {
     // the ! is the non-null assertion operator
     translationAmplitude = DefaultMutateOptions.translationAmplitude!,
-    seed = getDefaultSeed(),
+    randomGen = new Random(),
     debug = false,
   } = options;
 
@@ -59,14 +60,12 @@ export function mutateTranslate(
     newPieces.push(newPiece);
   }
 
-  const xsadd = new XSadd(seed);
-
   for (const piece of newPieces) {
     const rowOffset =
-      getRandomOffsetDirection(xsadd.getUint32()) * translationAmplitude;
+      getRandomOffsetDirection(randomGen) * translationAmplitude;
     // todo: is this a correct way to get different random values?
     const columnOffset =
-      getRandomOffsetDirection(xsadd.getUint32()) * translationAmplitude;
+      getRandomOffsetDirection(randomGen) * translationAmplitude;
 
     if (debug) {
       console.log(
@@ -84,13 +83,8 @@ export function mutateTranslate(
   return new Gene(newPieces);
 }
 
-function getRandomOffsetDirection(seed?: number): number {
-  if (seed === undefined) {
-    seed = getDefaultSeed();
-  }
-  const xsadd = new XSadd(seed);
-
+function getRandomOffsetDirection(randomGen: Random = new Random()): number {
   const values = [-1, 0, 1];
-  const index = Math.floor(xsadd.getFloat() * values.length);
+  const index = Math.floor(randomGen.random() * values.length);
   return values[index];
 }
