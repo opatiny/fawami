@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import type { Image } from 'image-js';
 import { add, writeSync } from 'image-js';
 
-import type { Gene } from '../geneticAlgo/Gene.ts';
+import type { Gene } from '../textileGA/Gene.ts';
 
 import { drawPieces } from './drawPieces.ts';
 import { create } from 'node:domain';

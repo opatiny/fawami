@@ -7,9 +7,9 @@ import { join } from 'node:path';
 import { write } from 'image-js';
 
 import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
-import { getDistanceMatrix } from '../../src/geneticAlgo/getDistanceMatrix.ts';
-import { getGenesDistance } from '../../src/geneticAlgo/getGenesDistance.ts';
-import { getRandomGenes } from '../../src/geneticAlgo/getRandomGenes.ts';
+import { getDistanceMatrix } from '../../src/textileGA/getDistanceMatrix.ts';
+import { getGenesDistance } from '../../src/textileGA/getGenesDistance.ts';
+import { getRandomGenes } from '../../src/textileGA/getRandomGenes.ts';
 import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
 import { svgToIjs } from '../../src/svgToIjs.ts';
 import { savePopulationImages } from '../../src/utils/savePopulationImages.ts';

@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
 import { PatternPiece } from '../../PatternPiece.ts';
-import { Gene } from '../../geneticAlgo/Gene.ts';
+import { Gene } from '../../textileGA/Gene.ts';
 import { getPiecesBoundingRectangle } from '../getPiecesBoundingRectangle.ts';
 import { computePacking } from '../computePacking.ts';
 

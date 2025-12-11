@@ -3,9 +3,9 @@ import { join } from 'node:path';
 import { write } from 'image-js';
 
 import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
-import { getDistantGenes } from '../../src/geneticAlgo/getDistantGenes.ts';
-import { getRandomGenes } from '../../src/geneticAlgo/getRandomGenes.ts';
-import { mutateAndKeepBest } from '../../src/geneticAlgo/mutateAndKeepBest.ts';
+import { getDistantGenes } from '../../src/textileGA/getDistantGenes.ts';
+import { getRandomGenes } from '../../src/textileGA/getRandomGenes.ts';
+import { mutateAndKeepBest } from '../../src/textileGA/mutateAndKeepBest.ts';
 import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
 import { svgToIjs } from '../../src/svgToIjs.ts';
 import { savePopulationImages } from '../../src/utils/savePopulationImages.ts';
