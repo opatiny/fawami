@@ -1,5 +1,5 @@
 import type { Image } from 'image-js';
-import type { PatternPieces } from '../PatternPiece.ts';
+import { PatternPiece, type PatternPieces } from '../PatternPiece.ts';
 
 import type { FitnessData, FitnessWeights } from './getFitness.ts';
 import { DefaultFitnessWeights, getFitness } from './getFitness.ts';
@@ -30,6 +30,16 @@ export class Gene {
 
     this.fitness = getFitness(fabric, this.patternPieces, {
       weights: this.fitnessWeights,
+    });
+  }
+
+  public clone(gene: Gene): Gene {
+    const newPieces: PatternPieces = [];
+    for (const piece of gene.patternPieces) {
+      newPieces.push(PatternPiece.clone(piece));
+    }
+    return new Gene(gene.fabric, newPieces, {
+      fitnessWeights: gene.fitnessWeights,
     });
   }
 
