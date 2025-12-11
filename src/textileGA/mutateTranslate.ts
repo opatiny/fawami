@@ -1,9 +1,7 @@
 import type { Image } from 'image-js';
-import { XSadd } from 'ml-xsadd';
 
 import { PatternPiece } from '../PatternPiece.ts';
 import { clampPiecesPosition } from '../utils/clampPiecesPosition.ts';
-import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 
 import { Gene } from './Gene.ts';
 import { Random } from 'ml-random';

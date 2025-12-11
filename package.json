@@ -59,7 +59,6 @@
     "ml-kmeans": "^6.0.0",
     "ml-matrix": "^6.12.1",
     "ml-random": "^2.0.0",
-    "ml-xsadd": "^3.0.1",
     "skia-canvas": "^3.0.8"
   }
 }

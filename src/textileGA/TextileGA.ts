@@ -40,6 +40,7 @@ import { saveConfig, type SaveConfigOptions } from './saveConfig.ts';
 import { join } from 'node:path';
 import { create } from 'node:domain';
 import { createOrEmptyDir } from '../utils/createOrEmptyDir.ts';
+import { mutateAndKeepBest } from './mutateAndKeepBest.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -180,10 +181,10 @@ export class TextileGA {
 
   private getMutationFunction(mutateOptions?: MutateOptions) {
     return (gene: Gene): Gene => {
-      return mutateTranslate(this.fabric, gene, {
+      return mutateAndKeepBest(this.fabric, gene, {
         randomGen: this.randomGen,
         ...mutateOptions,
-      });
+      }).at(-1) as Gene;
     };
   }
 

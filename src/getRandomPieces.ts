@@ -1,9 +1,7 @@
 import type { Image } from 'image-js';
-import { XSadd } from 'ml-xsadd';
 
 import type { Orientation, PatternPieces } from './PatternPiece.ts';
 import { PatternPiece } from './PatternPiece.ts';
-import { getDefaultSeed } from './utils/getDefaultSeed.ts';
 import { Random } from 'ml-random';
 
 export interface GetRandomPiecesOptions {

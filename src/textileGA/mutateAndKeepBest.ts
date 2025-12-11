@@ -1,11 +1,14 @@
 import type { Image } from 'image-js';
 
 import type { Gene } from './Gene.ts';
-import { mutateTranslate } from './mutateTranslate.ts';
+import {
+  mutateTranslate,
+  type MutateTranslateOptions,
+} from './mutateTranslate.ts';
 import { sortGenesByScore } from './utils/sortGenesByScore.ts';
 import { Random } from 'ml-random';
 
-export interface MutateAndKeepBestOptions {
+export interface MutateAndKeepBestOptions extends MutateTranslateOptions {
   /**
    * Population size of mutants to generate at each iteration.
    * @default 10
@@ -16,6 +19,11 @@ export interface MutateAndKeepBestOptions {
    * @default 5
    */
   nbIterations?: number;
+  /**
+   * Random number generator to use for mutations.
+   * @default New random generator without seed
+   */
+  randomGen?: Random;
   /**
    * Enable debug?
    * @default false
@@ -35,7 +43,12 @@ export function mutateAndKeepBest(
   gene: Gene,
   options: MutateAndKeepBestOptions = {},
 ): Gene[] {
-  const { populationSize = 10, nbIterations = 5, debug = false } = options;
+  const {
+    populationSize = 10,
+    nbIterations = 5,
+    debug = false,
+    randomGen = new Random(),
+  } = options;
   const bestGenes: Gene[] = [];
   let bestGene = gene;
 
@@ -46,8 +59,7 @@ export function mutateAndKeepBest(
   for (let iteration = 0; iteration < nbIterations; iteration++) {
     const mutants: Gene[] = [bestGene];
     for (let i = 0; i < populationSize; i++) {
-      // todo: pass random generator?
-      const mutant = mutateTranslate(fabric, bestGene);
+      const mutant = mutateTranslate(fabric, bestGene, { randomGen });
       mutants.push(mutant);
     }
     sortGenesByScore(mutants);

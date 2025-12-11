@@ -1,5 +1,5 @@
 /**
- * Default seed to use to generate random numbers with XSadd.
+ * Default seed to use to create random numbers with ml-random.
  * @returns A random integer
  */
 export function getDefaultSeed(): number {

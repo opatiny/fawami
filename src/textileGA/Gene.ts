@@ -5,6 +5,7 @@ import type { FitnessData, FitnessWeights } from './getFitness.ts';
 import { DefaultFitnessWeights, getFitness } from './getFitness.ts';
 import type { GetDataVectorOptions } from './utils/getDataVector.ts';
 import { getDataVector } from './utils/getDataVector.ts';
+import { drawPieces } from '../utils/drawPieces.ts';
 
 export interface GeneOptions {
   fitnessWeights?: FitnessWeights;
@@ -33,7 +34,7 @@ export class Gene {
     });
   }
 
-  public clone(gene: Gene): Gene {
+  public static clone(gene: Gene): Gene {
     const newPieces: PatternPieces = [];
     for (const piece of gene.patternPieces) {
       newPieces.push(PatternPiece.clone(piece));
@@ -53,5 +54,11 @@ export class Gene {
 
   public getDataVector(options: GetDataVectorOptions = {}): number[] {
     return getDataVector(this, options);
+  }
+
+  public getImage(): Image {
+    const image = this.fabric.clone();
+    drawPieces(image, this.patternPieces);
+    return image;
   }
 }

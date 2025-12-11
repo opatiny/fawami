@@ -72,17 +72,24 @@ export interface InternalOptionsGA<Type> {
    * A random number generator
    */
   randomGen: Random;
+  // todo: remove this option
   /**
    * Number of individuals to select that are the most diverse.
    * Should be less than population size.
    * Set to 0 to disable diversity selection.
-   * @default 10
+   * @default 50
    */
   nbDiverseIndividuals: number;
+  /**
+   * Number of best individuals to keep. The rest of the population will be kept as diverse as possible.
+   * @default 0
+   */
+  // eliteSize: number;
   /**
    * Exponent to apply to the score when computing probabilities for selecting parents for crossover.
    * @default 1
    */
+
   probabilityExponent: number;
   /**
    * Enable debug mode
@@ -222,7 +229,7 @@ export class GeneticAlgorithm<Type> {
       }
     }
 
-    const newIndividuals = [...crossovered, ...mutated];
+    const newIndividuals = mutated;
     const newScoredIndividuals: Array<ScoredIndividual<Type>> =
       newIndividuals.map((individual) => ({
         data: individual,
