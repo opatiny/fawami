@@ -23,7 +23,7 @@ const path = join(import.meta.dirname, '../data/', img1);
 // create a rectangular piece of fabric
 const fabric = getRectangleFabric(dim1);
 
-// convert the SVG to an image-js imageß
+// convert the SVG to an image-js image
 const pattern = await svgToIjs(path);
 
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
