@@ -11,12 +11,15 @@ export interface ScoredIndividual<Type> {
   score: number;
 }
 
-export type ScoreType = 'max' | 'min';
-
 type CrossoverFunc<Type> = (parent1: Type, parent2: Type) => [Type, Type];
 
 type MutationFunc<Type> = (individual: Type) => Type;
 
+/**
+ * Function computing the fitness score of an individual.
+ * The higher the score, the better the individual.
+ * If you want to minimize the score, compute 1/score instead.
+ */
 type FitnessFunc<Type> = (individual: Type) => number;
 
 type DistanceFunc<Type> = (
@@ -36,13 +39,11 @@ export interface ConfigGA<Type> {
 
   mutationFunction: MutationFunc<Type>;
   /**
-   * Function to compute the fitness score of an individual
+   * Function to compute the fitness score of an individual.
+   * The higher the score, the better the individual.
+   * If you want to minimize the score, compute -score instead.
    */
   fitnessFunction: FitnessFunc<Type>;
-  /**
-   * Define whether a higher score is better ('max') or a lower score is better ('min')
-   */
-  scoreType: ScoreType;
 }
 
 /**
@@ -110,10 +111,9 @@ export class GeneticAlgorithm<Type> {
   public crossover: CrossoverFunc<Type>;
   public mutate: MutationFunc<Type>;
   public fitness: FitnessFunc<Type>;
-  public readonly scoreType: ScoreType;
 
   // options
-  public options: InternalOptionsGA<Type>;
+  public readonly options: InternalOptionsGA<Type>;
 
   // results
   /**
@@ -125,7 +125,7 @@ export class GeneticAlgorithm<Type> {
   /**
    * Number of diverse individuals to keep at each iteration
    */
-  private nbDiverseIndividuals: number;
+  public readonly nbDiverseIndividuals: number;
   /**
    * Number of iterations performed
    */
@@ -139,6 +139,9 @@ export class GeneticAlgorithm<Type> {
    */
   public readonly randomGen: Random;
 
+  /**
+   * Minimal distance to elite individuals for each diverse individual
+   */
   public readonly minDistancesToElite: number[] = [];
 
   public constructor(
@@ -176,8 +179,6 @@ export class GeneticAlgorithm<Type> {
     this.fitness = config.fitnessFunction;
     this.crossover = config.crossoverFunction;
     this.mutate = config.mutationFunction;
-    this.scoreType = config.scoreType;
-
     // options
     this.options = options;
     this.nbDiverseIndividuals =
@@ -269,12 +270,8 @@ export class GeneticAlgorithm<Type> {
 
     const newPopulation = [...population, ...newScoredIndividuals];
 
-    // sort by fitness score
-    if (this.scoreType === 'max') {
-      newPopulation.sort((a, b) => b.score - a.score);
-    } else {
-      newPopulation.sort((a, b) => a.score - b.score);
-    }
+    // sort by descending fitness score
+    newPopulation.sort((a, b) => b.score - a.score);
 
     this.elitePopulation = newPopulation.slice(0, this.options.eliteSize);
 

@@ -37,7 +37,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
   optionsGA: {
     populationSize: 50,
-    nbDiverseIndividuals: 45,
+    eliteSize: 5,
     enableMutation: true,
     enableCrossover: true,
   },
@@ -69,7 +69,7 @@ const nbIterations = 10;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
-  textileOptimizer.ga.computeNextGeneration(false);
+  textileOptimizer.ga.getNextGeneration(false);
   if (0) {
     textileOptimizer.savePopulationImages({
       dirname: `population-iteration${i}`,

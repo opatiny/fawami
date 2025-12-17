@@ -47,7 +47,6 @@ const config: ConfigGA<DataType> = {
   crossoverFunction: crossover,
   mutationFunction: mutate,
   fitnessFunction: fitness,
-  scoreType: 'max',
 };
 
 const options: OptionsGA<DataType> = {

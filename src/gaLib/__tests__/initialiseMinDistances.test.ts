@@ -33,7 +33,6 @@ const config: ConfigGA<DataType> = {
   crossoverFunction: crossover,
   mutationFunction: mutate,
   fitnessFunction: fitness,
-  scoreType: 'max',
 };
 
 const options: OptionsGA<DataType> = {
@@ -48,6 +47,6 @@ const ga = new GeneticAlgorithm<DataType>(config, options);
 test('should initialize min distances to elite', () => {
   ga.initialiseMinDistances();
 
-  const expected = [0, 1, 2];
+  const expected = [1, 2];
   expect(ga.minDistancesToElite).toStrictEqual(expected);
 });

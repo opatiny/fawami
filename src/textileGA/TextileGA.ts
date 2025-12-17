@@ -7,7 +7,6 @@ import {
   GeneticAlgorithm,
   type OptionsGA,
   type ScoredIndividual,
-  type ScoreType,
 } from '../gaLib/GeneticAlgorithm.ts';
 
 import type { Gene } from './Gene.ts';
@@ -137,7 +136,6 @@ export class TextileGA {
       crossoverFunction: this.getCrossoverFunction(crossoverOptions),
       mutationFunction: this.getMutationFunction(mutateOptions),
       fitnessFunction: this.getFitnessFunction(),
-      scoreType: 'min' as ScoreType,
     };
 
     // todo: improve the distance function
@@ -165,7 +163,8 @@ export class TextileGA {
 
   private getFitnessFunction() {
     return (gene: Gene) => {
-      return gene.fitness.score;
+      // the minus sign is to have lower fitness correspond to better individuals
+      return -gene.fitness.score;
     };
   }
 
@@ -222,7 +221,7 @@ export class TextileGA {
    * @returns The distance matrix
    */
   public getDistanceMatrix(): Matrix {
-    const genes = this.ga.population.map((ind) => ind.data);
+    const genes = this.ga.getPopulation().map((ind) => ind.data);
     return getDistanceMatrix(genes);
   }
 
@@ -280,7 +279,7 @@ export class TextileGA {
   public savePopulationImages(
     options: Omit<SavePopulationImagesOptions, 'path'> = {},
   ): void {
-    const genes = this.ga.population.map((ind) => ind.data);
+    const genes = this.ga.getPopulation().map((ind) => ind.data);
     saveImages(this.fabric, genes, {
       path: this.populationImagesPath,
       dirname: 'population',

@@ -26,25 +26,24 @@ const fabric = new Image(10, 10);
 
 test('test constructor', () => {
   const textileGa = new TextileGA(fabric, pieces, {
-    optionsGA: { populationSize: 5, nbDiverseIndividuals: 0 },
+    optionsGA: { populationSize: 5, eliteSize: 5 },
   });
 
   expect(textileGa.patternPieces).toBe(pieces);
   expect(textileGa.fabric).toBe(fabric);
   expect(textileGa.ga.options.populationSize).toBe(5);
-  expect(textileGa.ga.population.length).toBe(5);
-  expect(textileGa.ga.options.seed).toBe(textileGa.seed);
-  expect(textileGa.ga.scoreType).toEqual('min');
+  expect(textileGa.ga.elitePopulation.length).toBe(5);
+  expect(textileGa.ga.diversePopulation.length).toBe(0);
 });
 
 test('compute first generation', () => {
   const textileGa = new TextileGA(fabric, pieces, {
-    optionsGA: { populationSize: 5, nbDiverseIndividuals: 0 },
+    optionsGA: { populationSize: 5, eliteSize: 5 },
   });
 
-  textileGa.ga.computeNextGeneration();
+  textileGa.ga.getNextGeneration();
 
-  expect(textileGa.ga.population.length).toBe(5);
+  expect(textileGa.ga.getPopulation().length).toBe(5);
   expect(textileGa.ga.bestScoredIndividuals.length).toBe(1);
   expect(textileGa.ga.iteration).toBe(1);
 });
@@ -52,13 +51,13 @@ test('compute first generation', () => {
 test('do 5 iterations with seed', () => {
   const textileGa = new TextileGA(fabric, pieces, {
     seed: 0,
-    optionsGA: { populationSize: 5, nbDiverseIndividuals: 0 },
+    optionsGA: { populationSize: 5, eliteSize: 5 },
   });
 
   textileGa.ga.evolve(5, true);
   console.log('best scores:', textileGa.getBestScores());
 
-  expect(textileGa.ga.population.length).toBe(5);
+  expect(textileGa.ga.getPopulation().length).toBe(5);
   expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
   expect(textileGa.ga.iteration).toBe(5);
 });
@@ -66,7 +65,7 @@ test('do 5 iterations with seed', () => {
 test('population size = 100', () => {
   const textileGa = new TextileGA(fabric, pieces, {
     seed: 0,
-    optionsGA: { populationSize: 100, nbDiverseIndividuals: 0 },
+    optionsGA: { populationSize: 100, eliteSize: 100 },
   });
   textileGa.savePopulationImages({
     dirname: 'initialPopulation',
@@ -92,7 +91,7 @@ test('population size = 100', () => {
     name: 'heatmap-iteration5.svg',
   });
 
-  expect(textileGa.ga.population.length).toBe(100);
+  expect(textileGa.ga.getPopulation().length).toBe(100);
   expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
   expect(textileGa.ga.iteration).toBe(5);
 });

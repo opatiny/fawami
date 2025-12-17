@@ -13,7 +13,7 @@ export interface WeightedChoiceOptions {
 }
 
 /**
- * Compute distinct random indices in a given range, taking into account weights (defining the probability of each index to be chosen).
+ * Compute nbIndices distinct random indices in a given range, taking into account weights (defining the probability of each index to be chosen).
  * By default, all weights are equal to 1 (uniform distribution).
  * @param nbIndices - Number of indexes to compute
  * @param arraySize - Size of the index array to pick from.
@@ -54,9 +54,11 @@ export function weightedDistinctChoice(
   }
 
   const chosenIndices: number[] = [];
+  let currentCumulatedWeights = cumulatedWeights.slice();
   for (let n = 0; n < nbIndices; n++) {
-    const data = getOneIndex(cumulatedWeights, randomGen);
+    const data = getOneIndex(currentCumulatedWeights, randomGen);
     chosenIndices.push(data.index);
+    currentCumulatedWeights = data.nextCumulatedWeights;
   }
   return chosenIndices;
 }

@@ -1,4 +1,4 @@
-import type { ScoreType, ScoredIndividual } from './GeneticAlgorithm.ts';
+import type {  ScoredIndividual } from '../GeneticAlgorithm.ts';
 
 export interface ProbabilitiesOptions {
   /**
@@ -6,11 +6,6 @@ export interface ProbabilitiesOptions {
    * @default 1
    */
   exponent?: number;
-  /**
-   * Is a low score or high score better?
-   * @default 'max'
-   */
-  scoreType?: ScoreType;
 }
 
 /**
@@ -25,12 +20,12 @@ export function getProbabilities<Type>(
   individuals: Array<ScoredIndividual<Type>>,
   options: ProbabilitiesOptions = {},
 ): number[] {
-  const { exponent = 1, scoreType = 'max' } = options;
+  const { exponent = 1 } = options;
   let totalScore = 0;
   const scores = [];
   for (const ind of individuals) {
     const currentValue =
-      (scoreType === 'max' ? ind.score : 1 / ind.score) ** exponent;
+      ind.score ** exponent;
     scores.push(currentValue);
     totalScore += currentValue;
   }
