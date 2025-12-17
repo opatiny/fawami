@@ -49,17 +49,18 @@ const config: ConfigGA<DataType> = {
   fitnessFunction: fitness,
   scoreType: 'max',
 };
+
 const options: OptionsGA<DataType> = {
   populationSize: 4,
-  nbDiverseIndividuals: 0,
-  seed: 0,
+  eliteSize: 4,
+  randomGen: randomGen,
   enableCrossover: true,
   enableMutation: true,
 };
 const ga = new GeneticAlgorithm<DataType>(config, options);
 
 test('should compute the next generation correctly', () => {
-  ga.computeNextGeneration(debug);
+  ga.getNextGeneration(debug);
 
   const gen1 = ga.population;
 

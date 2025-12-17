@@ -3,7 +3,8 @@
 import { Random } from 'ml-random';
 
 import { getDefaultOptions } from './getDefaultOptions.ts';
-import { getProbabilities } from './getProbabilities.ts';
+import { getProbabilities } from './utils/getProbabilities.ts';
+import { getMinDistanceToElite } from './utils/getMinDistanceToElite.ts';
 
 export interface ScoredIndividual<Type> {
   data: Type;
@@ -17,6 +18,11 @@ type CrossoverFunc<Type> = (parent1: Type, parent2: Type) => [Type, Type];
 type MutationFunc<Type> = (individual: Type) => Type;
 
 type FitnessFunc<Type> = (individual: Type) => number;
+
+type DistanceFunc<Type> = (
+  gene1: ScoredIndividual<Type>,
+  gene2: ScoredIndividual<Type>,
+) => number;
 
 type DistantIndividualsFunc<Type> = (
   population: Array<ScoredIndividual<Type>>,
@@ -48,6 +54,10 @@ export interface InternalOptionsGA<Type> {
    * @default Takes the N random individuals
    */
   getDistantIndividuals: DistantIndividualsFunc<Type>;
+  /** Function to compute the distance between two individuals
+   * @default Absolute difference between their fitness scores
+   */
+  getDistance: DistanceFunc<Type>;
   /**
    * Enable crossover?
    * @default true
@@ -72,19 +82,11 @@ export interface InternalOptionsGA<Type> {
    * A random number generator
    */
   randomGen: Random;
-  // todo: remove this option
-  /**
-   * Number of individuals to select that are the most diverse.
-   * Should be less than population size.
-   * Set to 0 to disable diversity selection.
-   * @default 50
-   */
-  nbDiverseIndividuals: number;
   /**
    * Number of best individuals to keep. The rest of the population will be kept as diverse as possible.
-   * @default 0
+   * @default 5
    */
-  // eliteSize: number;
+  eliteSize: number;
   /**
    * Exponent to apply to the score when computing probabilities for selecting parents for crossover.
    * @default 1
@@ -119,6 +121,10 @@ export class GeneticAlgorithm<Type> {
    */
   public population: Array<ScoredIndividual<Type>>;
   /**
+   * Number of diverse individuals to keep at each iteration
+   */
+  private nbDiverseIndividuals: number;
+  /**
    * Number of iterations performed
    */
   public iteration = 0;
@@ -129,7 +135,9 @@ export class GeneticAlgorithm<Type> {
   /**
    * Random number generator instance
    */
-  private randomGen: Random;
+  public readonly randomGen: Random;
+
+  public readonly minDistancesToElite: number[] = [];
 
   public constructor(
     config: ConfigGA<Type>,
@@ -156,12 +164,9 @@ export class GeneticAlgorithm<Type> {
       );
     }
 
-    if (
-      options.nbDiverseIndividuals > options.populationSize ||
-      options.nbDiverseIndividuals < 0
-    ) {
+    if (options.eliteSize > options.populationSize || options.eliteSize < 1) {
       throw new Error(
-        `Number of diverse individuals (${options.nbDiverseIndividuals}) must be between 0 and population size (${options.populationSize})`,
+        `Size of elite (${options.eliteSize}) must be between 1 and population size (${options.populationSize})`,
       );
     }
 
@@ -173,6 +178,8 @@ export class GeneticAlgorithm<Type> {
 
     // options
     this.options = options;
+    this.nbDiverseIndividuals =
+      this.options.populationSize - this.options.eliteSize;
 
     // results
     this.population = config.intitialPopulation.map((individual) => ({
@@ -183,7 +190,15 @@ export class GeneticAlgorithm<Type> {
     this.iteration = 0;
   }
 
-  public computeNextGeneration(debug = false): void {
+  public getScores(): number[] {
+    return this.population.map((ind) => ind.score);
+  }
+
+  public getBestScores(): number[] {
+    return this.bestScoredIndividuals.map((ind) => ind.score);
+  }
+
+  public getNextGeneration(debug = false): void {
     const originalIndividuals = this.population.map((ind) => ind.data);
 
     const crossovered: Type[] = [];
@@ -247,15 +262,15 @@ export class GeneticAlgorithm<Type> {
 
     this.population = newPopulation.slice(
       0,
-      this.options.populationSize - this.options.nbDiverseIndividuals,
+      this.options.populationSize - this.nbDiverseIndividuals,
     );
 
     // select most diverse individuals if needed
-    if (this.options.nbDiverseIndividuals > 0) {
+    if (this.nbDiverseIndividuals > 0) {
       // there is a probability that one of the individuals selected is already in the population
       const diverseIndividuals = this.options.getDistantIndividuals(
         newPopulation,
-        this.options.nbDiverseIndividuals,
+        this.nbDiverseIndividuals,
       );
       this.population.push(...diverseIndividuals);
     }
@@ -264,21 +279,23 @@ export class GeneticAlgorithm<Type> {
     this.bestScoredIndividuals.push(this.population[0]);
   }
 
-  public getScores(): number[] {
-    return this.population.map((ind) => ind.score);
-  }
-
-  public getBestScores(): number[] {
-    return this.bestScoredIndividuals.map((ind) => ind.score);
-  }
-
   public evolve(nbGenerations: number, debug = false): void {
     for (let i = 0; i < nbGenerations; i++) {
       if (debug) {
         console.log(`Current generation: ${this.iteration}`);
         console.log('Current scores:', this.getScores());
       }
-      this.computeNextGeneration();
+      this.getNextGeneration();
+    }
+  }
+
+  // PRIVATE METHODS
+  public initialiseMinDistances(): void {
+    if (this.minDistancesToElite.length === 0) {
+      for (let i = 0; i < this.population.length; i++) {
+        const individual = this.population[i];
+        this.minDistancesToElite.push(getMinDistanceToElite(this, individual));
+      }
     }
   }
 }
