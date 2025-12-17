@@ -206,12 +206,22 @@ export class GeneticAlgorithm<Type> {
     return this.elitePopulation.map((ind) => ind.score);
   }
 
+  /**
+   * Get scores of best individuals of each generation.
+   * @returns Array of best scores
+   */
   public getBestScores(): number[] {
     return this.bestScoredIndividuals.map((ind) => ind.score);
   }
 
   public getPopulation(): Array<ScoredIndividual<Type>> {
     return this.elitePopulation.concat(this.diversePopulation);
+  }
+
+  private sortPopulationDescending(
+    population: Array<ScoredIndividual<Type>>,
+  ): void {
+    population.sort((a, b) => b.score - a.score);
   }
 
   public getNextGeneration(debug = false): void {
@@ -271,7 +281,7 @@ export class GeneticAlgorithm<Type> {
     const newPopulation = [...population, ...newScoredIndividuals];
 
     // sort by descending fitness score
-    newPopulation.sort((a, b) => b.score - a.score);
+    this.sortPopulationDescending(newPopulation);
 
     this.elitePopulation = newPopulation.slice(0, this.options.eliteSize);
 
@@ -299,7 +309,6 @@ export class GeneticAlgorithm<Type> {
     }
   }
 
-  // PRIVATE METHODS
   public initialiseMinDistances(): void {
     if (this.minDistancesToElite.length === 0) {
       for (let i = 0; i < this.diversePopulation.length; i++) {
