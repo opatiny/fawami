@@ -119,7 +119,9 @@ export class GeneticAlgorithm<Type> {
   /**
    * Population at the current iteration
    */
-  public population: Array<ScoredIndividual<Type>>;
+  // public population: Array<ScoredIndividual<Type>>;
+  public elitePopulation: Array<ScoredIndividual<Type>>;
+  public diversePopulation: Array<ScoredIndividual<Type>>;
   /**
    * Number of diverse individuals to keep at each iteration
    */
@@ -182,24 +184,38 @@ export class GeneticAlgorithm<Type> {
       this.options.populationSize - this.options.eliteSize;
 
     // results
-    this.population = config.intitialPopulation.map((individual) => ({
+    const initialPopulation = config.intitialPopulation.map((individual) => ({
       data: individual,
       score: this.fitness(individual),
     }));
+
+    this.elitePopulation = initialPopulation.slice(0, this.options.eliteSize);
+    this.diversePopulation = initialPopulation.slice(this.options.eliteSize);
+
+    // sort by fitness score
     this.bestScoredIndividuals = [];
     this.iteration = 0;
   }
 
-  public getScores(): number[] {
-    return this.population.map((ind) => ind.score);
+  /**
+   * Get the scores of the elite individuals at the current iteration
+   * @returns The elite scores
+   */
+  public getEliteScores(): number[] {
+    return this.elitePopulation.map((ind) => ind.score);
   }
 
   public getBestScores(): number[] {
     return this.bestScoredIndividuals.map((ind) => ind.score);
   }
 
+  public getPopulation(): Array<ScoredIndividual<Type>> {
+    return this.elitePopulation.concat(this.diversePopulation);
+  }
+
   public getNextGeneration(debug = false): void {
-    const originalIndividuals = this.population.map((ind) => ind.data);
+    const population = this.getPopulation();
+    const originalIndividuals = population.map((ind) => ind.data);
 
     const crossovered: Type[] = [];
     // apply crossover
@@ -211,11 +227,11 @@ export class GeneticAlgorithm<Type> {
       }
 
       // compute probabilities for selection based on fitness scores
-      const probabilities = getProbabilities(this.population, {
+      const probabilities = getProbabilities(population, {
         exponent: this.options.probabilityExponent,
       });
 
-      const indices = this.population.map((_, index) => index);
+      const indices = population.map((_, index) => index);
       for (let i = 0; i < nbCrossovers; i++) {
         const parentsIndices = this.randomGen.choice(indices, {
           size: 2,
@@ -251,7 +267,7 @@ export class GeneticAlgorithm<Type> {
         score: this.fitness(individual),
       }));
 
-    const newPopulation = [...this.population, ...newScoredIndividuals];
+    const newPopulation = [...population, ...newScoredIndividuals];
 
     // sort by fitness score
     if (this.scoreType === 'max') {
@@ -260,10 +276,7 @@ export class GeneticAlgorithm<Type> {
       newPopulation.sort((a, b) => a.score - b.score);
     }
 
-    this.population = newPopulation.slice(
-      0,
-      this.options.populationSize - this.nbDiverseIndividuals,
-    );
+    this.elitePopulation = newPopulation.slice(0, this.options.eliteSize);
 
     // select most diverse individuals if needed
     if (this.nbDiverseIndividuals > 0) {
@@ -272,18 +285,18 @@ export class GeneticAlgorithm<Type> {
         newPopulation,
         this.nbDiverseIndividuals,
       );
-      this.population.push(...diverseIndividuals);
+      this.diversePopulation = diverseIndividuals;
     }
 
     this.iteration++;
-    this.bestScoredIndividuals.push(this.population[0]);
+    this.bestScoredIndividuals.push(this.elitePopulation[0]);
   }
 
   public evolve(nbGenerations: number, debug = false): void {
     for (let i = 0; i < nbGenerations; i++) {
       if (debug) {
         console.log(`Current generation: ${this.iteration}`);
-        console.log('Current scores:', this.getScores());
+        console.log('Current elite scores:', this.getEliteScores());
       }
       this.getNextGeneration();
     }
@@ -292,8 +305,8 @@ export class GeneticAlgorithm<Type> {
   // PRIVATE METHODS
   public initialiseMinDistances(): void {
     if (this.minDistancesToElite.length === 0) {
-      for (let i = 0; i < this.population.length; i++) {
-        const individual = this.population[i];
+      for (let i = 0; i < this.diversePopulation.length; i++) {
+        const individual = this.diversePopulation[i];
         this.minDistancesToElite.push(getMinDistanceToElite(this, individual));
       }
     }

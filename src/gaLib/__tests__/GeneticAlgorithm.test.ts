@@ -62,17 +62,13 @@ const ga = new GeneticAlgorithm<DataType>(config, options);
 test('should compute the next generation correctly', () => {
   ga.getNextGeneration(debug);
 
-  const gen1 = ga.population;
-
-  expect(gen1).toHaveLength(4);
+  expect(ga.getPopulation()).toHaveLength(4);
 });
 
 test('should evolve for multiple generations', () => {
   ga.evolve(10, debug);
 
-  const finalGen = ga.population;
-
-  expect(finalGen).toHaveLength(4);
+  expect(ga.getPopulation()).toHaveLength(4);
   expect(ga.iteration).toBe(11);
   expect(ga.bestScoredIndividuals).toHaveLength(11);
 

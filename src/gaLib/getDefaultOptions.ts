@@ -19,9 +19,10 @@ export function getDefaultOptions<Type>(
     enableMutation: true,
     populationSize: 100,
     initialPopulationSize: 100,
-    nbDiverseIndividuals: 10,
+    eliteSize: 5,
     getDistantIndividuals:
       getDefaultDistantIndividualsFunction<Type>(randomGen),
+    getDistance: getDefaultDistanceFunction<Type>(),
     probabilityExponent: 1,
     debug: false,
   };
@@ -37,5 +38,14 @@ function getDefaultDistantIndividualsFunction<Type>(randomGen: Random) {
       size: nbIndividuals,
       replace: false,
     });
+  };
+}
+
+function getDefaultDistanceFunction<Type>() {
+  return function getDistance(
+    gene1: ScoredIndividual<Type>,
+    gene2: ScoredIndividual<Type>,
+  ): number {
+    return Math.abs(gene1.score - gene2.score);
   };
 }
