@@ -13,8 +13,8 @@ const mask1 = testUtils.createMask([
 
 const mask2 = testUtils.createMask([
   [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
+  [1, 0, 0],
+  [1, 0, 0],
 ]);
 
 const piece2 = new PatternPiece(mask2);
@@ -27,6 +27,11 @@ const pieces = [piece1, piece2];
 
 test('pieces can fit', async () => {
   const fabric = new Image(10, 10);
+
+  expect(canPiecesFitInFabric(fabric, pieces)).toBe(true);
+});
+test('pieces can just fit', async () => {
+  const fabric = new Image(5, 4);
 
   expect(canPiecesFitInFabric(fabric, pieces)).toBe(true);
 });

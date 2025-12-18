@@ -2,7 +2,7 @@ import { mkdir } from 'fs/promises';
 
 import type { Image } from 'image-js';
 
-import type { PatternPiece } from '../PatternPiece.ts';
+import { PatternPiece } from '../PatternPiece.ts';
 import {
   GeneticAlgorithm,
   type OptionsGA,
@@ -43,6 +43,7 @@ import {
   getGenesDistance,
   type GetGenesDistanceOptions,
 } from './utils/getGenesDistance.ts';
+import { canPiecesFitInFabric } from '../utils/canPiecesFitInFabric.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -54,6 +55,11 @@ export interface OptionsTextileGA {
    * @default false
    */
   enableRotation?: boolean;
+  /**
+   * Number of times to cut the pattern pieces in the fabric.
+   * @default 1
+   */
+  nbCuts?: number;
   /**
    * Genetic algorithm options
    */
@@ -91,6 +97,11 @@ export class TextileGA {
    * Array of pattern pieces as extracted from the original pattern image.
    */
   public readonly patternPieces: PatternPiece[];
+  /**
+   * Desired number of times to cut the pattern pieces in the fabric.
+   * @default 1
+   */
+  public readonly nbCuts: number;
   public readonly fabric: Image;
 
   public readonly seed: number;
@@ -118,6 +129,7 @@ export class TextileGA {
     const today = new Date().toISOString().slice(0, 10);
     const {
       seed = getDefaultSeed(),
+      nbCuts = 1,
       enableRotation = false,
       optionsGA,
       fitnessWeights,
@@ -127,6 +139,24 @@ export class TextileGA {
       path = import.meta.dirname,
       dirname = today,
     } = options;
+
+    // copy the pattern pieces in order to match nbCuts
+    if (nbCuts < 1) {
+      throw new Error('nbCuts must be at least 1');
+    }
+    const originalPieces = patternPieces.slice();
+    for (let i = 1; i < nbCuts; i++) {
+      for (const piece of originalPieces) {
+        patternPieces.push(PatternPiece.clone(piece));
+      }
+    }
+    if (canPiecesFitInFabric(fabric, patternPieces) === false) {
+      throw new Error(
+        'The pattern pieces cannot fit in the fabric (pieces surface is larger than fabric surface).',
+      );
+    }
+    this.nbCuts = nbCuts;
+    this.patternPieces = patternPieces;
 
     // create correct options for GA
     this.randomGen = new Random(seed);
@@ -141,7 +171,6 @@ export class TextileGA {
       randomGen: this.randomGen,
     };
 
-    this.patternPieces = patternPieces;
     this.fabric = fabric;
 
     // create correct config for GA

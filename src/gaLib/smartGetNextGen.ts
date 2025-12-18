@@ -31,6 +31,7 @@ export function smartGetNextGen<Type>(
       addToPopulation(ga, scoredChild, options);
     }
   }
+  ga.sortPopulationDescending(ga.elitePopulation);
 }
 
 export function addToPopulation<Type>(

@@ -197,6 +197,8 @@ export class GeneticAlgorithm<Type> {
       score: this.fitness(individual),
     }));
 
+    this.sortPopulationDescending(initialPopulation);
+
     this.elitePopulation = initialPopulation.slice(0, this.options.eliteSize);
     this.diversePopulation = initialPopulation.slice(this.options.eliteSize);
     this.initialiseMinDistances(); // really important not to forget this step

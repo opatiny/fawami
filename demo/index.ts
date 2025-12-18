@@ -8,7 +8,7 @@ import { svgToIjs } from '../src/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
 
 const img1 = 'shapes-holes.svg';
-const dim1 = { width: 20, length: 30 };
+const dim1 = { width: 40, length: 60 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 
@@ -31,6 +31,7 @@ console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
+  nbCuts: 2,
   enableRotation: false,
   optionsGA: {
     initialPopulationSize: 100,
@@ -38,10 +39,10 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
     eliteSize: 2,
     enableMutation: true,
     enableCrossover: true,
-    nextGenFunction: 'smart',
+    nextGenFunction: 'default',
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
-  mutateOptions: { translationAmplitude: 2 },
+  mutateOptions: { translationAmplitude: 20 },
   distanceOptions: { centerWeight: 1, orientationWeight: 100 },
   fitnessWeights: {
     averageColumn: 5,
@@ -65,12 +66,12 @@ textileOptimizer.plotDistanceHeatmap({
   name: 'heatmap-iteration0.svg',
 });
 
-const nbIterations = 20;
+const nbIterations = 10;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
   textileOptimizer.ga.getNextGeneration(false);
-  if (0) {
+  if (1) {
     textileOptimizer.savePopulationImages({
       dirname: `population-iteration${i}`,
       addText: true,

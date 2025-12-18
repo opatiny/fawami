@@ -39,11 +39,17 @@ export async function saveConfig(
 
   const data = {
     seed: textileGA.seed,
+    nbCuts: textileGA.nbCuts,
+    enableRotation: textileGA.enableRotation,
     fitnessWeights: textileGA.fitnessWeights,
     mutateOptions: textileGA.mutateOptions,
     crossoverOptions: textileGA.crossoverOptions,
     distanceOptions: textileGA.distanceOptions,
     optionsGA: textileGA.ga.options,
+    fabricDimensions: {
+      width: textileGA.fabric.width,
+      height: textileGA.fabric.height,
+    },
     // fabric: textileGA.fabric.,
     // patternPieces: textileGA.patternPieces,
   };
