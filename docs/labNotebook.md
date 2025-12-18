@@ -21,7 +21,7 @@ todo:
   - use getters to compute on the fly
   - `toJSON` method to display all stats from different genes as a table with `console.table()`
 
-## 2026.11.12
+## 2025.11.12
 
 questions:
 
@@ -33,3 +33,8 @@ questions:
 - how to remove console.log being an error?
 - how to avoid `number | undefined` errors? when I access an element of an array
 - how to implement functions that act on an array of class instances? can you put it directly in the class?
+
+## 2025.12.18
+
+- work on implementing new way of computing next generation in GA
+- add and optimize 1 individual at a time

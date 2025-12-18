@@ -44,9 +44,7 @@ const options: OptionsGA<DataType> = {
 };
 const ga = new GeneticAlgorithm<DataType>(config, options);
 
-test('should initialize min distances to elite', () => {
-  ga.initialiseMinDistances();
-
+test('check min distances to elite were initialized', () => {
   const expected = [1, 2];
   expect(ga.minDistancesToElite).toStrictEqual(expected);
 });

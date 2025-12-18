@@ -192,6 +192,7 @@ export class GeneticAlgorithm<Type> {
 
     this.elitePopulation = initialPopulation.slice(0, this.options.eliteSize);
     this.diversePopulation = initialPopulation.slice(this.options.eliteSize);
+    this.initialiseMinDistances(); // really important not to forget this step
 
     // sort by fitness score
     this.bestScoredIndividuals = [];
@@ -204,6 +205,15 @@ export class GeneticAlgorithm<Type> {
    */
   public getEliteScores(): number[] {
     return this.elitePopulation.map((ind) => ind.score);
+  }
+
+  /**
+   * Get the scores of the elite individuals at the current iteration
+   * @returns The elite scores
+   */
+  public getScores(): number[] {
+    const population = this.getPopulation();
+    return population.map((ind) => ind.score);
   }
 
   /**

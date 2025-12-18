@@ -46,8 +46,6 @@ const options: OptionsGA<DataType> = {
 
 const ga = new GeneticAlgorithm<DataType>(config, options);
 
-ga.initialiseMinDistances();
-
 test('worst index should be 2', () => {
   const index = findWorstEliteIndex(ga);
   expect(ga.minDistancesToElite).toStrictEqual([1, 2]);
