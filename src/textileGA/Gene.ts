@@ -12,9 +12,19 @@ export interface GeneOptions {
 }
 
 export class Gene {
+  /**
+   * Fabric associated with the gene.
+   */
   public readonly fabric: Image;
+  /**
+   * Resolution of the pattern pieces associated with the gene in pixels/cm.
+   */
+  public readonly resolution: number;
   public readonly patternPieces: PatternPieces;
   public readonly fitness: FitnessData;
+  /**
+   *  Paramters to compute gene fitness.
+   */
   public readonly fitnessWeights: FitnessWeights;
 
   public constructor(
@@ -22,6 +32,15 @@ export class Gene {
     patternPieces: PatternPieces,
     options: GeneOptions = {},
   ) {
+    // check pattern pieces all have same resolution
+
+    const resolution = patternPieces[0].meta.resolution as number;
+    for (const piece of patternPieces) {
+      if (piece.meta.resolution !== resolution) {
+        throw new Error('All pattern pieces must have the same resolution');
+      }
+    }
+    this.resolution = resolution;
     this.fabric = fabric;
     this.patternPieces = patternPieces;
     this.fitnessWeights = {

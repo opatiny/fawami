@@ -75,7 +75,4 @@ export function defaultGetNextGen<Type>(
     );
     ga.diversePopulation = diverseIndividuals;
   }
-
-  ga.iteration++;
-  ga.bestScoredIndividuals.push(ga.elitePopulation[0]);
 }

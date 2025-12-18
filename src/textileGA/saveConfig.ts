@@ -42,6 +42,7 @@ export async function saveConfig(
     fitnessWeights: textileGA.fitnessWeights,
     mutateOptions: textileGA.mutateOptions,
     crossoverOptions: textileGA.crossoverOptions,
+    distanceOptions: textileGA.distanceOptions,
     optionsGA: textileGA.ga.options,
     // fabric: textileGA.fabric.,
     // patternPieces: textileGA.patternPieces,

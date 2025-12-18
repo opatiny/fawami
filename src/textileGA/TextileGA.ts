@@ -20,7 +20,10 @@ import { DefaultMutateOptions, type MutateOptions } from './mutateTranslate.ts';
 import { getRandomGenes } from './getRandomGenes.ts';
 import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 import { getDefaultOptions } from '../gaLib/getDefaultOptions.ts';
-import { getDistantGenes } from './getDistantGenes.ts';
+import {
+  getDistantGenes,
+  type GetDistantGenesOptions,
+} from './getDistantGenes.ts';
 
 import {
   savePopulationImages as saveImages,
@@ -35,6 +38,11 @@ import { saveConfig, type SaveConfigOptions } from './saveConfig.ts';
 import { join } from 'node:path';
 import { createOrEmptyDir } from '../utils/createOrEmptyDir.ts';
 import { mutateAndKeepBest } from './mutateAndKeepBest.ts';
+import {
+  DefaultDistanceOptions,
+  getGenesDistance,
+  type GetGenesDistanceOptions,
+} from './utils/getGenesDistance.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -64,6 +72,10 @@ export interface OptionsTextileGA {
    */
   crossoverOptions?: CrossoverOptions;
   /**
+   * Distance computation options.
+   */
+  distanceOptions?: GetGenesDistanceOptions;
+  /**
    * Path where to create the output directory.
    */
   path?: string;
@@ -86,6 +98,7 @@ export class TextileGA {
   public fitnessWeights: FitnessWeights;
   public mutateOptions?: MutateOptions;
   public crossoverOptions?: CrossoverOptions;
+  public distanceOptions?: GetGenesDistanceOptions;
 
   public readonly ga: GeneticAlgorithm<Gene>;
 
@@ -110,6 +123,7 @@ export class TextileGA {
       fitnessWeights,
       mutateOptions,
       crossoverOptions,
+      distanceOptions,
       path = import.meta.dirname,
       dirname = today,
     } = options;
@@ -122,6 +136,7 @@ export class TextileGA {
 
     const gaOptions: OptionsGA<Gene> = {
       ...defaultOptionsGA,
+      getDistance: this.getDistanceFunction(distanceOptions),
       ...optionsGA,
       randomGen: this.randomGen,
     };
@@ -148,6 +163,7 @@ export class TextileGA {
 
     this.mutateOptions = { ...DefaultMutateOptions, ...mutateOptions };
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
+    this.distanceOptions = { ...DefaultDistanceOptions, ...distanceOptions };
 
     console.log('gaOptions.randomGen', gaOptions.randomGen);
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
@@ -212,6 +228,22 @@ export class TextileGA {
         data: gene,
         score: this.ga.fitness(gene),
       }));
+    };
+  }
+
+  /**
+   * Compute the distance between two genes.
+   * @param gene1 - First gene
+   * @param gene2 - Second gene
+   * @returns Distance between the two genes
+   */
+  private getDistanceFunction(options?: GetDistantGenesOptions) {
+    return (
+      gene1: ScoredIndividual<Gene>,
+      gene2: ScoredIndividual<Gene>,
+    ): number => {
+      const distance = getGenesDistance(gene1.data, gene2.data, options);
+      return distance;
     };
   }
 

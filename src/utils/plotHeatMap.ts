@@ -71,7 +71,7 @@ export function plotHeatMap(
     visualMap: {
       type: 'piecewise',
       min: 0,
-      max: Math.ceil(matrix.max() / nbColors) * nbColors,
+      max: Math.ceil(matrix.max() * 10) / 10,
       left: 'right',
       top: 'center',
       calculable: true,

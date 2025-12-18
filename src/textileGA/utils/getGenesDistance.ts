@@ -2,6 +2,11 @@ import type { PatternPiece } from '../../PatternPiece.ts';
 
 import type { Gene } from '../Gene.ts';
 
+export const DefaultDistanceOptions: GetGenesDistanceOptions = {
+  centerWeight: 1,
+  orientationWeight: 100,
+};
+
 export interface GetGenesDistanceOptions {
   /**
    * Weight for center distance.
@@ -48,7 +53,7 @@ export function getGenesDistance(
     const center1 = piece1.centerOrigin;
     const center2 = piece2.centerOrigin;
 
-    // euclidean distance
+    // euclidean distance in pixels
     const distance = Math.round(
       Math.hypot(center1.row - center2.row, center1.column - center2.column),
     );
@@ -65,8 +70,10 @@ export function getGenesDistance(
   if (debug) {
     console.log({ centerDistance, orientationDistance });
   }
-
+  // divide by max dimension of fabric to make independent of fabric size
+  const maxDim = Math.max(gene1.fabric.width, gene1.fabric.height);
   return (
-    centerDistance * centerWeight + orientationDistance * orientationWeight
+    (centerDistance / maxDim) * centerWeight +
+    orientationDistance * orientationWeight
   );
 }

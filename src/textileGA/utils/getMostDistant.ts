@@ -4,9 +4,9 @@ import type { Gene } from '../Gene.ts';
 import { getGenesDistance } from './getGenesDistance.ts';
 
 /**
- * Compute a distance matrix between all genes in the population.
+ * Find the most distant gene from a source gene in an array of genes.
  * @param genes - Array of genes
- * @returns Index from the most distant gene to the source
+ * @returns Index of the most distant gene to the source
  */
 export function getMostDistant(source: Gene, genes: Gene[]): number {
   const n = genes.length;

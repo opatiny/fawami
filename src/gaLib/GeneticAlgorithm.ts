@@ -250,6 +250,9 @@ export class GeneticAlgorithm<Type> {
     } else {
       throw new Error(`Unknown next generation function: ${nextGenFunction}`);
     }
+
+    this.iteration++;
+    this.bestScoredIndividuals.push(this.elitePopulation[0]);
   }
 
   public evolve(nbGenerations: number, debug = false): void {

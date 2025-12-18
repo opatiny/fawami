@@ -48,6 +48,7 @@ export function mutateAndKeepBest(
     nbIterations = 5,
     debug = false,
     randomGen = new Random(),
+    translationAmplitude,
   } = options;
   const bestGenes: Gene[] = [];
   let bestGene = gene;
@@ -59,7 +60,10 @@ export function mutateAndKeepBest(
   for (let iteration = 0; iteration < nbIterations; iteration++) {
     const mutants: Gene[] = [bestGene];
     for (let i = 0; i < populationSize; i++) {
-      const mutant = mutateTranslate(fabric, bestGene, { randomGen });
+      const mutant = mutateTranslate(fabric, bestGene, {
+        randomGen,
+        translationAmplitude,
+      });
       mutants.push(mutant);
     }
     sortGenesByScore(mutants);

@@ -31,22 +31,24 @@ console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
-  enableRotation: true,
+  enableRotation: false,
   optionsGA: {
+    initialPopulationSize: 100,
     populationSize: 10,
     eliteSize: 2,
     enableMutation: true,
     enableCrossover: true,
-    nextGenFunction: 'default',
+    nextGenFunction: 'smart',
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
   mutateOptions: { translationAmplitude: 2 },
+  distanceOptions: { centerWeight: 1, orientationWeight: 100 },
   fitnessWeights: {
     averageColumn: 5,
-    averageRow: 1,
-    overlap: 30,
+    averageRow: 2,
+    overlap: 15,
     usedLength: 0,
-    packing: 1,
+    packing: 5,
   },
   path: currentDir,
 });
