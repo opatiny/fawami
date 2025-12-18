@@ -23,6 +23,9 @@ export interface GetRandomGenesOptions {
    * @default New random generator without seed
    */
   randomGen?: Random;
+  /**
+   * Fitness weights to compute the score of the new genes.
+   */
   fitnessWeights?: FitnessWeights;
 }
 

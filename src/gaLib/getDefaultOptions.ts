@@ -19,6 +19,7 @@ export function getDefaultOptions<Type>(
     enableMutation: true,
     populationSize: 100,
     initialPopulationSize: 100,
+    nextGenFunction: 'default',
     eliteSize: 5,
     getDistantIndividuals:
       getDefaultDistantIndividualsFunction<Type>(randomGen),

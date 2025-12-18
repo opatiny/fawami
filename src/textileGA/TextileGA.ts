@@ -16,11 +16,7 @@ import {
   type CrossoverOptions,
 } from './crossover1Point.ts';
 import { DefaultFitnessWeights, type FitnessWeights } from './getFitness.ts';
-import {
-  DefaultMutateOptions,
-  mutateTranslate,
-  type MutateOptions,
-} from './mutateTranslate.ts';
+import { DefaultMutateOptions, type MutateOptions } from './mutateTranslate.ts';
 import { getRandomGenes } from './getRandomGenes.ts';
 import { getDefaultSeed } from '../utils/getDefaultSeed.ts';
 import { getDefaultOptions } from '../gaLib/getDefaultOptions.ts';
@@ -37,7 +33,6 @@ import { plotHeatMap, type PlotHeatMapOptions } from '../utils/plotHeatMap.ts';
 import { Random } from 'ml-random';
 import { saveConfig, type SaveConfigOptions } from './saveConfig.ts';
 import { join } from 'node:path';
-import { create } from 'node:domain';
 import { createOrEmptyDir } from '../utils/createOrEmptyDir.ts';
 import { mutateAndKeepBest } from './mutateAndKeepBest.ts';
 
@@ -46,6 +41,11 @@ export interface OptionsTextileGA {
    * Seed used for all random values in the genetic algorithm ("top-level" seed).
    */
   seed?: number;
+  /**
+   * Enable rotation of pattern pieces
+   * @default false
+   */
+  enableRotation?: boolean;
   /**
    * Genetic algorithm options
    */
@@ -67,7 +67,6 @@ export interface OptionsTextileGA {
    * Path where to create the output directory.
    */
   path?: string;
-
   /**
    * Name of output directory for saving data.
    * @default today's date in YYYY-MM-DD format
@@ -83,6 +82,7 @@ export class TextileGA {
   public readonly fabric: Image;
 
   public readonly seed: number;
+  public readonly enableRotation: boolean;
   public fitnessWeights: FitnessWeights;
   public mutateOptions?: MutateOptions;
   public crossoverOptions?: CrossoverOptions;
@@ -105,6 +105,7 @@ export class TextileGA {
     const today = new Date().toISOString().slice(0, 10);
     const {
       seed = getDefaultSeed(),
+      enableRotation = false,
       optionsGA,
       fitnessWeights,
       mutateOptions,
@@ -115,6 +116,7 @@ export class TextileGA {
 
     // create correct options for GA
     this.randomGen = new Random(seed);
+    this.enableRotation = enableRotation;
 
     const defaultOptionsGA = getDefaultOptions<Gene>(this.randomGen);
 
@@ -195,6 +197,7 @@ export class TextileGA {
       populationSize,
       randomGen: this.randomGen,
       fitnessWeights: fitnessWeights,
+      rotatePieces: this.enableRotation,
     });
     return genes;
   }
@@ -207,13 +210,13 @@ export class TextileGA {
       });
       return distantIndividuals.map((gene) => ({
         data: gene,
-        score: gene.fitness.score,
+        score: this.ga.fitness(gene),
       }));
     };
   }
 
   public getBestScores(): number[] {
-    return this.ga.bestScoredIndividuals.map((ind) => ind.score);
+    return this.ga.bestScoredIndividuals.map((ind) => ind.data.fitness.score);
   }
 
   /**

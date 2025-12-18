@@ -3,12 +3,8 @@ import { join } from 'node:path';
 import { write } from 'image-js';
 
 import { extractPatternPieces } from '../src/extractPatternPieces.ts';
-import { getDistantGenes } from '../src/textileGA/getDistantGenes.ts';
-import { getRandomGenes } from '../src/textileGA/getRandomGenes.ts';
-import { mutateAndKeepBest } from '../src/textileGA/mutateAndKeepBest.ts';
 import { getRectangleFabric } from '../src/getRectangleFabric.ts';
 import { svgToIjs } from '../src/svgToIjs.ts';
-import { savePopulationImages } from '../src/utils/savePopulationImages.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
 
 const img1 = 'shapes-holes.svg';
@@ -35,20 +31,22 @@ console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
+  enableRotation: true,
   optionsGA: {
-    populationSize: 50,
-    eliteSize: 5,
+    populationSize: 10,
+    eliteSize: 2,
     enableMutation: true,
     enableCrossover: true,
+    nextGenFunction: 'default',
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
   mutateOptions: { translationAmplitude: 2 },
   fitnessWeights: {
     averageColumn: 5,
     averageRow: 1,
-    overlap: 5,
+    overlap: 30,
     usedLength: 0,
-    packing: 0,
+    packing: 1,
   },
   path: currentDir,
 });
@@ -65,7 +63,7 @@ textileOptimizer.plotDistanceHeatmap({
   name: 'heatmap-iteration0.svg',
 });
 
-const nbIterations = 10;
+const nbIterations = 20;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
@@ -76,15 +74,13 @@ for (let i = 1; i <= nbIterations; i++) {
       addText: true,
     });
   }
-
   textileOptimizer.plotDistanceHeatmap({
     debug: false,
     name: `heatmap-iteration${i}.svg`,
   });
 
   const currentBestGene = textileOptimizer.ga.bestScoredIndividuals[i - 1];
-  console.log('New best score: ', currentBestGene.score);
-  // console.log('Fitness data: ', currentBestGene.data.fitness);
+  console.log('New best score: ', currentBestGene.data.fitness.score);
 }
 
 textileOptimizer.saveBestGenesImages({ addText: true });

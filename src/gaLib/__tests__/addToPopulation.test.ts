@@ -17,8 +17,6 @@ type DataType = number[];
 
 const randomGen = new Random(0);
 
-const debug = false;
-
 function crossover(parent1: DataType, parent2: DataType): [DataType, DataType] {
   return [parent1, parent2];
 }
@@ -77,7 +75,7 @@ test('should add to elite', () => {
   expect(ga.minDistancesToElite).toStrictEqual([3, 4]);
 });
 
-test('should add to elite', () => {
+test('should add to diverse', () => {
   const ga = new GeneticAlgorithm<DataType>(config, options);
   const newElite = { data: [1, 1, 1, 1, 0], score: -4 };
 

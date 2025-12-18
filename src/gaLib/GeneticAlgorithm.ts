@@ -5,6 +5,8 @@ import { Random } from 'ml-random';
 import { getDefaultOptions } from './getDefaultOptions.ts';
 import { getProbabilities } from './utils/getProbabilities.ts';
 import { getMinDistanceToElite } from './utils/getMinDistanceToElite.ts';
+import { smartGetNextGen } from './smartGetNextGen.ts';
+import { defaultGetNextGen } from './defaultGetNextGen.ts';
 
 export interface ScoredIndividual<Type> {
   data: Type;
@@ -50,6 +52,11 @@ export interface ConfigGA<Type> {
  * Internal options with all fields required
  */
 export interface InternalOptionsGA<Type> {
+  /**
+   * Pick function to get the next generation
+   * @default 'default'
+   */
+  nextGenFunction: 'default' | 'smart';
   /**
    * Function to select the most diverse individuals in the population
    * @default Takes the N random individuals
@@ -228,85 +235,21 @@ export class GeneticAlgorithm<Type> {
     return this.elitePopulation.concat(this.diversePopulation);
   }
 
-  private sortPopulationDescending(
+  public sortPopulationDescending(
     population: Array<ScoredIndividual<Type>>,
   ): void {
     population.sort((a, b) => b.score - a.score);
   }
 
   public getNextGeneration(debug = false): void {
-    const population = this.getPopulation();
-    const originalIndividuals = population.map((ind) => ind.data);
-
-    const crossovered: Type[] = [];
-    // apply crossover
-    if (this.options.enableCrossover) {
-      const nbCrossovers = Math.floor(this.options.populationSize / 2);
-
-      if (debug) {
-        console.log(`Performing ${nbCrossovers} crossovers`);
-      }
-
-      // compute probabilities for selection based on fitness scores
-      const probabilities = getProbabilities(population, {
-        exponent: this.options.probabilityExponent,
-      });
-
-      const indices = population.map((_, index) => index);
-      for (let i = 0; i < nbCrossovers; i++) {
-        const parentsIndices = this.randomGen.choice(indices, {
-          size: 2,
-          replace: false,
-          // probabilities,
-        });
-        if (debug) {
-          console.log({ parentsIndices });
-        }
-        const parents = [
-          originalIndividuals[parentsIndices[0]],
-          originalIndividuals[parentsIndices[1]],
-        ];
-        const [child1, child2] = this.crossover(parents[0], parents[1]);
-        crossovered.push(child1, child2);
-      }
+    const { nextGenFunction } = this.options;
+    if (nextGenFunction === 'default') {
+      defaultGetNextGen(this, debug);
+    } else if (nextGenFunction === 'smart') {
+      smartGetNextGen(this, { debug });
+    } else {
+      throw new Error(`Unknown next generation function: ${nextGenFunction}`);
     }
-
-    // apply mutation to original and crossovered individuals
-    const mutated: Type[] = [];
-    if (this.options.enableMutation) {
-      const toMutate = [...originalIndividuals, ...crossovered];
-      for (const individual of toMutate) {
-        const mutatedIndividual = this.mutate(individual);
-        mutated.push(mutatedIndividual);
-      }
-    }
-
-    const newIndividuals = mutated;
-    const newScoredIndividuals: Array<ScoredIndividual<Type>> =
-      newIndividuals.map((individual) => ({
-        data: individual,
-        score: this.fitness(individual),
-      }));
-
-    const newPopulation = [...population, ...newScoredIndividuals];
-
-    // sort by descending fitness score
-    this.sortPopulationDescending(newPopulation);
-
-    this.elitePopulation = newPopulation.slice(0, this.options.eliteSize);
-
-    // select most diverse individuals if needed
-    if (this.nbDiverseIndividuals > 0) {
-      // there is a probability that one of the individuals selected is already in the population
-      const diverseIndividuals = this.options.getDistantIndividuals(
-        newPopulation,
-        this.nbDiverseIndividuals,
-      );
-      this.diversePopulation = diverseIndividuals;
-    }
-
-    this.iteration++;
-    this.bestScoredIndividuals.push(this.elitePopulation[0]);
   }
 
   public evolve(nbGenerations: number, debug = false): void {
