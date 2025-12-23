@@ -3,7 +3,6 @@ import { join } from 'node:path';
 import { write } from 'image-js';
 
 import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
-import { getDistantGenes } from '../../src/textileGA/getDistantGenes.ts';
 import { getRandomGenes } from '../../src/textileGA/getRandomGenes.ts';
 import { mutateAndKeepBest } from '../../src/textileGA/mutateAndKeepBest.ts';
 import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
@@ -56,5 +55,5 @@ savePopulationImages(fabric, bestMutants, {
   dirname: 'sortedMutants',
   path: import.meta.dirname,
   nameBase: 'generation',
-  addNumbers: true,
+  addText: true,
 });

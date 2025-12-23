@@ -86,7 +86,7 @@ export function savePopulationImages(
 
       fabricClone = drawText(fabricClone, {
         ...textBaseOptions,
-        content: `score: ${gene.fitness.score.toFixed(3)}`,
+        content: `score: ${gene.getFitness().toFixed(3)}`,
         position: scorePosition,
       });
       fabricClone = drawText(fabricClone, {
