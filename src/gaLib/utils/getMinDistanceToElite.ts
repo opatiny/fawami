@@ -3,7 +3,7 @@ import type {
   ScoredIndividual,
 } from '../GeneticAlgorithm.ts';
 /**
- * Compute the minimum distance from a new individual to the elite individuals.
+ * Compute the minimum distance from a individual to the elite individuals.
  * @param ga - Genetic algorithm instance
  * @param newIndividual - New individual
  * @returns Minimum distance to elite individuals

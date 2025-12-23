@@ -20,8 +20,10 @@ export class Gene {
    * Resolution of the pattern pieces associated with the gene in pixels/cm.
    */
   public readonly resolution: number;
+  /**
+   * Caution: the pattern pieces can still be moved and rotated
+   */
   public readonly patternPieces: PatternPieces;
-  public readonly fitness: FitnessData;
   /**
    *  Paramters to compute gene fitness.
    */
@@ -47,12 +49,23 @@ export class Gene {
       ...DefaultFitnessWeights,
       ...options.fitnessWeights,
     };
+  }
 
-    this.fitness = getFitness(fabric, this.patternPieces, {
+  public getFitnessData(): FitnessData {
+    return getFitness(this.fabric, this.patternPieces, {
       weights: this.fitnessWeights,
     });
   }
 
+  public getFitness(): number {
+    return this.getFitnessData().score;
+  }
+
+  /**
+   * Clone a gene. The pattern pieces masks are not copied to save memory, but the origins and rotations are.
+   * @param gene Gene to clone.
+   * @returns Clone of the gene.
+   */
   public static clone(gene: Gene): Gene {
     const newPieces: PatternPieces = [];
     for (const piece of gene.patternPieces) {
@@ -64,10 +77,11 @@ export class Gene {
   }
 
   toJSON() {
+    const fitnessData = this.getFitnessData();
     return {
-      fitness: this.fitness.score,
-      overlapArea: this.fitness.overlapArea,
-      usedLength: this.fitness.usedLength,
+      fitness: fitnessData.score,
+      overlapArea: fitnessData.overlapArea,
+      usedLength: fitnessData.usedLength,
     };
   }
 

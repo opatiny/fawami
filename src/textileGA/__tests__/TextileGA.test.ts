@@ -72,7 +72,7 @@ test('population size = 100', () => {
   });
 
   textileGa.plotDistanceHeatmap({
-    debug: true,
+    debug: false,
     name: 'heatmap-iteration0.svg',
   });
 
@@ -80,14 +80,14 @@ test('population size = 100', () => {
 
   textileGa.saveBestGenesImages();
 
-  textileGa.plotBestScores({ debug: true });
+  textileGa.plotBestScores({ debug: false });
 
   textileGa.savePopulationImages({
     dirname: 'population-iteration5',
   });
 
   textileGa.plotDistanceHeatmap({
-    debug: true,
+    debug: false,
     name: 'heatmap-iteration5.svg',
   });
 

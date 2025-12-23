@@ -41,8 +41,8 @@ export function addToPopulation<Type>(
 ): void {
   const { debug = false } = options;
 
-  const worstEliteIndex = findWorstEliteIndex(ga);
-
+  const worstEliteIndex = findWorstIndividualIndex(ga.elitePopulation);
+  // if new individual score is better than worst elite, add to elite
   if (newIndividual.score > ga.elitePopulation[worstEliteIndex].score) {
     if (debug) {
       console.log('Adding to elite');
@@ -51,13 +51,14 @@ export function addToPopulation<Type>(
     // add new individual to elite
     ga.elitePopulation[worstEliteIndex] = newIndividual;
     // update distances to elite
-    updateMinDistances(ga, newIndividual);
+    updateMinDistances(ga);
   } else {
     if (debug) {
       console.log('Adding to diverse');
     }
 
     // add new individual to diverse population if it increases diversity
+    // increase diversity: new min distance to elite is larger than smallest min distance in current diverse population
     const minDistance = getMinDistanceToElite(ga, newIndividual);
     let index = 0;
     let diverseSmallestMinDistance = Infinity;
@@ -68,6 +69,8 @@ export function addToPopulation<Type>(
         index = i;
       }
     }
+    // replace previously least diverse individual
+    // We want to maximize the minimum distance to elite.
     if (minDistance > diverseSmallestMinDistance) {
       ga.diversePopulation[index] = newIndividual;
       ga.minDistancesToElite[index] = minDistance;
@@ -76,15 +79,17 @@ export function addToPopulation<Type>(
 }
 
 /**
- * Find elite individual with lowest score
- * @param ga - Genetic algorithm instance
- * @returns Index of the worst elite individual
+ * Find individual with lowest score in a population.
+ * @param population - Array of scored individuals
+ * @returns Index of the worst individual
  */
-export function findWorstEliteIndex<Type>(ga: GeneticAlgorithm<Type>): number {
+export function findWorstIndividualIndex<Type>(
+  population: Array<ScoredIndividual<Type>>,
+): number {
   let worstIndex = 0;
   let worstScore = Infinity;
-  for (let i = 0; i < ga.options.eliteSize; i++) {
-    const individual = ga.elitePopulation[i];
+  for (let i = 0; i < population.length; i++) {
+    const individual = population[i];
     if (individual.score < worstScore) {
       worstScore = individual.score;
       worstIndex = i;
@@ -96,16 +101,12 @@ export function findWorstEliteIndex<Type>(ga: GeneticAlgorithm<Type>): number {
 /**
  * Update the minimum distances to elite after adding a new elite individual.
  * @param ga - Genetic algorithm instance
- * @param newElite - New elite individual
  */
-export function updateMinDistances<Type>(
-  ga: GeneticAlgorithm<Type>,
-  newElite: ScoredIndividual<Type>,
-): void {
+export function updateMinDistances<Type>(ga: GeneticAlgorithm<Type>): void {
   for (let i = 0; i < ga.diversePopulation.length; i++) {
-    const distance = ga.options.getDistance(ga.diversePopulation[i], newElite);
-    if (distance > ga.minDistancesToElite[i]) {
-      ga.minDistancesToElite[i] = distance;
-    }
+    ga.minDistancesToElite[i] = getMinDistanceToElite(
+      ga,
+      ga.diversePopulation[i],
+    );
   }
 }

@@ -201,7 +201,7 @@ export class GeneticAlgorithm<Type> {
 
     this.elitePopulation = initialPopulation.slice(0, this.options.eliteSize);
     this.diversePopulation = initialPopulation.slice(this.options.eliteSize);
-    this.initialiseMinDistances(); // really important not to forget this step
+    this.initialiseMinDistances(); // really important not to forget this step for smart next gen to work
 
     // sort by fitness score
     this.bestScoredIndividuals = [];

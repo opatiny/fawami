@@ -3,7 +3,10 @@ import { expect, test } from 'vitest';
 
 import type { ConfigGA, OptionsGA } from '../GeneticAlgorithm.ts';
 import { GeneticAlgorithm } from '../GeneticAlgorithm.ts';
-import { findWorstEliteIndex, updateMinDistances } from '../smartGetNextGen.ts';
+import {
+  findWorstIndividualIndex,
+  updateMinDistances,
+} from '../smartGetNextGen.ts';
 
 type DataType = number[];
 
@@ -24,9 +27,9 @@ function fitness(gene: DataType): number {
 }
 
 const initialPopulation: DataType[] = [
-  [0, 0, 1],
-  [0, 1, 1],
   [1, 1, 1],
+  [0, 1, 1],
+  [0, 0, 1],
 ];
 
 const config: ConfigGA<DataType> = {
@@ -46,12 +49,14 @@ const options: OptionsGA<DataType> = {
 
 const ga = new GeneticAlgorithm<DataType>(config, options);
 
-test('worst index should be 2', () => {
-  const index = findWorstEliteIndex(ga);
+test('initial minimal distances should be correct', () => {
   expect(ga.minDistancesToElite).toStrictEqual([1, 2]);
+});
 
-  const newElite = { data: [1, 1, 1], score: 3 };
-  updateMinDistances(ga, newElite);
-  const expected = [1, 0];
+test('update distances', () => {
+  ga.elitePopulation[0] = { data: [1, 1, 0], score: 2 };
+  updateMinDistances(ga);
+
+  const expected = [0, 1];
   expect(ga.minDistancesToElite).toStrictEqual(expected);
 });

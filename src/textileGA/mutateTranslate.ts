@@ -12,6 +12,11 @@ export interface MutateOptions {
    * @default 10
    */
   translationAmplitude?: number;
+  /**
+   * Number of iterations (generations) to compute)
+   * @default 5
+   */
+  nbIterations?: number;
 }
 
 export const DefaultMutateOptions: MutateOptions = {

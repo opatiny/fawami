@@ -58,6 +58,17 @@ const options: OptionsGA<DataType> = {
 };
 const ga = new GeneticAlgorithm<DataType>(config, options);
 
+test('should compute initial scores correctly', () => {
+  const population = ga.getPopulation();
+  expect(population).toHaveLength(4);
+
+  // population is sorted descending by score!!
+  const scores = [33, 24, 15, 6];
+  for (let i = 0; i < population.length; i++) {
+    expect(population[i].score).toBe(scores[i]);
+  }
+});
+
 test('should compute the next generation correctly', () => {
   ga.getNextGeneration(debug);
 

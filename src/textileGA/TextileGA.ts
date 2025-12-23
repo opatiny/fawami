@@ -194,7 +194,6 @@ export class TextileGA {
     this.crossoverOptions = { ...DefaultCrossoverOptions, ...crossoverOptions };
     this.distanceOptions = { ...DefaultDistanceOptions, ...distanceOptions };
 
-    console.log('gaOptions.randomGen', gaOptions.randomGen);
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
 
     // setup out directories
@@ -211,7 +210,7 @@ export class TextileGA {
   private getFitnessFunction() {
     return (gene: Gene) => {
       // the minus sign is to have lower fitness correspond to better individuals
-      return -gene.fitness.score;
+      return -gene.getFitness();
     };
   }
 
@@ -277,7 +276,7 @@ export class TextileGA {
   }
 
   public getBestScores(): number[] {
-    return this.ga.bestScoredIndividuals.map((ind) => ind.data.fitness.score);
+    return this.ga.bestScoredIndividuals.map((ind) => ind.data.getFitness());
   }
 
   /**

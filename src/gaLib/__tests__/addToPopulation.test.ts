@@ -9,7 +9,7 @@ import type {
 import { GeneticAlgorithm } from '../GeneticAlgorithm.ts';
 import {
   addToPopulation,
-  findWorstEliteIndex,
+  findWorstIndividualIndex,
   updateMinDistances,
 } from '../smartGetNextGen.ts';
 
