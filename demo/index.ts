@@ -11,13 +11,15 @@ const img1 = 'shapes-holes.svg';
 const dim1 = { width: 40, length: 30 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
+const img3 = 'circles.svg';
+const dim3 = { width: 30, length: 20 };
 
-const path = join(import.meta.dirname, '../data/', img1);
+const path = join(import.meta.dirname, '../data/', img3);
 
 const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim1);
+const fabric = getRectangleFabric(dim3);
 
 // convert the SVG to an image-js image
 const pattern = await svgToIjs(path, { resolution: 10 });
@@ -31,18 +33,18 @@ console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
-  nbCuts: 2,
+  nbCuts: 3,
   enableRotation: true,
   optionsGA: {
-    initialPopulationSize: 10,
-    populationSize: 10,
+    initialPopulationSize: 20,
+    populationSize: 20,
     eliteSize: 2,
     enableMutation: true,
     enableCrossover: true,
     nextGenFunction: 'smart',
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
-  mutateOptions: { translationAmplitude: 10, mutationFunction: 'smart' },
+  mutateOptions: { translationAmplitude: 2, mutationFunction: 'smart' },
   distanceOptions: { centerWeight: 1, orientationWeight: 100 },
   fitnessWeights: {
     averageColumn: 1,

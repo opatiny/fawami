@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200mm"
+   height="200mm"
+   viewBox="0 0 200 200"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   sodipodi:docname="circles.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.7399737"
+     inkscape:cx="295.28076"
+     inkscape:cy="305.41626"
+     inkscape:window-width="1920"
+     inkscape:window-height="1021"
+     inkscape:window-x="0"
+     inkscape:window-y="31"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:#000000;stroke-width:0.264583"
+       id="path1"
+       cx="59.890923"
+       cy="67.042076"
+       r="15.196204" />
+    <circle
+       style="fill:#000000;stroke-width:0.264583"
+       id="path2"
+       cx="104.22808"
+       cy="75.623459"
+       r="11.620626" />
+    <circle
+       style="fill:#000000;stroke-width:0.264583"
+       id="path3"
+       cx="75.444679"
+       cy="96.540588"
+       r="4.6482506" />
+    <circle
+       style="fill:#000000;stroke-width:0.264583"
+       id="path4"
+       cx="87.601639"
+       cy="47.19762"
+       r="8.5813866" />
+    <circle
+       style="fill:#000000;stroke-width:0.264583"
+       id="path5"
+       cx="138.91118"
+       cy="142.84433"
+       r="35.219437" />
+    <ellipse
+       style="fill:#000000;stroke-width:0.264583"
+       id="path6"
+       cx="56.851685"
+       cy="123.5362"
+       rx="30.749964"
+       ry="7.6874914" />
+    <ellipse
+       style="fill:#000000;stroke-width:0.264583"
+       id="path7"
+       cx="140.34142"
+       cy="71.194748"
+       rx="10.190395"
+       ry="16.488407" />
+  </g>
+</svg>
