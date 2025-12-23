@@ -22,7 +22,7 @@ const fabric = new Image(10, 10);
 const gene = new Gene(fabric, pieces, {
   fitnessWeights: {
     averageColumn: 1,
-    averageRow: 0,
+    averageRow: 1,
     packing: 0,
     usedLength: 0,
     overlap: 0,

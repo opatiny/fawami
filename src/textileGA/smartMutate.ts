@@ -35,40 +35,38 @@ export function smartMutate(
   let bestGene = Gene.clone(gene);
 
   const nbPieces = gene.patternPieces.length;
-  let bestScore = bestGene.getFitness();
   for (let iteration = 0; iteration < nbIterations; iteration++) {
     let improved = false;
     for (let i = 0; i < nbPieces; i++) {
       for (let direction = 0; direction < nbDirections; direction++) {
-        const currentGene = Gene.clone(bestGene);
-        const piece = currentGene.patternPieces[i];
-        // a smaller score is better
-        do {
-          bestScore = currentGene.getFitness();
-          const hadToClamp = movePiece(
-            fabric,
-            piece,
-            direction,
-            translationAmplitude,
-          );
+        while (true) {
+          const currentGene = Gene.clone(bestGene);
+          const piece = currentGene.patternPieces[i];
+          movePiece(fabric, piece, direction, translationAmplitude);
           if (debug) {
-            console.log({
-              iteration: iteration,
-              piece: i,
-              direction: MutationDirections[direction],
-              origin: piece.centerOrigin,
-              newScore: currentGene.getFitness(),
-            });
+            console.log(
+              `Iteration ${iteration}, piece ${i}, origin: (${piece.centerOrigin.column},${piece.centerOrigin.row}), score: ${bestGene.getFitness()}, direction ${MutationDirections[direction]}`,
+            );
           }
-          if (hadToClamp) {
-            // Can't move further in this direction
+          // new score is worse (higher), stop trying this direction
+          if (currentGene.getFitness() >= bestGene.getFitness()) {
+            if (debug) {
+              console.log('no more improvements in this direction');
+            }
             break;
           }
-        } while (bestGene.getFitness() < bestScore);
+          bestGene = currentGene;
+          improved = true;
+        }
       }
     }
     if (improved == false) {
       // No improvement over the whole iteration, stop the process
+      if (debug) {
+        console.log(
+          `No improvement in iteration ${iteration}, stopping early.`,
+        );
+      }
       break;
     }
   }
