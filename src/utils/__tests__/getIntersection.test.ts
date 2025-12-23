@@ -65,3 +65,21 @@ test('piece 2 orientation = 180', async () => {
 
   expect(result).toBe(5);
 });
+
+test('piece with hole', async () => {
+  const mask1 = testUtils.createMask([
+    [1, 1, 1],
+    [1, 0, 1],
+    [1, 1, 1],
+  ]);
+
+  const mask2 = testUtils.createMask([[1]]);
+
+  const piece1 = new PatternPiece(mask1);
+  const piece2 = new PatternPiece(mask2);
+  piece1.centerOrigin = { row: 1, column: 1 };
+  piece2.centerOrigin = { row: 1, column: 1 };
+  const result = getIntersection(piece1, piece2);
+
+  expect(result).toBe(0);
+});

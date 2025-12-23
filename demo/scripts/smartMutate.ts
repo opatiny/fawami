@@ -28,13 +28,19 @@ await write(join(import.meta.dirname, 'pattern.png'), pattern);
 // extract the pieces of the pattern
 const pieces = extractPatternPieces(pattern, { debug: true });
 
+// save all pieces to files
+for (let i = 0; i < pieces.length; i++) {
+  const piece = pieces[i];
+  await write(join(import.meta.dirname, `piece_${i}.png`), piece.mask);
+}
+
 console.log(`Extracted ${pieces.length} pieces`);
 
 const randomGen = new Random(0);
 
 // create initial generation for genetic algorithm
 const initialPopulation = getRandomGenes(fabric, pieces, {
-  populationSize: 5,
+  populationSize: 1,
   randomGen: randomGen,
   rotatePieces: true,
   fitnessWeights: {

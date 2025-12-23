@@ -39,3 +39,8 @@ questions:
 - work on implementing new way of computing next generation in GA
 - add and optimize 1 individual at a time
 - todo: fix getDistance issue. The function should not be optional when using smart get next gen, plus does it have to take in scored individuals?
+
+## 2025.12.23
+
+- work on smart mutate
+- fix gene fitness bug (ensure fitness is always up to date with pieces position and orientation)
