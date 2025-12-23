@@ -8,7 +8,7 @@ import { svgToIjs } from '../src/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
 
 const img1 = 'shapes-holes.svg';
-const dim1 = { width: 40, length: 60 };
+const dim1 = { width: 40, length: 30 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 
@@ -32,24 +32,24 @@ console.log(`Extracted ${pieces.length} pieces`);
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
   nbCuts: 2,
-  enableRotation: false,
+  enableRotation: true,
   optionsGA: {
-    initialPopulationSize: 100,
+    initialPopulationSize: 10,
     populationSize: 10,
     eliteSize: 2,
     enableMutation: true,
     enableCrossover: true,
-    nextGenFunction: 'default',
+    nextGenFunction: 'smart',
   },
   crossoverOptions: { minCrossoverFraction: 0.2 },
-  mutateOptions: { translationAmplitude: 20 },
+  mutateOptions: { translationAmplitude: 10, mutationFunction: 'smart' },
   distanceOptions: { centerWeight: 1, orientationWeight: 100 },
   fitnessWeights: {
-    averageColumn: 5,
-    averageRow: 2,
-    overlap: 15,
+    averageColumn: 1,
+    averageRow: 1,
+    overlap: 1000,
     usedLength: 0,
-    packing: 5,
+    packing: 1,
   },
   path: currentDir,
 });
@@ -71,7 +71,7 @@ for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
   textileOptimizer.ga.getNextGeneration(false);
-  if (1) {
+  if (0) {
     textileOptimizer.savePopulationImages({
       dirname: `population-iteration${i}`,
       addText: true,
@@ -83,7 +83,7 @@ for (let i = 1; i <= nbIterations; i++) {
   });
 
   const currentBestGene = textileOptimizer.ga.bestScoredIndividuals[i - 1];
-  console.log('New best score: ', currentBestGene.data.fitness.score);
+  console.log('New best score: ', currentBestGene.data.getFitness());
 }
 
 textileOptimizer.saveBestGenesImages({ addText: true });

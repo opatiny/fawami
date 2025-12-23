@@ -17,10 +17,16 @@ export interface MutateOptions {
    * @default 5
    */
   nbIterations?: number;
+  /**
+   * Pick mutation function
+   * @default 'smart'
+   */
+  mutationFunction?: 'mutateAndKeepBest' | 'smart';
 }
 
 export const DefaultMutateOptions: MutateOptions = {
   translationAmplitude: 10,
+  mutationFunction: 'smart',
 };
 
 export interface MutateTranslateOptions extends MutateOptions {

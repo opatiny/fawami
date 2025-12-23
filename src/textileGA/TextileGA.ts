@@ -44,6 +44,7 @@ import {
   type GetGenesDistanceOptions,
 } from './utils/getGenesDistance.ts';
 import { canPiecesFitInFabric } from '../utils/canPiecesFitInFabric.ts';
+import { smartMutate } from './smartMutate.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -69,6 +70,7 @@ export interface OptionsTextileGA {
    * @default DefaultFitnessWeights
    */
   fitnessWeights?: FitnessWeights;
+
   /**
    * Mutation options
    */
@@ -180,7 +182,10 @@ export class TextileGA {
         fitnessWeights,
       ), // it is in defaultOptionsGA
       crossoverFunction: this.getCrossoverFunction(crossoverOptions),
-      mutationFunction: this.getMutationFunction(mutateOptions),
+      mutationFunction: this.getMutationFunction({
+        ...DefaultMutateOptions,
+        ...mutateOptions,
+      }),
       fitnessFunction: this.getFitnessFunction(),
     };
 
@@ -225,12 +230,22 @@ export class TextileGA {
   }
 
   private getMutationFunction(mutateOptions?: MutateOptions) {
-    return (gene: Gene): Gene => {
-      return mutateAndKeepBest(this.fabric, gene, {
-        randomGen: this.randomGen,
-        ...mutateOptions,
-      }).at(-1) as Gene;
-    };
+    if (mutateOptions?.mutationFunction === 'smart') {
+      return (gene: Gene): Gene => {
+        return smartMutate(this.fabric, gene, mutateOptions);
+      };
+    } else if (mutateOptions?.mutationFunction === 'mutateAndKeepBest') {
+      return (gene: Gene): Gene => {
+        return mutateAndKeepBest(this.fabric, gene, {
+          randomGen: this.randomGen,
+          ...mutateOptions,
+        }).at(-1) as Gene;
+      };
+    } else {
+      throw new Error(
+        `Unknown mutation function: ${mutateOptions?.mutationFunction}`,
+      );
+    }
   }
 
   private getInitialPopulation(

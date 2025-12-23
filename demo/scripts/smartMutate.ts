@@ -40,7 +40,7 @@ const randomGen = new Random(0);
 
 // create initial generation for genetic algorithm
 const initialPopulation = getRandomGenes(fabric, pieces, {
-  populationSize: 1,
+  populationSize: 10,
   randomGen: randomGen,
   rotatePieces: true,
   fitnessWeights: {
