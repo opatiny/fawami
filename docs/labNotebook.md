@@ -44,3 +44,7 @@ questions:
 
 - work on smart mutate
 - fix gene fitness bug (ensure fitness is always up to date with pieces position and orientation)
+
+## 2025.12.36
+
+- work on speed optimisation

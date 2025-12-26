@@ -46,6 +46,7 @@ import {
 import { canPiecesFitInFabric } from '../utils/canPiecesFitInFabric.ts';
 import { smartMutate } from './smartMutate.ts';
 import { pushTopLeft } from './utils/pushTopLeft.ts';
+import { sortGenesByScore } from './utils/sortGenesByScore.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -179,6 +180,7 @@ export class TextileGA {
     // create correct config for GA
     const gaConfig = {
       intitialPopulation: this.getInitialPopulation(
+        gaOptions.initialPopulationSize as number,
         gaOptions.populationSize as number,
         fitnessWeights,
       ), // it is in defaultOptionsGA
@@ -256,15 +258,20 @@ export class TextileGA {
   }
 
   private getInitialPopulation(
+    initialPopulationSize: number,
     populationSize: number,
     fitnessWeights?: FitnessWeights,
   ): Gene[] {
     const genes = getRandomGenes(this.fabric, this.patternPieces, {
-      populationSize,
+      populationSize: initialPopulationSize,
       randomGen: this.randomGen,
       fitnessWeights: fitnessWeights,
       rotatePieces: this.enableRotation,
     });
+    // only keep individuals with best score
+    sortGenesByScore(genes);
+    genes.splice(populationSize);
+
     return genes;
   }
 

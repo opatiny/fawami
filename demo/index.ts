@@ -32,13 +32,13 @@ const pieces = extractPatternPieces(pattern, { debug: true });
 console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
-  seed: 0,
+  // seed: 100,
   nbCuts: 3,
   enableRotation: true,
   optionsGA: {
     initialPopulationSize: 10,
     populationSize: 10,
-    eliteSize: 2,
+    eliteSize: 5,
     enableMutation: true,
     enableCrossover: true,
     nextGenFunction: 'smart',
@@ -74,7 +74,7 @@ textileOptimizer.plotDistanceHeatmap({
 });
 
 console.log('Textile optimizer created');
-console.log(textileOptimizer);
+// console.log(textileOptimizer);
 
 const nbIterations = 8;
 for (let i = 1; i <= nbIterations; i++) {
