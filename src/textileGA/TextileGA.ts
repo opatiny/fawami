@@ -216,7 +216,7 @@ export class TextileGA {
   private getFitnessFunction() {
     return (gene: Gene) => {
       // the minus sign is to have lower fitness correspond to better individuals
-      return -gene.getFitness();
+      return -gene.getFitnessScore();
     };
   }
 
@@ -298,7 +298,9 @@ export class TextileGA {
   }
 
   public getBestScores(): number[] {
-    return this.ga.bestScoredIndividuals.map((ind) => ind.data.getFitness());
+    return this.ga.bestScoredIndividuals.map((ind) =>
+      ind.data.getFitnessScore(),
+    );
   }
 
   /**

@@ -4,6 +4,7 @@ import type { PatternPiece } from '../PatternPiece.ts';
 import { clampPiecePosition } from '../utils/clampPiecesPosition.ts';
 import type { Image } from 'image-js';
 import type { MutateOptions } from './mutateTranslate.ts';
+import { modifyOverlapMatrix } from '../utils/modifyOverlapMatrix.ts';
 
 const MutationDirections = {
   LEFT: 0,
@@ -55,13 +56,16 @@ export function smartMutate(
             direction as MutationDirections,
             translationAmplitude,
           );
+          // indicate which entries of the overlap matrix need to be recomputed
+          modifyOverlapMatrix(currentGene.overlapMatrix, i);
+
           if (debug > 1) {
             console.log(
-              `Iteration ${iteration}, piece ${i}, origin: (${piece.centerOrigin.column},${piece.centerOrigin.row}), score: ${bestGene.getFitness()}, direction ${directionNames[direction]}`,
+              `Iteration ${iteration}, piece ${i}, origin: (${piece.centerOrigin.column},${piece.centerOrigin.row}), score: ${bestGene.getFitnessScore()}, direction ${directionNames[direction]}`,
             );
           }
           // new score is worse (higher), stop trying this direction
-          if (currentGene.getFitness() >= bestGene.getFitness()) {
+          if (currentGene.getFitnessScore() >= bestGene.getFitnessScore()) {
             if (debug > 1) {
               console.log('no more improvements in this direction');
             }

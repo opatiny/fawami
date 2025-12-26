@@ -5,6 +5,7 @@ import { clampPiecesPosition } from '../utils/clampPiecesPosition.ts';
 
 import { Gene } from './Gene.ts';
 import { Random } from 'ml-random';
+import { modifyOverlapMatrix } from '../utils/modifyOverlapMatrix.ts';
 
 export interface MutateOptions {
   /**
@@ -76,7 +77,12 @@ export function mutateTranslate(
     newPieces.push(newPiece);
   }
 
-  for (const piece of newPieces) {
+  // clone overlap matrix
+  const matrix = gene.overlapMatrix.clone();
+
+  const nbPieces = newPieces.length;
+
+  for (let i = 0; i < nbPieces; i++) {
     const rowOffset =
       getRandomOffsetDirection(randomGen) * translationAmplitude;
     // todo: is this a correct way to get different random values?
@@ -89,15 +95,21 @@ export function mutateTranslate(
       );
     }
 
-    piece.centerOrigin = {
-      row: piece.centerOrigin.row + rowOffset,
-      column: piece.centerOrigin.column + columnOffset,
+    newPieces[i].centerOrigin = {
+      row: newPieces[i].centerOrigin.row + rowOffset,
+      column: newPieces[i].centerOrigin.column + columnOffset,
     };
+
+    // set matrix entries to -1 if piece is moved
+    if (rowOffset !== 0 || columnOffset !== 0) {
+      modifyOverlapMatrix(matrix, i);
+    }
   }
   clampPiecesPosition(fabric, newPieces);
 
   return new Gene(gene.fabric, newPieces, {
     fitnessWeights: gene.fitnessWeights,
+    overlapMatrix: matrix,
   });
 }
 

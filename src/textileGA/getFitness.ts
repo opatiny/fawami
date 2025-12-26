@@ -5,6 +5,8 @@ import { getAverageOrigin } from '../utils/getAverageOrigin.ts';
 import { getIntersectionMatrix } from '../utils/getIntersectionMatrix.ts';
 import { getUsedLength } from '../utils/getUsedLength.ts';
 import { computePacking } from '../utils/computePacking.ts';
+import { Matrix } from 'ml-matrix';
+import { updateOverlapMatrix } from '../utils/updateOverlapMatrix.ts';
 
 export interface FitnessWeights {
   /**
@@ -82,11 +84,14 @@ export interface FitnessData {
 export function getFitness(
   fabric: Image,
   pieces: PatternPieces,
+  overlapMatrix: Matrix,
   options: GetFitnessOptions = {},
 ): FitnessData {
   const { weights = DefaultFitnessWeights, debug = false } = options;
-  const intersectionMatrix = getIntersectionMatrix(pieces);
-  const overlapArea = intersectionMatrix.sum() / 2;
+  // update overlap matrix of the gene (in place)
+  updateOverlapMatrix(overlapMatrix, pieces);
+
+  const overlapArea = overlapMatrix.sum() / 2;
   const usedLength = getUsedLength(pieces);
   const averageOrigin = getAverageOrigin(pieces);
   const packing = computePacking(pieces);
@@ -99,10 +104,7 @@ export function getFitness(
   };
   // easy way of having the overlap with the right order of magnitude
   // can be larger than 1
-  const maxOverlapArea = pieces.reduce(
-    (sum, piece) => sum + piece.meta!.surface!,
-    0,
-  );
+  const maxOverlapArea = fabric.width * fabric.height;
   const normalizedOverlapArea = overlapArea / maxOverlapArea;
 
   if (debug) {

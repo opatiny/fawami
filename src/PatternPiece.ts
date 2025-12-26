@@ -138,6 +138,10 @@ export class PatternPiece {
     return rotated.threshold();
   }
 
+  /**
+   * Get width of rotated piece.
+   * @returns Width of rotated piece.
+   */
   public getRotatedWidth(): number {
     const orientation = this.orientation;
     if (orientation === 0 || orientation === 180) {
@@ -146,6 +150,10 @@ export class PatternPiece {
     return this.meta.height;
   }
 
+  /**
+   * Get height of rotated piece.
+   * @returns Height of rotated piece.
+   */
   public getRotatedHeight(): number {
     const orientation = this.orientation;
     if (orientation === 0 || orientation === 180) {

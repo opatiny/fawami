@@ -5,5 +5,5 @@ import type { Gene } from '../Gene.ts';
  * @param genes - The genes to sort.
  */
 export function sortGenesByScore(genes: Gene[]): void {
-  genes.sort((a, b) => a.getFitness() - b.getFitness());
+  genes.sort((a, b) => a.getFitnessScore() - b.getFitnessScore());
 }

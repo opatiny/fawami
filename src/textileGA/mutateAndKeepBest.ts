@@ -73,7 +73,7 @@ export function mutateAndKeepBest(
     bestGenes.push(bestGene);
 
     if (debug) {
-      console.log(iteration, bestGene.getFitness());
+      console.log(iteration, bestGene.getFitnessScore());
     }
   }
 
@@ -83,6 +83,6 @@ export function mutateAndKeepBest(
 function printScores(genes: Gene[]) {
   console.log('index', 'score');
   for (const [index, gene] of genes.entries()) {
-    console.log(index, gene.getFitness());
+    console.log(index, gene.getFitnessScore());
   }
 }

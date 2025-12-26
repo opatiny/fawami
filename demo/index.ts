@@ -93,7 +93,7 @@ for (let i = 1; i <= nbIterations; i++) {
   });
 
   const currentBestGene = textileOptimizer.ga.bestScoredIndividuals[i - 1];
-  console.log('New best score: ', currentBestGene.data.getFitness());
+  console.log('New best score: ', currentBestGene.data.getFitnessScore());
 }
 
 textileOptimizer.saveBestGenesImages({ addText: true });

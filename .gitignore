@@ -130,3 +130,5 @@ src/**/*.gif
 
 src/**/config.json
 demo/**/config.json
+
+*.cpuprofile
