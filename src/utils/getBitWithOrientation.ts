@@ -8,7 +8,7 @@ import type { Image, Mask, Point } from 'image-js';
  * @returns Value of the pixel
  */
 export function getBitWithOrientation(
-  image: Image | Mask,
+  image: Mask,
   point: Point,
   orientation: number,
 ): number {
@@ -37,7 +37,5 @@ export function getBitWithOrientation(
     default:
       throw new Error(`Unsupported orientation: ${orientation}`);
   }
-
-  const pixel = image.getPixel(originalColumn, originalRow);
-  return pixel[0] as number;
+  return image.getBit(originalColumn, originalRow);
 }
