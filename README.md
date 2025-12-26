@@ -1,18 +1,10 @@
 # FaWaMi: Fabric waste minimization project
 
-## Project structure idea
+## Project structure
 
-- `data`: some tests data
-- `demo`: contains some code that imports the functions defined in `src` and displays a GUI with the results
+- `data`: some test data
+- `demo`: contains example scripts that imports the functions defined in `src` and displays a GUI with the results
 - `src`: contains the actual code. All functions are unit tested
-
-## Concept for the GUI
-
-- Input an SVG image with the pattern pieces to place on the fabric
-- Define the fabric dimensions (if rectangular). We'll see if we handle not rectangular shapes.
-- Drop-down for optimisation algorithm selection
-- Some options buttons: orientation, space between parts (padding), ...
-- Graphics zone with the results of the opti displayed as an image
 
 ## Run a script
 
@@ -20,34 +12,8 @@ Simply use `node yourScript.ts`. In the latest node version, you don't need to t
 
 In watch mode: `node --watch yourScript.ts`
 
-## Running tests
+## Running the unit tests
 
 - To run all tests once: `npm run test-only`
 - Watch mode: `npx vitest` (no coverage)
 - Focus on one test: `npx vitest testName`
-
-## TS and Node.js tips
-
-Typescript:
-
-- `structuredClone(object)`: create a typed copy of the object
-- random values with seed: use the `ml-random` library
-- add types for a library: `npm i @types/thePackage`
-
-Node.js
-
-- install newest version of package: `npm i image-js@latest`
-
-## Generating SVG charts
-
-We are using the `echarts` library, which allows to create backend and frontend charts: https://echarts.apache.org/examples/en/index.html
-
-## Create a gif from set of images in the command line
-
-This command adds a longer delay (of 100) before the first and last images.
-
-```bash
-convert -resize 20% -delay 40 -loop 0 *.png -set delay '%[fx:t==(n-1) || t==0 ? 100 : 40]'  mutateTranslate.gif
-```
-
-- Remove the `resize` option if you don't want to scale down
