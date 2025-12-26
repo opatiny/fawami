@@ -56,6 +56,9 @@ export function getIntersection(
     });
   }
 
+  const mask1 = piece1.mask.getRawImage();
+  const mask2 = piece2.mask.getRawImage();
+
   // scan intersection bounding box and count overlapping pixels
   let intersectionSurface = 0;
   for (let y = yMin; y < yMax; y++) {
@@ -69,17 +72,9 @@ export function getIntersection(
         console.log('  Point in piece 2:', point2);
       }
 
-      const inPiece1 = getBitWithOrientation(
-        piece1.mask,
-        point1,
-        piece1.orientation,
-      );
+      const inPiece1 = getBitWithOrientation(mask1, point1, piece1.orientation);
       if (!inPiece1) continue;
-      const inPiece2 = getBitWithOrientation(
-        piece2.mask,
-        point2,
-        piece2.orientation,
-      );
+      const inPiece2 = getBitWithOrientation(mask2, point2, piece2.orientation);
 
       if (debug) {
         console.log(`  inPiece1: ${inPiece1}, inPiece2: ${inPiece2}`);

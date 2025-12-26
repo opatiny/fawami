@@ -37,5 +37,6 @@ export function getBitWithOrientation(
     default:
       throw new Error(`Unsupported orientation: ${orientation}`);
   }
-  return image.getBit(originalColumn, originalRow);
+
+  return image.data[originalRow * image.width + originalColumn];
 }
