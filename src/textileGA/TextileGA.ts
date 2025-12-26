@@ -45,6 +45,7 @@ import {
 } from './utils/getGenesDistance.ts';
 import { canPiecesFitInFabric } from '../utils/canPiecesFitInFabric.ts';
 import { smartMutate } from './smartMutate.ts';
+import { pushTopLeft } from './utils/pushTopLeft.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -232,10 +233,16 @@ export class TextileGA {
   private getMutationFunction(mutateOptions?: MutateOptions) {
     if (mutateOptions?.mutationFunction === 'smart') {
       return (gene: Gene): Gene => {
+        if (mutateOptions?.pushTopLeft) {
+          pushTopLeft(gene);
+        }
         return smartMutate(this.fabric, gene, mutateOptions);
       };
     } else if (mutateOptions?.mutationFunction === 'mutateAndKeepBest') {
       return (gene: Gene): Gene => {
+        if (mutateOptions?.pushTopLeft) {
+          pushTopLeft(gene);
+        }
         return mutateAndKeepBest(this.fabric, gene, {
           randomGen: this.randomGen,
           ...mutateOptions,

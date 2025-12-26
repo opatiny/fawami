@@ -14,12 +14,12 @@ const dim2 = { width: 150, length: 100 };
 const img3 = 'circles.svg';
 const dim3 = { width: 30, length: 20 };
 
-const path = join(import.meta.dirname, '../data/', img3);
+const path = join(import.meta.dirname, '../data/', img1);
 
 const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim3);
+const fabric = getRectangleFabric(dim1);
 
 // convert the SVG to an image-js image
 const pattern = await svgToIjs(path, { resolution: 10 });
@@ -36,15 +36,20 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   nbCuts: 3,
   enableRotation: true,
   optionsGA: {
-    initialPopulationSize: 20,
-    populationSize: 20,
+    initialPopulationSize: 10,
+    populationSize: 10,
     eliteSize: 2,
     enableMutation: true,
     enableCrossover: true,
     nextGenFunction: 'smart',
   },
-  crossoverOptions: { minCrossoverFraction: 0.2 },
-  mutateOptions: { translationAmplitude: 2, mutationFunction: 'smart' },
+  crossoverOptions: { minCrossoverFraction: 0.4 },
+  mutateOptions: {
+    translationAmplitude: 2,
+    mutationFunction: 'smart',
+    nbIterations: 15,
+    pushTopLeft: true,
+  },
   distanceOptions: { centerWeight: 1, orientationWeight: 100 },
   fitnessWeights: {
     averageColumn: 1,
@@ -68,11 +73,14 @@ textileOptimizer.plotDistanceHeatmap({
   name: 'heatmap-iteration0.svg',
 });
 
-const nbIterations = 10;
+console.log('Textile optimizer created');
+console.log(textileOptimizer);
+
+const nbIterations = 8;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
-  textileOptimizer.ga.getNextGeneration(false);
+  textileOptimizer.ga.getNextGeneration();
   if (0) {
     textileOptimizer.savePopulationImages({
       dirname: `population-iteration${i}`,

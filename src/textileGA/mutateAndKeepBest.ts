@@ -2,6 +2,7 @@ import type { Image } from 'image-js';
 
 import type { Gene } from './Gene.ts';
 import {
+  DefaultMutateOptions,
   mutateTranslate,
   type MutateTranslateOptions,
 } from './mutateTranslate.ts';
@@ -45,7 +46,7 @@ export function mutateAndKeepBest(
 ): Gene[] {
   const {
     populationSize = 10,
-    nbIterations = 5,
+    nbIterations = DefaultMutateOptions.nbIterations!,
     debug = false,
     randomGen = new Random(),
     translationAmplitude,

@@ -22,11 +22,18 @@ export interface MutateOptions {
    * @default 'smart'
    */
   mutationFunction?: 'mutateAndKeepBest' | 'smart';
+  /**
+   * Whether to push the pieces to top-left before starting mutation
+   * @default false
+   */
+  pushTopLeft?: boolean;
 }
 
 export const DefaultMutateOptions: MutateOptions = {
   translationAmplitude: 10,
   mutationFunction: 'smart',
+  nbIterations: 5,
+  pushTopLeft: false,
 };
 
 export interface MutateTranslateOptions extends MutateOptions {

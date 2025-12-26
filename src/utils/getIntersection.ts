@@ -74,6 +74,7 @@ export function getIntersection(
         point1,
         piece1.orientation,
       );
+      if (!inPiece1) continue;
       const inPiece2 = getBitWithOrientation(
         piece2.mask,
         point2,
@@ -83,7 +84,7 @@ export function getIntersection(
       if (debug) {
         console.log(`  inPiece1: ${inPiece1}, inPiece2: ${inPiece2}`);
       }
-      if (inPiece1 && inPiece2) {
+      if (inPiece2) {
         intersectionSurface++;
       }
     }
