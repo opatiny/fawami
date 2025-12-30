@@ -1,6 +1,9 @@
 import type { Point } from 'image-js';
 
-import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
+import type {
+  PatternPiece,
+  PatternPieces,
+} from '../patternPiece/PatternPiece.ts';
 
 /**
  * Compute the average column of the center origins of the given pattern pieces. Can be used to compute fitness.

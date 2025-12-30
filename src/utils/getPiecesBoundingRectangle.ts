@@ -1,5 +1,5 @@
 import type { Point } from 'image-js';
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../patternPiece/PatternPiece.ts';
 
 export interface Rectangle {
   /**

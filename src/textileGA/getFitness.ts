@@ -1,8 +1,7 @@
 import type { Image, Point } from 'image-js';
 
-import type { PatternPieces } from '../PatternPiece.ts';
+import type { PatternPieces } from '../patternPiece/PatternPiece.ts';
 import { getAverageOrigin } from '../utils/getAverageOrigin.ts';
-import { getIntersectionMatrix } from '../utils/getIntersectionMatrix.ts';
 import { getUsedLength } from '../utils/getUsedLength.ts';
 import { computePacking } from '../utils/computePacking.ts';
 import { Matrix } from 'ml-matrix';

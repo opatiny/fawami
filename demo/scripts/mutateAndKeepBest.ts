@@ -5,7 +5,7 @@ import { write } from 'image-js';
 import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
 import { getRandomGenes } from '../../src/textileGA/getRandomGenes.ts';
 import { mutateAndKeepBest } from '../../src/textileGA/mutateAndKeepBest.ts';
-import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
+import { getRectangleFabric } from '../../src/utils/getRectangleFabric.ts';
 import { svgToIjs } from '../../src/svgToIjs.ts';
 import { savePopulationImages } from '../../src/utils/savePopulationImages.ts';
 import { Random } from 'ml-random';

@@ -3,7 +3,7 @@ import {
   PatternPiece,
   type Orientation,
   type PatternPieces,
-} from '../PatternPiece.ts';
+} from '../patternPiece/PatternPiece.ts';
 
 import type { FitnessData, FitnessWeights } from './getFitness.ts';
 import { DefaultFitnessWeights, getFitness } from './getFitness.ts';

@@ -1,4 +1,4 @@
-import type { PatternPiece } from '../../PatternPiece.ts';
+import type { PatternPiece } from '../../patternPiece/PatternPiece.ts';
 
 import type { Gene } from '../Gene.ts';
 

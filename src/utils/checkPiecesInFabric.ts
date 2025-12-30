@@ -1,6 +1,9 @@
 import type { Image } from 'image-js';
 
-import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
+import type {
+  PatternPiece,
+  PatternPieces,
+} from '../patternPiece/PatternPiece.ts';
 
 /**
  * Check if all pieces are within the fabric boundaries given their location and orientation.

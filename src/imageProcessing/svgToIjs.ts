@@ -6,7 +6,7 @@ import { readCanvas } from 'image-js';
 import { JSDOM } from 'jsdom';
 import { Canvas, Image } from 'skia-canvas';
 
-import { parseDimension } from './utils/parseDimension.ts';
+import { parseDimension } from '../utils/parseDimension.ts';
 
 export interface SvgToIjsOptions {
   /**

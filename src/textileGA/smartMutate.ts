@@ -1,6 +1,6 @@
 import type { MutateAndKeepBestOptions } from './mutateAndKeepBest.ts';
 import { Gene } from './Gene.ts';
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../patternPiece/PatternPiece.ts';
 import { clampPiecePosition } from '../utils/clampPiecesPosition.ts';
 import type { Image } from 'image-js';
 import type { MutateOptions } from './mutateTranslate.ts';

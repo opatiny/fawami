@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { PatternPiece } from '../../PatternPiece.ts';
+import { PatternPiece } from '../../patternPiece/PatternPiece.ts';
 import { Gene } from '../Gene.ts';
 import { Image } from 'image-js';
 import { smartMutate } from '../smartMutate.ts';
@@ -33,7 +33,7 @@ test('should bring the piece top left', async () => {
   const result = smartMutate(fabric, gene, {
     nbIterations: 10,
     translationAmplitude: 1,
-    debug: true,
+    debug: 1,
   });
 
   expect(result.patternPieces[0].centerOrigin).toStrictEqual({

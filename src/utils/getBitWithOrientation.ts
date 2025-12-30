@@ -1,4 +1,5 @@
 import type { Image, Mask, Point } from 'image-js';
+import type { RawMask } from './getIntersection.ts';
 
 /**
  * Get a pixel from a rotated image.
@@ -8,7 +9,7 @@ import type { Image, Mask, Point } from 'image-js';
  * @returns Value of the pixel
  */
 export function getBitWithOrientation(
-  image: Mask,
+  image: RawMask,
   point: Point,
   orientation: number,
 ): number {

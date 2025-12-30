@@ -1,6 +1,9 @@
 import type { Image } from 'image-js';
 
-import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
+import type {
+  PatternPiece,
+  PatternPieces,
+} from '../patternPiece/PatternPiece.ts';
 
 /**
  * Clamps the positions of the pieces to ensure they stay within the fabric boundaries.

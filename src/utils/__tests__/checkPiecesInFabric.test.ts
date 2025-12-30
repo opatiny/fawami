@@ -1,7 +1,8 @@
 import { Image } from 'image-js';
 import { expect, test } from 'vitest';
 
-import { PatternPiece } from '../../PatternPiece.ts';
+import { PatternPiece } from '../../patternPiece/PatternPiece.ts';
+
 import { checkPiecesInFabric } from '../checkPiecesInFabric.ts';
 
 const fabric = new Image(10, 10);

@@ -1,7 +1,7 @@
 import type { Image } from 'image-js';
 
-import type { PatternPieces } from '../PatternPiece.ts';
-import { getRandomPieces } from '../getRandomPieces.ts';
+import type { PatternPieces } from '../patternPiece/PatternPiece.ts';
+import { getRandomPieces } from '../patternPiece/getRandomPieces.ts';
 
 import { Gene } from './Gene.ts';
 import { Random } from 'ml-random';

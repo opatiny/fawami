@@ -6,13 +6,14 @@ import { join } from 'node:path';
 
 import { write } from 'image-js';
 
-import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
-import { getDistanceMatrix } from '../../src/textileGA/getDistanceMatrix.ts';
-import { getGenesDistance } from '../../src/textileGA/getGenesDistance.ts';
+import { extractPatternPieces } from '../../src/imageProcessing/extractPatternPieces.ts';
+import { getDistanceMatrix } from '../../src/textileGA/utils/getDistanceMatrix.ts';
+import { getGenesDistance } from '../../src/textileGA/utils/getGenesDistance.ts';
 import { getRandomGenes } from '../../src/textileGA/getRandomGenes.ts';
-import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
-import { svgToIjs } from '../../src/svgToIjs.ts';
+import { getRectangleFabric } from '../../src/utils/getRectangleFabric.ts';
+import { svgToIjs } from '../../src/imageProcessing/svgToIjs.ts';
 import { savePopulationImages } from '../../src/utils/savePopulationImages.ts';
+import { Random } from 'ml-random';
 
 const img1 = 'shapes-holes.svg';
 const dim1 = { width: 20, length: 30 };
@@ -35,7 +36,7 @@ console.log(`Extracted ${pieces.length} pieces`);
 // create initial generation for genetic algorithm
 const initialPopulation = getRandomGenes(fabric, pieces, {
   populationSize: 10,
-  seedRandomGenerator: true,
+  randomGen: new Random(0),
   rotatePieces: true,
 });
 

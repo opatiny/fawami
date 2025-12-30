@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { extractPatternPieces } from '../extractPatternPieces.ts';
+import { extractPatternPieces } from '../imageProcessing/extractPatternPieces.ts';
 
 test('aaron', async () => {
   const image = testUtils.load('png/aaron.png');

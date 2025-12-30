@@ -1,4 +1,4 @@
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../patternPiece/PatternPiece.ts';
 import { Gene } from '../textileGA/Gene.ts';
 
 import { getPiecesBoundingRectangle } from './getPiecesBoundingRectangle.ts';

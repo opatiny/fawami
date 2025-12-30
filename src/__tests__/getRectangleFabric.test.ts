@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { getRectangleFabric } from '../getRectangleFabric.ts';
+import { getRectangleFabric } from '../utils/getRectangleFabric.ts';
 
 test('default options', async () => {
   const fabric = getRectangleFabric();

@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
 import { getPath } from '../../test/testUtils.ts';
-import { svgToIjs } from '../svgToIjs.ts';
+import { svgToIjs } from '../imageProcessing/svgToIjs.ts';
 
 test('default options, rectangles', async () => {
   // size: 210x297mm

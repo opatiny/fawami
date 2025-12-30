@@ -1,6 +1,6 @@
 import type { Mask, Point, Roi } from 'image-js';
 
-import { getCenterPoint } from './utils/getCenterPoint.ts';
+import { getCenterPoint } from '../utils/getCenterPoint.ts';
 
 export type PatternPieces = PatternPiece[];
 

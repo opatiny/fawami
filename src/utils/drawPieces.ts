@@ -1,6 +1,6 @@
 import type { Image } from 'image-js';
 
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../patternPiece/PatternPiece.ts';
 
 import { drawBoundingRectangles } from './drawBoundingRectangles.ts';
 import { getBlack } from './getBlack.ts';

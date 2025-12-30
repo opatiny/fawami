@@ -2,7 +2,7 @@ import { mkdir } from 'fs/promises';
 
 import type { Image } from 'image-js';
 
-import { PatternPiece } from '../PatternPiece.ts';
+import { PatternPiece } from '../patternPiece/PatternPiece.ts';
 import {
   GeneticAlgorithm,
   type OptionsGA,

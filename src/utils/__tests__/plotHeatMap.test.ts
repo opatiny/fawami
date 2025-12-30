@@ -1,8 +1,5 @@
-import { Image } from 'image-js';
-import { expect, test } from 'vitest';
+import { test } from 'vitest';
 
-import { PatternPiece } from '../../PatternPiece.ts';
-import { checkPiecesInFabric } from '../checkPiecesInFabric.ts';
 import { Matrix } from 'ml-matrix';
 import { plotHeatMap } from '../plotHeatMap.ts';
 

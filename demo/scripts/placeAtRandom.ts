@@ -6,19 +6,18 @@ import { join } from 'node:path';
 
 import { write, writeSync } from 'image-js';
 
-import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
-import { getFitness } from '../../src/textileGA/getFitness.ts';
-import { getRandomPieces } from '../../src/getRandomPieces.ts';
-import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
-import { svgToIjs } from '../../src/svgToIjs.ts';
+import { extractPatternPieces } from '../../src/imageProcessing/extractPatternPieces.ts';
+import { getRandomPieces } from '../../src/patternPiece/getRandomPieces.ts';
+import { getRectangleFabric } from '../../src/utils/getRectangleFabric.ts';
+import { svgToIjs } from '../../src/imageProcessing/svgToIjs.ts';
 import { drawPieces } from '../../src/utils/drawPieces.ts';
 
 const img1 = 'shapes-holes.svg';
-const dim1 = { width: 20, length: 30 };
+const dim1 = { width: 29.7, length: 21 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 
-const path = join(import.meta.dirname, '../data/', img1);
+const path = join(import.meta.dirname, '../../data/', img1);
 
 // create a rectangular piece of fabric
 const fabric = getRectangleFabric(dim1);
@@ -72,5 +71,5 @@ await write(
 );
 
 // compute fitness value
-const fitness = getFitness(fabricRandom, randomPieces, { debug: true });
-console.log(`Fitness: ${fitness}`);
+// const fitness = getFitness(fabricRandom, randomPieces, { debug: true });
+// console.log(`Fitness: ${fitness}`);

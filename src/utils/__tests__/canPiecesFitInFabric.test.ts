@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { PatternPiece } from '../../PatternPiece.ts';
+import { PatternPiece } from '../../patternPiece/PatternPiece.ts';
 
 import { Image } from 'image-js';
 import { canPiecesFitInFabric } from '../canPiecesFitInFabric.ts';

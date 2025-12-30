@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { PatternPiece } from '../../../PatternPiece.ts';
+import { PatternPiece } from '../../../patternPiece/PatternPiece.ts';
 import { Gene } from '../../Gene.ts';
 import { Image } from 'image-js';
 import { pushTopLeft } from '../pushTopLeft.ts';

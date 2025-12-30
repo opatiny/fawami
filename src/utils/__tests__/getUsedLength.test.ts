@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { PatternPiece } from '../../PatternPiece.ts';
+import { PatternPiece } from '../../patternPiece/PatternPiece.ts';
 import { getUsedLength } from '../getUsedLength.ts';
 
 const mask1 = testUtils.createMask([

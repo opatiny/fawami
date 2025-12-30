@@ -1,6 +1,9 @@
 import { Matrix } from 'ml-matrix';
 
-import type { PatternPiece, PatternPieces } from '../PatternPiece.ts';
+import type {
+  PatternPiece,
+  PatternPieces,
+} from '../patternPiece/PatternPiece.ts';
 
 import { getIntersection } from './getIntersection.ts';
 

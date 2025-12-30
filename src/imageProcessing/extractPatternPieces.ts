@@ -3,8 +3,8 @@ import { join } from 'node:path';
 import type { Image } from 'image-js';
 import { fromMask, writeSync } from 'image-js';
 
-import type { PatternPieces } from './PatternPiece.ts';
-import { PatternPiece } from './PatternPiece.ts';
+import type { PatternPieces } from '../patternPiece/PatternPiece.ts';
+import { PatternPiece } from '../patternPiece/PatternPiece.ts';
 
 export interface ExtractPatternPiecesOptions {
   /**

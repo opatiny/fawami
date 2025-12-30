@@ -1,6 +1,6 @@
 import type { Image } from 'image-js';
 
-import { PatternPiece } from '../PatternPiece.ts';
+import { PatternPiece } from '../patternPiece/PatternPiece.ts';
 import { clampPiecesPosition } from '../utils/clampPiecesPosition.ts';
 
 import { Gene } from './Gene.ts';

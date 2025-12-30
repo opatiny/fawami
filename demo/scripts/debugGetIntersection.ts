@@ -2,11 +2,11 @@ import { join } from 'node:path';
 
 import { write } from 'image-js';
 
-import { extractPatternPieces } from '../../src/extractPatternPieces.ts';
-import { getRectangleFabric } from '../../src/getRectangleFabric.ts';
-import { svgToIjs } from '../../src/svgToIjs.ts';
+import { extractPatternPieces } from '../../src/imageProcessing/extractPatternPieces.ts';
+import { getRectangleFabric } from '../../src/utils/getRectangleFabric.ts';
+import { svgToIjs } from '../../src/imageProcessing/svgToIjs.ts';
 import { savePopulationImages } from '../../src/utils/savePopulationImages.ts';
-import type { Orientation } from '../../src/PatternPiece.ts';
+import type { Orientation } from '../../src/patternPiece/PatternPiece.ts';
 import { Gene } from '../../src/textileGA/Gene.ts';
 import { getIntersection } from '../../src/utils/getIntersection.ts';
 import { debug } from 'node:console';

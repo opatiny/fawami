@@ -1,6 +1,12 @@
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../patternPiece/PatternPiece.ts';
 
 import { getBitWithOrientation } from './getBitWithOrientation.ts';
+
+export interface RawMask {
+  width: number;
+  height: number;
+  data: Uint8Array;
+}
 
 /**
  * Compute the surface of the intersection of two pattern pieces in pixels (handles orientation).

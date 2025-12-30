@@ -2,9 +2,9 @@ import { join } from 'node:path';
 
 import { write } from 'image-js';
 
-import { extractPatternPieces } from '../src/extractPatternPieces.ts';
-import { getRectangleFabric } from '../src/getRectangleFabric.ts';
-import { svgToIjs } from '../src/svgToIjs.ts';
+import { extractPatternPieces } from '../src/imageProcessing/extractPatternPieces.ts';
+import { getRectangleFabric } from '../src/utils/getRectangleFabric.ts';
+import { svgToIjs } from '../src/imageProcessing/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
 
 const img1 = 'shapes-holes.svg';

@@ -1,5 +1,5 @@
 import type { Image } from 'image-js';
-import type { PatternPieces } from '../PatternPiece.ts';
+import type { PatternPieces } from '../patternPiece/PatternPiece.ts';
 
 export function canPiecesFitInFabric(
   fabric: Image,

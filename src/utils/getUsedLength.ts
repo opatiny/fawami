@@ -1,4 +1,4 @@
-import type { PatternPiece } from '../PatternPiece.ts';
+import type { PatternPiece } from '../patternPiece/PatternPiece.ts';
 
 /**
  * Compute the length of fabric used by the pieces.
