@@ -32,6 +32,11 @@ export interface SavePopulationImagesOptions {
    * @default false
    */
   addText?: boolean;
+  /**
+   * Whether to show bounding rectangles around the masks
+   * @default true
+   */
+  showBoundingRectangles?: boolean;
 }
 
 /**
@@ -50,6 +55,7 @@ export function savePopulationImages(
     path = import.meta.dirname,
     nameBase = 'sequence',
     addText = false,
+    showBoundingRectangles = true,
   } = options;
 
   if (addText && Math.max(fabric.width, fabric.height) < 50) {
@@ -76,7 +82,7 @@ export function savePopulationImages(
     const gene = genes[i] as Gene;
     let fabricClone = fabric.clone();
 
-    drawPieces(fabricClone, gene.patternPieces);
+    drawPieces(fabricClone, gene.patternPieces, { showBoundingRectangles });
 
     if (addText) {
       const textBaseOptions = {

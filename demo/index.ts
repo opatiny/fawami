@@ -14,14 +14,14 @@ const dim2 = { width: 150, length: 100 };
 const img3 = 'circles.svg';
 const dim3 = dim1;
 const img4 = 'rectangles.svg';
-const dim4 = dim1;
+const dim4 = { width: 40, length: 50 };
 
-const path = join(import.meta.dirname, '../data/', img1);
+const path = join(import.meta.dirname, '../data/', img4);
 
 const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim1);
+const fabric = getRectangleFabric(dim4);
 
 // convert the SVG to an image-js image
 const pattern = await svgToIjs(path, { resolution: 10 });
@@ -33,6 +33,8 @@ const pieces = extractPatternPieces(pattern, { debug: true });
 
 console.log(`Extracted ${pieces.length} pieces`);
 
+// having a smaller population makes the algorithm converge faster??
+
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
   nbCuts: 3,
@@ -42,7 +44,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
     populationSize: 10,
     eliteSize: 3,
     enableMutation: true,
-    enableCrossover: false,
+    enableCrossover: true,
     nextGenFunction: 'smart',
   },
   crossoverOptions: { minCrossoverFraction: 0.4 },
@@ -58,7 +60,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
     averageRow: 1,
     overlap: 1000,
     usedLength: 0,
-    packing: 1,
+    packing: 0.1,
   },
   path: currentDir,
 });
@@ -77,6 +79,7 @@ textileOptimizer.saveConfig();
 textileOptimizer.savePopulationImages({
   dirname: `population-iteration0`,
   addText: true,
+  showBoundingRectangles: false,
 });
 
 textileOptimizer.plotDistanceHeatmap({
@@ -96,6 +99,7 @@ for (let i = 1; i <= nbIterations; i++) {
     textileOptimizer.savePopulationImages({
       dirname: `population-iteration${i}`,
       addText: true,
+      showBoundingRectangles: false,
     });
   }
   textileOptimizer.plotDistanceHeatmap({
@@ -107,7 +111,10 @@ for (let i = 1; i <= nbIterations; i++) {
   console.log('New best score: ', currentBestGene.getFitnessScore());
 }
 
-textileOptimizer.saveBestGenesImages({ addText: true });
+textileOptimizer.saveBestGenesImages({
+  addText: true,
+  showBoundingRectangles: true,
+});
 
 textileOptimizer.plotBestScores({ debug: false });
 
