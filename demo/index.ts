@@ -8,11 +8,13 @@ import { svgToIjs } from '../src/imageProcessing/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
 
 const img1 = 'shapes-holes.svg';
-const dim1 = { width: 20, length: 30 };
+const dim1 = { width: 40, length: 30 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 const img3 = 'circles.svg';
-const dim3 = { width: 30, length: 20 };
+const dim3 = dim1;
+const img4 = 'rectangles.svg';
+const dim4 = dim1;
 
 const path = join(import.meta.dirname, '../data/', img1);
 
@@ -33,8 +35,8 @@ console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
-  nbCuts: 1,
-  enableRotation: false,
+  nbCuts: 3,
+  enableRotation: true,
   optionsGA: {
     initialPopulationSize: 10,
     populationSize: 10,
@@ -52,9 +54,9 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   },
   distanceOptions: { centerWeight: 1, orientationWeight: 100 },
   fitnessWeights: {
-    averageColumn: 0,
-    averageRow: 0,
-    overlap: 0,
+    averageColumn: 1,
+    averageRow: 1,
+    overlap: 1000,
     usedLength: 0,
     packing: 1,
   },
@@ -85,7 +87,7 @@ textileOptimizer.plotDistanceHeatmap({
 console.log('Textile optimizer created');
 // console.log(textileOptimizer);
 
-const nbIterations = 1;
+const nbIterations = 10;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 

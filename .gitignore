@@ -130,5 +130,7 @@ src/**/*.gif
 
 src/**/config.json
 demo/**/config.json
+src/**/results.json
+demo/**/results.json
 
 *.cpuprofile

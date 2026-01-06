@@ -19,7 +19,12 @@ export function smartGetNextGen<Type>(
     const diverseGeneIndex = ga.randomGen.randInt(ga.nbDiverseIndividuals);
     const diverseGene = ga.diversePopulation[diverseGeneIndex];
 
-    const children = ga.crossover(eliteGene.data, diverseGene.data);
+    // crossover disabled
+    let children = [eliteGene.data, diverseGene.data];
+    // crossover enabled
+    if (ga.options.enableCrossover) {
+      children = ga.crossover(eliteGene.data, diverseGene.data);
+    }
 
     const mutatedChildren = children.map((child) => ga.mutate(child));
 
