@@ -47,6 +47,12 @@ import { canPiecesFitInFabric } from '../utils/canPiecesFitInFabric.ts';
 import { smartMutate } from './smartMutate.ts';
 import { pushTopLeft } from './utils/pushTopLeft.ts';
 import { sortGenesByScore } from './utils/sortGenesByScore.ts';
+import {
+  DefaultStats,
+  saveResults,
+  type SaveResultsOptions,
+  type TextileGAStats,
+} from './saveResults.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -115,9 +121,11 @@ export class TextileGA {
   public crossoverOptions?: CrossoverOptions;
   public distanceOptions?: GetGenesDistanceOptions;
 
-  public readonly ga: GeneticAlgorithm<Gene>;
+  private ga: GeneticAlgorithm<Gene>;
 
   private randomGen: Random;
+
+  public readonly stats: TextileGAStats;
 
   // options for saving data
   public readonly outdir?: string;
@@ -203,6 +211,7 @@ export class TextileGA {
     this.distanceOptions = { ...DefaultDistanceOptions, ...distanceOptions };
 
     this.ga = new GeneticAlgorithm<Gene>(gaConfig, gaOptions);
+    this.stats = DefaultStats;
 
     // setup out directories
     this.outdir = join(path, dirname);
@@ -304,10 +313,53 @@ export class TextileGA {
     };
   }
 
+  public getNextGeneration(): void {
+    const startTime = performance.now();
+    // compute next generation
+    this.ga.getNextGeneration();
+
+    // save stats data
+    const endTime = performance.now();
+    const iterationTime = (endTime - startTime) / 1000; // in seconds
+    this.stats.runTime.iterations.push(iterationTime);
+    this.stats.runTime.total += iterationTime;
+    this.stats.packings.push(
+      this.ga.bestScoredIndividuals[
+        this.ga.bestScoredIndividuals.length - 1
+      ].data.getFitnessData().packing,
+    );
+  }
+
+  public evolve(nbIterations: number, debug = false): void {
+    for (let i = 0; i < nbIterations; i++) {
+      if (debug) {
+        console.log(`--- Iteration ${i + 1} ---`);
+      }
+      this.getNextGeneration();
+      if (debug) {
+        const currentBestGene = this.ga.bestScoredIndividuals.at(
+          -1,
+        ) as ScoredIndividual<Gene>;
+        console.log('New best score: ', currentBestGene.data.getFitnessScore());
+        console.log(
+          `Iteration time: ${this.stats.runTime.iterations
+            .at(-1)
+            ?.toFixed(2)} s`,
+        );
+      }
+    }
+  }
+
+  // PROPERTY GETTERS
+
   public getBestScores(): number[] {
     return this.ga.bestScoredIndividuals.map((ind) =>
       ind.data.getFitnessScore(),
     );
+  }
+
+  public getBestGenes(): Gene[] {
+    return this.ga.bestScoredIndividuals.map((ind) => ind.data);
   }
 
   /**
@@ -318,6 +370,12 @@ export class TextileGA {
     const genes = this.ga.getPopulation().map((ind) => ind.data);
     return getDistanceMatrix(genes);
   }
+
+  public getGaOptions(): OptionsGA<Gene> {
+    return this.ga.options;
+  }
+
+  //  PLOT AND SAVE IMAGE
 
   public plotBestScores(options: Omit<PlotScoresOptions, 'path'> = {}): void {
     const scores = this.getBestScores();
@@ -348,6 +406,10 @@ export class TextileGA {
     options: Omit<SaveConfigOptions, 'path'> = {},
   ): Promise<void> {
     await saveConfig(this, { ...options, outdir: this.outdir });
+  }
+
+  public async saveResults(options: SaveResultsOptions = {}): Promise<void> {
+    await saveResults(this, options);
   }
 
   /**

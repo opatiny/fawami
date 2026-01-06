@@ -99,7 +99,7 @@ export interface InternalOptionsGA<Type> {
    * Exponent to apply to the score when computing probabilities for selecting parents for crossover.
    * @default 1
    */
-
+  // todo; propability exponent is not really usable
   probabilityExponent: number;
   /**
    * Enable debug mode

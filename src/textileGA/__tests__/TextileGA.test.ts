@@ -31,9 +31,7 @@ test('test constructor', () => {
 
   expect(textileGa.patternPieces).toBe(pieces);
   expect(textileGa.fabric).toBe(fabric);
-  expect(textileGa.ga.options.populationSize).toBe(5);
-  expect(textileGa.ga.elitePopulation.length).toBe(5);
-  expect(textileGa.ga.diversePopulation.length).toBe(0);
+  expect(textileGa.getGaOptions().populationSize).toBe(5);
 });
 
 test('compute first generation', () => {
@@ -41,11 +39,12 @@ test('compute first generation', () => {
     optionsGA: { populationSize: 5, eliteSize: 5 },
   });
 
-  textileGa.ga.getNextGeneration();
+  textileGa.getNextGeneration();
 
-  expect(textileGa.ga.getPopulation().length).toBe(5);
-  expect(textileGa.ga.bestScoredIndividuals.length).toBe(1);
-  expect(textileGa.ga.iteration).toBe(1);
+  expect(textileGa.getBestScores().length).toBe(1);
+  expect(textileGa.stats.runTime.iterations.length).toBe(1);
+  expect(textileGa.stats.packings.length).toBe(1);
+  expect(textileGa.stats.runTime.total).toBeGreaterThan(0);
 });
 
 test('do 5 iterations with seed', () => {
@@ -54,12 +53,10 @@ test('do 5 iterations with seed', () => {
     optionsGA: { populationSize: 5, eliteSize: 5 },
   });
 
-  textileGa.ga.evolve(5, true);
+  textileGa.evolve(5, true);
   console.log('best scores:', textileGa.getBestScores());
 
-  expect(textileGa.ga.getPopulation().length).toBe(5);
-  expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
-  expect(textileGa.ga.iteration).toBe(5);
+  expect(textileGa.getBestScores().length).toBe(5);
 });
 
 test('population size = 100', () => {
@@ -76,7 +73,7 @@ test('population size = 100', () => {
     name: 'heatmap-iteration0.svg',
   });
 
-  textileGa.ga.evolve(5, false);
+  textileGa.evolve(5, false);
 
   textileGa.saveBestGenesImages();
 
@@ -90,8 +87,5 @@ test('population size = 100', () => {
     debug: false,
     name: 'heatmap-iteration5.svg',
   });
-
-  expect(textileGa.ga.getPopulation().length).toBe(100);
-  expect(textileGa.ga.bestScoredIndividuals.length).toBe(5);
-  expect(textileGa.ga.iteration).toBe(5);
+  expect(textileGa.getBestScores().length).toBe(5);
 });

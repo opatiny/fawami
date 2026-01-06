@@ -8,7 +8,7 @@ import { svgToIjs } from '../src/imageProcessing/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
 
 const img1 = 'shapes-holes.svg';
-const dim1 = { width: 40, length: 30 };
+const dim1 = { width: 20, length: 30 };
 const img2 = 'freesewing-aaron.svg';
 const dim2 = { width: 150, length: 100 };
 const img3 = 'circles.svg';
@@ -33,12 +33,12 @@ console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
   // seed: 100,
-  nbCuts: 3,
+  nbCuts: 1,
   enableRotation: true,
   optionsGA: {
     initialPopulationSize: 10,
     populationSize: 10,
-    eliteSize: 5,
+    eliteSize: 3,
     enableMutation: true,
     enableCrossover: true,
     nextGenFunction: 'smart',
@@ -76,11 +76,11 @@ textileOptimizer.plotDistanceHeatmap({
 console.log('Textile optimizer created');
 // console.log(textileOptimizer);
 
-const nbIterations = 8;
+const nbIterations = 9;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
-  textileOptimizer.ga.getNextGeneration();
+  textileOptimizer.getNextGeneration();
   if (0) {
     textileOptimizer.savePopulationImages({
       dirname: `population-iteration${i}`,
@@ -92,10 +92,18 @@ for (let i = 1; i <= nbIterations; i++) {
     name: `heatmap-iteration${i}.svg`,
   });
 
-  const currentBestGene = textileOptimizer.ga.bestScoredIndividuals[i - 1];
-  console.log('New best score: ', currentBestGene.data.getFitnessScore());
+  const currentBestGene = textileOptimizer.getBestGenes()[i - 1];
+  console.log('New best score: ', currentBestGene.getFitnessScore());
 }
 
 textileOptimizer.saveBestGenesImages({ addText: true });
 
 textileOptimizer.plotBestScores({ debug: false });
+
+await textileOptimizer.saveResults();
+
+console.log(
+  '\nTotal run time:',
+  textileOptimizer.stats.runTime.total.toFixed(2),
+  's',
+);
