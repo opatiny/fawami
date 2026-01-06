@@ -113,7 +113,7 @@ export class TextileGA {
    */
   public readonly nbCuts: number;
   public readonly fabric: Image;
-
+  public readonly resolution: number;
   public readonly seed: number;
   public readonly enableRotation: boolean;
   public fitnessWeights: FitnessWeights;
@@ -169,6 +169,7 @@ export class TextileGA {
     }
     this.nbCuts = nbCuts;
     this.patternPieces = patternPieces;
+    this.resolution = patternPieces[0].meta.resolution as number;
 
     // create correct options for GA
     this.randomGen = new Random(seed);

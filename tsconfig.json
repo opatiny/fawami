@@ -5,7 +5,7 @@
     "outDir": "lib",
     "types": ["node"]
   },
-  "include": ["src", "demo", "test", "vite*.ts"],
+  "include": ["src", "demo", "test", "vite*.ts", "results/index.ts"],
   "ts-node": {
     "esm": true
   }
