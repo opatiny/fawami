@@ -7,21 +7,33 @@ import { getRectangleFabric } from '../src/utils/getRectangleFabric.ts';
 import { svgToIjs } from '../src/imageProcessing/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
 
-const img1 = 'shapes-holes.svg';
-const dim1 = { width: 40, length: 30 };
-const img2 = 'freesewing-aaron.svg';
-const dim2 = { width: 150, length: 100 };
-const img3 = 'circles.svg';
-const dim3 = dim1;
-const img4 = 'rectangles.svg';
-const dim4 = { width: 40, length: 50 };
+const geomImg = ['shapes-holes.svg', 'circles.svg', 'rectangles.svg'];
+const geomDim = [
+  { width: 40, length: 30 },
+  { width: 40, length: 30 },
+  { width: 40, length: 50 },
+];
 
-const path = join(import.meta.dirname, '../data/', img4);
+const freesewingImg = [
+  'freesewing-aaron.svg',
+  'freesewing-bee.svg',
+  'freesewing-carlita.svg',
+];
+const freesewingDim = [
+  { width: 150, length: 100 },
+  { width: 150, length: 100 },
+  { width: 150, length: 300 },
+];
+
+const img = freesewingImg[2];
+const dim = freesewingDim[2];
+
+const path = join(import.meta.dirname, '../data/', img);
 
 const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim4);
+const fabric = getRectangleFabric(dim);
 
 // convert the SVG to an image-js image
 const pattern = await svgToIjs(path, { resolution: 10 });
@@ -37,7 +49,7 @@ console.log(`Extracted ${pieces.length} pieces`);
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
   seed: 0,
-  nbCuts: 3,
+  nbCuts: 1,
   enableRotation: true,
   optionsGA: {
     initialPopulationSize: 10,
@@ -49,7 +61,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   },
   crossoverOptions: { minCrossoverFraction: 0.4 },
   mutateOptions: {
-    translationAmplitude: 2,
+    translationAmplitude: 20,
     mutationFunction: 'smart',
     nbIterations: 15,
     pushTopLeft: true,
@@ -60,7 +72,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
     averageRow: 1,
     overlap: 1000,
     usedLength: 0,
-    packing: 0.1,
+    packing: 1,
   },
   path: currentDir,
 });
