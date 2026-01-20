@@ -71,7 +71,12 @@ export function extractPatternPieces(
 
   const pieces: PatternPieces = [];
   for (const roi of rois) {
-    pieces.push(PatternPiece.createFromRoi(roi));
+    pieces.push(
+      PatternPiece.createFromRoi(roi, {
+        inputResolution: patternResolution,
+        desiredResolution,
+      }),
+    );
   }
 
   return pieces;

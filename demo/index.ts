@@ -6,6 +6,7 @@ import { extractPatternPieces } from '../src/imageProcessing/extractPatternPiece
 import { getRectangleFabric } from '../src/utils/getRectangleFabric.ts';
 import { svgToIjs } from '../src/imageProcessing/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
+import { drawPieces } from '../src/utils/drawPieces.ts';
 
 const geomImg = ['shapes-holes.svg', 'circles.svg', 'rectangles.svg'];
 const geomDim = [
@@ -28,22 +29,40 @@ const freesewingDim = [
 const img = freesewingImg[2];
 const dim = freesewingDim[2];
 
+// desired resolution of pattern pieces and fabric
+const resolution = 1;
+// intermediate pattern resolution
+const patternResolution = 10;
+
 const path = join(import.meta.dirname, '../data/', img);
 
 const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim);
+const fabric = getRectangleFabric({ ...dim, resolution });
 
 // convert the SVG to an image-js image
-const pattern = await svgToIjs(path, { resolution: 10 });
+const pattern = await svgToIjs(path, { resolution: patternResolution });
 
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
 
 // extract the pieces of the pattern
-const pieces = extractPatternPieces(pattern, { debug: true });
+const pieces = extractPatternPieces(pattern, {
+  debug: true,
+  desiredResolution: resolution,
+  patternResolution,
+});
 
 console.log(`Extracted ${pieces.length} pieces`);
+
+const fabricDefaultPos = fabric.clone();
+
+drawPieces(fabricDefaultPos, pieces, { showBoundingRectangles: true });
+
+await write(
+  join(import.meta.dirname, 'fabric-with-original-parts.png'),
+  fabricDefaultPos,
+);
 
 // having a smaller population makes the algorithm converge faster??
 
@@ -52,16 +71,16 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   nbCuts: 1,
   enableRotation: true,
   optionsGA: {
-    initialPopulationSize: 10,
-    populationSize: 10,
+    initialPopulationSize: 100,
+    populationSize: 100,
     eliteSize: 3,
     enableMutation: true,
     enableCrossover: true,
     nextGenFunction: 'smart',
   },
-  crossoverOptions: { minCrossoverFraction: 0.4 },
+  crossoverOptions: { minCrossoverFraction: 0.1, crossoverFunction: 'random' },
   mutateOptions: {
-    translationAmplitude: 20,
+    translationAmplitude: 1,
     mutationFunction: 'smart',
     nbIterations: 15,
     pushTopLeft: true,

@@ -23,7 +23,7 @@ export interface MetaInfo {
    */
   center: Point;
   /**
-   * Resolution of the mask in pixels per cm
+   * Resolution of the pattern piece in pixels per cm
    */
   resolution?: number;
   /**
@@ -50,7 +50,7 @@ export interface PatternPieceOptions {
    */
   meta?: MetaInfo;
   /**
-   * Origin of the piece on the fabric relative to the **center** of the piece
+   * Origin of the center of thepiece relative to the top-left corner of the fabric
    */
   centerOrigin?: Point;
   /**
@@ -58,6 +58,14 @@ export interface PatternPieceOptions {
    * The piece is first placed at the center origin, then rotated around its center.
    */
   orientation?: Orientation;
+  /**
+   * Resolution of the input pieces (mask or ROI) in pixels per cm
+   */
+  inputResolution?: number;
+  /**
+   * Desired resolution of the masks of the pattern pieces in pixels per cm
+   */
+  desiredResolution?: number;
 }
 
 export class PatternPiece {
@@ -66,6 +74,7 @@ export class PatternPiece {
   public orientation: Orientation;
   public readonly meta: MetaInfo;
 
+  // todo: resolution not handled when using constructor directly
   public constructor(mask: Mask, options: PatternPieceOptions = {}) {
     const { orientation = 0, centerOrigin = { row: 0, column: 0 } } = options;
 
@@ -88,25 +97,40 @@ export class PatternPiece {
     roi: Roi,
     options: PatternPieceOptions = {},
   ): PatternPiece {
+    const { desiredResolution = 10, inputResolution = 10 } = options;
+
+    const scale = desiredResolution / inputResolution;
+    let mask = roi.getMask();
+    if (scale !== 1) {
+      // scale roi mask to match resolution
+      // we have to convert to image and then back to mask
+      mask = mask
+        .convertColor('GREY')
+        .resize({
+          xFactor: scale,
+          yFactor: scale,
+        })
+        .threshold();
+    }
+
     // roi has origin in top-left corner of the mask, so we need to adjust it to be relative to the center
-    const center = getCenterPoint(roi.width, roi.height);
+    const center = getCenterPoint(mask.width, mask.height);
     const centerOrigin = {
-      row: roi.origin.row + center.row,
-      column: roi.origin.column + center.column,
+      row: Math.round(roi.origin.row * scale) + center.row,
+      column: Math.round(roi.origin.column * scale) + center.column,
     };
-    return new PatternPiece(roi.getMask(), {
+    return new PatternPiece(mask, {
       orientation: 0,
       centerOrigin,
       meta: {
-        width: roi.width,
-        height: roi.height,
+        width: mask.width,
+        height: mask.height,
         center: {
-          row: Math.floor(roi.height / 2),
-          column: Math.floor(roi.width / 2),
+          row: Math.floor(mask.height / 2),
+          column: Math.floor(mask.width / 2),
         },
-        surface: roi.surface,
-        centroid: roi.centroid,
         numberHoles: roi.holesInfo.number,
+        resolution: desiredResolution,
         ...options.meta,
       },
     });
