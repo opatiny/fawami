@@ -28,12 +28,14 @@ const freesewingDim = [
 const img = freesewingImg[2];
 const dim = freesewingDim[2];
 
+const resolution = 4;
+
 const path = join(import.meta.dirname, '../data/', img);
 
 const currentDir = import.meta.dirname;
 
 // create a rectangular piece of fabric
-const fabric = getRectangleFabric(dim);
+const fabric = getRectangleFabric({ ...dim, resolution });
 
 // convert the SVG to an image-js image
 const pattern = await svgToIjs(path, { resolution: 10 });
@@ -41,7 +43,11 @@ const pattern = await svgToIjs(path, { resolution: 10 });
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
 
 // extract the pieces of the pattern
-const pieces = extractPatternPieces(pattern, { debug: true });
+const pieces = extractPatternPieces(pattern, {
+  debug: true,
+  desiredResolution: resolution,
+  patternResolution: 10,
+});
 
 console.log(`Extracted ${pieces.length} pieces`);
 
@@ -102,7 +108,7 @@ textileOptimizer.plotDistanceHeatmap({
 console.log('Textile optimizer created');
 // console.log(textileOptimizer);
 
-const nbIterations = 10;
+const nbIterations = 1;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
