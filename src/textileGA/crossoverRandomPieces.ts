@@ -7,16 +7,10 @@ export interface CrossoverOptions {
    * @default 0
    */
   minCrossoverFraction?: number;
-  /**
-   * Pick crossover function
-   * @default 'random'
-   */
-  crossoverFunction?: 'random' | '1point';
 }
 
 export const DefaultCrossoverOptions: CrossoverOptions = {
   minCrossoverFraction: 0,
-  crossoverFunction: 'random',
 };
 
 export interface Crossover1PointOptions extends CrossoverOptions {
@@ -30,13 +24,13 @@ export interface Crossover1PointOptions extends CrossoverOptions {
 }
 
 /**
- * Perform one-point crossover between two parent genes to produce two children.
+ * Perform a crossover between two parent genes to produce two children by randomly swapping some of the pieces.
  * @param parent1 - First parent gene
  * @param parent2 - Second parent gene
  * @param options - Options for crossover
  * @returns Two child genes resulting from the crossover
  */
-export function crossover1Point(
+export function crossoverRandomPieces(
   parent1: Gene,
   parent2: Gene,
   options: Crossover1PointOptions = {},
@@ -48,7 +42,9 @@ export function crossover1Point(
   } = options;
 
   if (parent1.patternPieces.length !== parent2.patternPieces.length) {
-    throw new Error('crossover1Point: Both parents must have the same length');
+    throw new Error(
+      'crossoverRandomPieces: Both parents must have the same length',
+    );
   }
 
   if (minCrossoverFraction < 0 || minCrossoverFraction > 0.5) {
@@ -57,27 +53,21 @@ export function crossover1Point(
     );
   }
 
-  const length = parent1.patternPieces.length;
+  const nbPiecesToSwap = Math.round(
+    parent1.patternPieces.length * minCrossoverFraction,
+  );
+  const swapIndices = randomGen.choice(parent1.patternPieces.length, {
+    size: nbPiecesToSwap,
+    replace: false,
+  });
 
-  const minCrossoverPoint = Math.ceil(length * minCrossoverFraction);
-  const crossoverLength = length - 2 * minCrossoverPoint;
+  const child1Pieces = parent1.patternPieces.slice();
+  const child2Pieces = parent2.patternPieces.slice();
 
-  const crossoverPoint =
-    minCrossoverPoint + Math.floor(randomGen.random() * crossoverLength);
-
-  if (debug) {
-    console.log(`crossover point: ${crossoverPoint}, genes length: ${length}`);
+  for (const index of swapIndices) {
+    child1Pieces[index] = parent2.patternPieces[index];
+    child2Pieces[index] = parent1.patternPieces[index];
   }
-
-  const child1Pieces = [
-    ...parent1.patternPieces.slice(0, crossoverPoint),
-    ...parent2.patternPieces.slice(crossoverPoint),
-  ];
-  const child2Pieces = [
-    ...parent2.patternPieces.slice(0, crossoverPoint),
-    ...parent1.patternPieces.slice(crossoverPoint),
-  ];
-
   const fabric = parent1.fabric;
 
   const newGeneOptions = {

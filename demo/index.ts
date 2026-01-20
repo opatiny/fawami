@@ -71,14 +71,14 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   nbCuts: 1,
   enableRotation: true,
   optionsGA: {
-    initialPopulationSize: 10,
-    populationSize: 10,
+    initialPopulationSize: 100,
+    populationSize: 100,
     eliteSize: 3,
     enableMutation: true,
     enableCrossover: true,
     nextGenFunction: 'smart',
   },
-  crossoverOptions: { minCrossoverFraction: 0.4 },
+  crossoverOptions: { minCrossoverFraction: 0.1, crossoverFunction: 'random' },
   mutateOptions: {
     translationAmplitude: 1,
     mutationFunction: 'smart',

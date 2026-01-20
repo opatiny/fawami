@@ -53,6 +53,7 @@ import {
   type SaveResultsOptions,
   type TextileGAStats,
 } from './saveResults.ts';
+import { crossoverRandomPieces } from './crossoverRandomPieces.ts';
 
 export interface OptionsTextileGA {
   /**
@@ -233,13 +234,27 @@ export class TextileGA {
   }
 
   private getCrossoverFunction(options?: CrossoverOptions) {
-    return (parent1: Gene, parent2: Gene): [Gene, Gene] => {
-      return crossover1Point(parent1, parent2, {
-        randomGen: this.randomGen,
-        ...options,
-        debug: false,
-      });
-    };
+    if (options?.crossoverFunction === '1point') {
+      return (parent1: Gene, parent2: Gene): [Gene, Gene] => {
+        return crossover1Point(parent1, parent2, {
+          randomGen: this.randomGen,
+          ...options,
+          debug: false,
+        });
+      };
+    } else if (options?.crossoverFunction === 'random') {
+      return (parent1: Gene, parent2: Gene): [Gene, Gene] => {
+        return crossoverRandomPieces(parent1, parent2, {
+          randomGen: this.randomGen,
+          ...options,
+          debug: false,
+        });
+      };
+    } else {
+      throw new Error(
+        `Unknown crossover function: ${options?.crossoverFunction}`,
+      );
+    }
   }
 
   private getMutationFunction(mutateOptions?: MutateOptions) {
