@@ -50,7 +50,7 @@ export interface PatternPieceOptions {
    */
   meta?: MetaInfo;
   /**
-   * Origin of the piece on the fabric relative to the **center** of the piece
+   * Origin of the center of thepiece relative to the top-left corner of the fabric
    */
   centerOrigin?: Point;
   /**
@@ -99,10 +99,10 @@ export class PatternPiece {
   ): PatternPiece {
     const { desiredResolution = 10, inputResolution = 10 } = options;
 
+    const scale = desiredResolution / inputResolution;
     let mask = roi.getMask();
-    if (desiredResolution !== inputResolution) {
+    if (scale !== 1) {
       // scale roi mask to match resolution
-      const scale = desiredResolution / inputResolution;
       // we have to convert to image and then back to mask
       mask = mask
         .convertColor('GREY')
@@ -116,8 +116,8 @@ export class PatternPiece {
     // roi has origin in top-left corner of the mask, so we need to adjust it to be relative to the center
     const center = getCenterPoint(mask.width, mask.height);
     const centerOrigin = {
-      row: roi.origin.row + center.row,
-      column: roi.origin.column + center.column,
+      row: Math.round(roi.origin.row * scale) + center.row,
+      column: Math.round(roi.origin.column * scale) + center.column,
     };
     return new PatternPiece(mask, {
       orientation: 0,

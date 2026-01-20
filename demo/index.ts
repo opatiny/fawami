@@ -6,6 +6,7 @@ import { extractPatternPieces } from '../src/imageProcessing/extractPatternPiece
 import { getRectangleFabric } from '../src/utils/getRectangleFabric.ts';
 import { svgToIjs } from '../src/imageProcessing/svgToIjs.ts';
 import { TextileGA } from '../src/textileGA/TextileGA.ts';
+import { drawPieces } from '../src/utils/drawPieces.ts';
 
 const geomImg = ['shapes-holes.svg', 'circles.svg', 'rectangles.svg'];
 const geomDim = [
@@ -28,7 +29,10 @@ const freesewingDim = [
 const img = freesewingImg[2];
 const dim = freesewingDim[2];
 
-const resolution = 4;
+// desired resolution of pattern pieces and fabric
+const resolution = 1;
+// intermediate pattern resolution
+const patternResolution = 10;
 
 const path = join(import.meta.dirname, '../data/', img);
 
@@ -38,7 +42,7 @@ const currentDir = import.meta.dirname;
 const fabric = getRectangleFabric({ ...dim, resolution });
 
 // convert the SVG to an image-js image
-const pattern = await svgToIjs(path, { resolution: 10 });
+const pattern = await svgToIjs(path, { resolution: patternResolution });
 
 await write(join(import.meta.dirname, 'pattern.png'), pattern);
 
@@ -46,10 +50,19 @@ await write(join(import.meta.dirname, 'pattern.png'), pattern);
 const pieces = extractPatternPieces(pattern, {
   debug: true,
   desiredResolution: resolution,
-  patternResolution: 10,
+  patternResolution,
 });
 
 console.log(`Extracted ${pieces.length} pieces`);
+
+const fabricDefaultPos = fabric.clone();
+
+drawPieces(fabricDefaultPos, pieces, { showBoundingRectangles: true });
+
+await write(
+  join(import.meta.dirname, 'fabric-with-original-parts.png'),
+  fabricDefaultPos,
+);
 
 // having a smaller population makes the algorithm converge faster??
 
@@ -67,7 +80,7 @@ const textileOptimizer = new TextileGA(fabric, pieces, {
   },
   crossoverOptions: { minCrossoverFraction: 0.4 },
   mutateOptions: {
-    translationAmplitude: 20,
+    translationAmplitude: 1,
     mutationFunction: 'smart',
     nbIterations: 15,
     pushTopLeft: true,
@@ -108,7 +121,7 @@ textileOptimizer.plotDistanceHeatmap({
 console.log('Textile optimizer created');
 // console.log(textileOptimizer);
 
-const nbIterations = 1;
+const nbIterations = 10;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 
