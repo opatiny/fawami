@@ -34,7 +34,7 @@ test('should bring the piece top left', async () => {
     nbIterations: 10,
     translationAmplitude: 1,
     debug: 1,
-  });
+  }).at(-1)!;
 
   expect(result.patternPieces[0].centerOrigin).toStrictEqual({
     row: 1,

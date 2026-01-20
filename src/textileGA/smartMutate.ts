@@ -25,18 +25,20 @@ export interface SmartMutateOptions extends MutateOptions {
 }
 
 /**
- * Mutate a gene and keep the best one of each generation.
+ * Mutate a gene iteratively to improve its score. Save all intermediate improvements.
  * @param fabric - The fabric image.
  * @param gene - The gene to mutate.
  * @param options - Options for mutation.
- * @returns The best mutated gene.
+ * @returns The best mutated genes.
  */
 export function smartMutate(
   fabric: Image,
   gene: Gene,
   options: SmartMutateOptions = {},
-): Gene {
+): Gene[] {
   const { nbIterations = 5, debug = 0, translationAmplitude = 10 } = options;
+
+  const genes: Gene[] = [Gene.clone(gene)];
   let bestGene = Gene.clone(gene);
 
   const nbPieces = gene.patternPieces.length;
@@ -73,6 +75,7 @@ export function smartMutate(
           }
           bestGene = currentGene;
           improved = true;
+          genes.push(bestGene);
         }
       }
     }
@@ -87,7 +90,7 @@ export function smartMutate(
     }
   }
 
-  return bestGene;
+  return genes;
 }
 
 /**

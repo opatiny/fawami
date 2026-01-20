@@ -40,7 +40,7 @@ const randomGen = new Random(0);
 
 // create initial generation for genetic algorithm
 const initialPopulation = getRandomGenes(fabric, pieces, {
-  populationSize: 10,
+  populationSize: 1,
   randomGen: randomGen,
   rotatePieces: true,
   fitnessWeights: {
@@ -60,14 +60,12 @@ savePopulationImages(fabric, initialPopulation, {
 });
 
 // mutate a gene multiple times and select the best ones
-const mutants = initialPopulation.map(
-  (gene) =>
-    smartMutate(fabric, gene, {
-      translationAmplitude: 1,
-      nbIterations: 10,
-      debug: 1,
-    }).at(-1)!,
-);
+const gene = initialPopulation[0];
+const mutants = smartMutate(fabric, gene, {
+  translationAmplitude: 10,
+  nbIterations: 10,
+  debug: 1,
+});
 
 savePopulationImages(fabric, mutants, {
   dirname: 'smartMutants',

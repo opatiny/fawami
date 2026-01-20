@@ -248,7 +248,8 @@ export class TextileGA {
         if (mutateOptions?.pushTopLeft) {
           pushTopLeft(gene);
         }
-        return smartMutate(this.fabric, gene, mutateOptions);
+        const genes = smartMutate(this.fabric, gene, mutateOptions);
+        return genes.at(-1) as Gene;
       };
     } else if (mutateOptions?.mutationFunction === 'mutateAndKeepBest') {
       return (gene: Gene): Gene => {
