@@ -10,7 +10,6 @@ const distances = new Matrix([
 ]);
 
 test('plot heat map', () => {
-  console.log(distances);
   plotHeatMap(distances, {
     path: import.meta.dirname,
     name: 'testHeatMap.svg',

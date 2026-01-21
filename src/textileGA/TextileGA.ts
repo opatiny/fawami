@@ -194,7 +194,10 @@ export class TextileGA {
         gaOptions.populationSize as number,
         fitnessWeights,
       ), // it is in defaultOptionsGA
-      crossoverFunction: this.getCrossoverFunction(crossoverOptions),
+      crossoverFunction: this.getCrossoverFunction({
+        ...DefaultCrossoverOptions,
+        ...crossoverOptions,
+      }),
       mutationFunction: this.getMutationFunction({
         ...DefaultMutateOptions,
         ...mutateOptions,

@@ -53,8 +53,13 @@ export function crossoverRandomPieces(
     );
   }
 
+  const crossoverFraction = Math.max(
+    minCrossoverFraction,
+    randomGen.random() / 2,
+  );
+
   const nbPiecesToSwap = Math.round(
-    parent1.patternPieces.length * minCrossoverFraction,
+    parent1.patternPieces.length * crossoverFraction,
   );
   const swapIndices = randomGen.choice(parent1.patternPieces.length, {
     size: nbPiecesToSwap,
