@@ -67,7 +67,7 @@ await write(
 // having a smaller population makes the algorithm converge faster??
 
 const textileOptimizer = new TextileGA(fabric, pieces, {
-  seed: 0,
+  seed: 1,
   nbCuts: 1,
   enableRotation: true,
   optionsGA: {
@@ -121,7 +121,7 @@ textileOptimizer.plotDistanceHeatmap({
 console.log('Textile optimizer created');
 // console.log(textileOptimizer);
 
-const nbIterations = 10;
+const nbIterations = 100;
 for (let i = 1; i <= nbIterations; i++) {
   console.log(`\n--- Iteration ${i} ---`);
 

@@ -1,0 +1,40 @@
+{
+  "seed": 1,
+  "nbCuts": 1,
+  "enableRotation": true,
+  "fitnessWeights": {
+    "overlap": 1000,
+    "usedLength": 0,
+    "averageColumn": 1,
+    "averageRow": 1,
+    "packing": 1
+  },
+  "mutateOptions": {
+    "translationAmplitude": 2,
+    "mutationFunction": "smart",
+    "nbIterations": 15,
+    "pushTopLeft": true
+  },
+  "crossoverOptions": {
+    "minCrossoverFraction": 0.4
+  },
+  "distanceOptions": {
+    "centerWeight": 1,
+    "orientationWeight": 100
+  },
+  "optionsGA": {
+    "randomGen": {},
+    "enableCrossover": false,
+    "enableMutation": true,
+    "populationSize": 10,
+    "initialPopulationSize": 10,
+    "nextGenFunction": "smart",
+    "eliteSize": 3,
+    "probabilityExponent": 1,
+    "debug": false
+  },
+  "fabricDimensions": {
+    "width": 300,
+    "height": 200
+  }
+}

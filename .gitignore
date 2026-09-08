@@ -118,7 +118,7 @@ dist
 .DS_Store
 
 lib
-results
+results-local
 
 demo/**/*.png
 demo/**/*.svg

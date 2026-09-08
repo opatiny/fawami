@@ -1,6 +1,23 @@
 # FaWaMi: Fabric waste minimization project
 
-This project implements a genetic algorithm from scratch to optimize the placement of sewing pattern pieces on fabric, minimizing the textile waste. The software is definitely not competitive with existing solutions, but the modular architecture provides a flexible tool for testing alternative fitness functions, crossover operators, and mutation strategies.
+This project implements a genetic algorithm from scratch to optimize the placement of sewing pattern pieces on fabric, minimizing the textile waste. The software is definitely not competitive with existing solutions in terms of running time or final packing, but the modular architecture provides a flexible tool for testing alternative fitness functions, crossover operators, and mutation strategies.
+
+## Documentation
+
+You can read the official report of the project here: [results/PatinyOceane_rapport_MSE_PA_SA25.pdf](results/PatinyOceane_rapport_MSE_PA_SA25.pdf)
+
+## Results
+
+When running the demo, a complete results folder is generated, which contains images of the pieces layout on the fabric after each generation (in `bestGenes`) and heatmaps of the similarity of the individual (to ensure that there is enough diversity for efficient crossover, this is in `heatmaps`). A convergence plot of the solution score at each generation is also saved as `convergencePlot.svg`. Finally, all of the configuration used during the optimization is stored in `config.json`, whereas statistics are computed and savec in `results.json`.
+
+An example of a results folder can be found in [results/2026-01-06-seed1](results/2026-01-06-seed1).
+
+In that example, which uses simple small geometric shapes, the final optimized placement after ten iteration shown in the following image. The packing for this placement of the pieces is 73%.
+
+![results/2026-01-06-seed1/bestGenes/iteration9.png](results/2026-01-06-seed1/bestGenes/iteration9.png)
+
+Whereas the corresponding convergence plot is shown below.
+![results/2026-01-06-seed1/convergencePlot.svg](results/2026-01-06-seed1/convergencePlot.svg)
 
 ## Run the demo
 
